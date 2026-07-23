@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: prediction-arb-dashboard
+    runtime: node
+    plan: starter
+    autoDeploy: true
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: POLYMARKET_TIMEOUT_MS
+        value: 10000

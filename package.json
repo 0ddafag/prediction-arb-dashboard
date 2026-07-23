@@ -1,0 +1,15 @@
+{
+  "name": "prediction-arb-dashboard",
+  "private": false,
+  "version": "0.1.0",
+  "description": "MVP dashboard for Polymarket ↔ bookmaker comparison with screenshot/manual intake and live calculator.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

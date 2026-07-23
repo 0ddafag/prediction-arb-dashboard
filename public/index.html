@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polymarket ↔ Bookmaker Arb Dashboard MVP</title>
+    <meta
+      name="description"
+      content="Screenshot-assisted/manual arb dashboard MVP with editable bookmaker odds and live calculator."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="apple-dot"></div>
+        <div class="topbar-title">Polymarket ↔ bookmaker / screenshot-assisted MVP</div>
+        <div class="topbar-meta" id="generatedAt">Загрузка…</div>
+      </header>
+
+      <main>
+        <section class="hero section-card">
+          <div class="hero-copy">
+            <p class="eyebrow">Prediction dashboard</p>
+            <h1>Manual first. Live Polymarket now. Editable bookmaker odds.</h1>
+            <p class="hero-text">
+              MVP уже работает без bookmaker machine-fetch: есть inbox для screenshot/manual intake, mapped opportunities,
+              explainability, live refresh Polymarket и калькулятор для ручных odds override / breakeven / target profit.
+            </p>
+            <div class="hero-pills">
+              <span class="pill">source mode: screenshot_manual</span>
+              <span class="pill pill-muted">machine_fetch: stub contract</span>
+              <span class="pill pill-blue">same-outcome hedge: bookmaker YES ↔ Polymarket NO</span>
+            </div>
+          </div>
+
+          <div class="hero-metrics" id="metricCards">
+            <article class="metric-card skeleton"></article>
+            <article class="metric-card skeleton"></article>
+            <article class="metric-card skeleton"></article>
+            <article class="metric-card skeleton"></article>
+          </div>
+        </section>
+
+        <section class="section-card table-section">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Controls</p>
+              <h2>Opportunities table</h2>
+            </div>
+            <div class="section-actions wide-actions">
+              <div class="control-row">
+                <button class="action-button primary" id="refreshButton" type="button">Refresh Polymarket</button>
+                <label class="field compact-field">
+                  <span>Source mode</span>
+                  <select id="sourceFilter">
+                    <option value="all">All</option>
+                    <option value="screenshot_manual">screenshot_manual</option>
+                    <option value="manual_form">manual_form</option>
+                  </select>
+                </label>
+                <label class="field compact-field">
+                  <span>Min net limit edge</span>
+                  <input id="edgeFilter" type="number" value="0" step="0.01" />
+                </label>
+                <label class="checkbox-pill">
+                  <input id="mappedOnly" type="checkbox" checked />
+                  <span>mapped only</span>
+                </label>
+              </div>
+              <div class="legend-summary" id="legendSummary"></div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Event / outcome</th>
+                  <th>Book source</th>
+                  <th>Book odds</th>
+                  <th>Implied %</th>
+                  <th>Poly NO market</th>
+                  <th>Poly NO limit</th>
+                  <th>Poly NO easy</th>
+                  <th>Net edge (mkt/lim/easy)</th>
+                  <th>Size</th>
+                  <th>Freshness</th>
+                </tr>
+              </thead>
+              <tbody id="opportunitiesBody">
+                <tr>
+                  <td colspan="11" class="loading-cell">Loading opportunities…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="two-up grid-top">
+          <section class="section-card chart-section compact">
+            <div class="section-head compact-head">
+              <div>
+                <p class="eyebrow">Inbox</p>
+                <h2>Bookmaker ingestion queue</h2>
+              </div>
+              <p class="subdued">Screenshot / manual records stay visible before and after mapping.</p>
+            </div>
+            <div class="stack-list" id="inboxList"></div>
+          </section>
+
+          <section class="section-card chart-section compact">
+            <div class="section-head compact-head">
+              <div>
+                <p class="eyebrow">Explainability</p>
+                <h2>Pair detail</h2>
+              </div>
+              <p class="subdued">Select any opportunity row to inspect raw capture, mapping and arb math.</p>
+            </div>
+            <div id="pairDetail" class="detail-shell"></div>
+          </section>
+        </section>
+
+        <section class="section-card notes-card">
+          <div class="section-head compact-head">
+            <div>
+              <p class="eyebrow">Live calculator / manual override</p>
+              <h2>Editable bookmaker odds + sandbox</h2>
+            </div>
+            <p class="subdued">captured_odds, edited_odds и scenario_odds разведены отдельно.</p>
+          </div>
+
+          <div class="calculator-grid">
+            <section class="note-item">
+              <strong>1. Editable bookmaker inputs</strong>
+              <div id="calculatorEditor"></div>
+            </section>
+            <section class="note-item">
+              <strong>2. Arb calculator</strong>
+              <div id="calculatorResults"></div>
+            </section>
+            <section class="note-item">
+              <strong>3. Manual intake from scratch</strong>
+              <form id="manualEntryForm" class="form-grid">
+                <label class="field">
+                  <span>Event title</span>
+                  <input name="event_title" required placeholder="Manual event" />
+                </label>
+                <label class="field">
+                  <span>Sport</span>
+                  <input name="sport" value="manual" />
+                </label>
+                <label class="field">
+                  <span>Market type</span>
+                  <select name="market_type">
+                    <option value="yes_no">yes_no</option>
+                    <option value="1x2">1x2</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Outcome key</span>
+                  <select name="outcome_key">
+                    <option value="yes">yes</option>
+                    <option value="home">home</option>
+                    <option value="draw">draw</option>
+                    <option value="away">away</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Outcome label</span>
+                  <input name="outcome_label" value="Manual outcome" />
+                </label>
+                <label class="field">
+                  <span>Captured odds</span>
+                  <input name="captured_decimal_odds" type="number" step="0.01" min="1.01" required />
+                </label>
+                <label class="field full-width">
+                  <span>Optional Polymarket market id for mapping candidate</span>
+                  <input name="poly_market_id" placeholder="540817" />
+                </label>
+                <div class="form-actions full-width">
+                  <button class="action-button" type="submit">Create manual row</button>
+                  <span class="subdued" id="manualFormStatus">Новый bookmaker row появится в inbox и sandbox сразу после сохранения.</span>
+                </div>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section class="section-card table-section">
+          <div class="section-head compact-head">
+            <div>
+              <p class="eyebrow">Polymarket core</p>
+              <h2>Featured live markets</h2>
+            </div>
+            <p class="subdued">Dashboard запускается даже без bookmaker machine-fetch, потому что Polymarket живой уже сейчас.</p>
+          </div>
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Market id</th>
+                  <th>Question</th>
+                  <th>YES bid/ask</th>
+                  <th>Outcome prices</th>
+                  <th>Liquidity</th>
+                  <th>24h vol</th>
+                </tr>
+              </thead>
+              <tbody id="featuredMarketsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
