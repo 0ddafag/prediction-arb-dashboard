@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const { buildDashboardPayload } = require('./src/dashboard');
-const { updateNormalizedMarket, createManualInput } = require('./src/storage');
+const { updateNormalizedMarket, updateMarketPair, createManualInput } = require('./src/storage');
 const { impliedProbability } = require('./src/math');
 
 const PORT = Number(process.env.PORT || 4173);
@@ -103,6 +103,22 @@ async function handleApi(req, res, pathname) {
       market.limit_notes = payload.limit_notes || market.limit_notes || '';
       return market;
     });
+
+    return sendJson(res, 200, { ok: true, updated });
+  }
+
+  const pairPricesMatch = pathname.match(/^\/api\/pairs\/([^/]+)\/prices$/);
+  if (req.method === 'POST' && pairPricesMatch) {
+    const pairId = decodeURIComponent(pairPricesMatch[1]);
+    const payload = await readBody(req);
+    const toNullableNumber = (value) => (value === '' || value == null ? null : Number(value));
+
+    const updated = updateMarketPair(pairId, (pair) => ({
+      ...pair,
+      poly_no_market_override: toNullableNumber(payload.poly_no_market_override),
+      poly_no_limit_override: toNullableNumber(payload.poly_no_limit_override),
+      poly_no_easy_override: toNullableNumber(payload.poly_no_easy_override),
+    }));
 
     return sendJson(res, 200, { ok: true, updated });
   }

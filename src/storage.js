@@ -23,6 +23,18 @@ function updateNormalizedMarket(bookmakerMarketId, updater) {
   return updated;
 }
 
+function updateMarketPair(pairId, updater) {
+  const store = readStore();
+  const index = store.market_pairs.findIndex((item) => item.pair_id === pairId);
+  if (index === -1) {
+    throw new Error(`Unknown pair_id: ${pairId}`);
+  }
+  const updated = updater({ ...store.market_pairs[index] });
+  store.market_pairs[index] = updated;
+  writeStore(store);
+  return updated;
+}
+
 function createManualInput(payload) {
   const store = readStore();
   const now = new Date().toISOString();
@@ -96,6 +108,7 @@ module.exports = {
   readStore,
   writeStore,
   updateNormalizedMarket,
+  updateMarketPair,
   createManualInput,
   STORE_PATH,
 };

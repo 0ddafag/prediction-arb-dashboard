@@ -5,6 +5,7 @@ const {
   bookmakerThreshold,
   decimalOddsForTarget,
   deriveNoPriceViews,
+  buildArbSnapshot,
 } = require('../src/math');
 
 test('impliedProbability and bookmakerThreshold derive expected values', () => {
@@ -39,4 +40,30 @@ test('deriveNoPriceViews handles missing market and calculates candidates', () =
   assert.equal(views.limit_candidate, 0.375);
   assert.equal(views.easy_limit_candidate, 0.37);
   assert.ok(views.easy_limit_score >= 0 && views.easy_limit_score <= 100);
+});
+
+test('buildArbSnapshot respects manual polymarket overrides for table experiments', () => {
+  const snapshot = buildArbSnapshot(
+    {
+      pair_id: 'pair-test',
+      poly_no_market_override: 0.41,
+      poly_no_limit_override: 0.37,
+    },
+    {
+      effective_decimal_odds: 2.5,
+    },
+    {
+      bestBid: 0.61,
+      bestAsk: 0.64,
+      takerBaseFee: 0,
+      liquidityClob: 10000,
+      volume24hr: 2000,
+    }
+  );
+
+  assert.equal(snapshot.poly_no_market_exec, 0.41);
+  assert.equal(snapshot.poly_no_limit_candidate, 0.37);
+  assert.equal(snapshot.poly_no_easy_limit_candidate, 0.37);
+  assert.equal(snapshot.price_views.derived_market_exec, 0.39);
+  assert.equal(snapshot.price_views.derived_limit_candidate, 0.375);
 });

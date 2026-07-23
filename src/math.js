@@ -70,7 +70,16 @@ function deriveNoPriceViews(polyMarket) {
 }
 
 function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
-  const priceViews = deriveNoPriceViews(polyMarket);
+  const derivedViews = deriveNoPriceViews(polyMarket);
+  const priceViews = {
+    ...derivedViews,
+    market_exec: pair.poly_no_market_override == null ? derivedViews.market_exec : Number(pair.poly_no_market_override),
+    limit_candidate: pair.poly_no_limit_override == null ? derivedViews.limit_candidate : Number(pair.poly_no_limit_override),
+  };
+  priceViews.easy_limit_candidate = pair.poly_no_easy_override == null
+    ? (priceViews.limit_candidate ?? derivedViews.easy_limit_candidate)
+    : Number(pair.poly_no_easy_override);
+
   const odds = Number(bookmakerMarket.effective_decimal_odds ?? bookmakerMarket.edited_decimal_odds ?? bookmakerMarket.captured_decimal_odds);
   const impliedProb = impliedProbability(odds);
   const threshold = bookmakerThreshold(odds);
@@ -116,6 +125,9 @@ function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
     computed_at: new Date().toISOString(),
     price_views: {
       ...priceViews,
+      derived_market_exec: derivedViews.market_exec,
+      derived_limit_candidate: derivedViews.limit_candidate,
+      derived_easy_limit_candidate: derivedViews.easy_limit_candidate,
       market_net: marketCostNet,
       limit_net: limitCostNet,
       easy_net: easyCostNet,
