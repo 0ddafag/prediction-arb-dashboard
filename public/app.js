@@ -4,8 +4,8 @@ const state = {
   secondaryOpen: false,
   drafts: {},
   settings: {
-    cashStakeRub: 1725,
-    fxRubPerUsd: 81,
+    cashStakeRub: '1725',
+    fxRubPerUsd: '81',
   },
 };
 
@@ -17,19 +17,31 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function bindControls() {
+  const cashInput = document.getElementById('cashStakeRub');
+  const fxInput = document.getElementById('fxRubPerUsd');
+
   document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
   document.getElementById('toggleSecondary').addEventListener('click', () => {
     state.secondaryOpen = !state.secondaryOpen;
     renderSecondaryVisibility();
   });
-  document.getElementById('cashStakeRub').addEventListener('input', (event) => {
-    state.settings.cashStakeRub = Number(event.target.value || 0);
-    renderDashboard();
+
+  cashInput.addEventListener('input', (event) => {
+    state.settings.cashStakeRub = event.target.value;
+    syncSettingInputs('cashStakeRub', event.target.value, event.target);
+    renderSummaryBar();
+    renderPairDetail();
   });
-  document.getElementById('fxRubPerUsd').addEventListener('input', (event) => {
-    state.settings.fxRubPerUsd = Number(event.target.value || 0);
-    renderDashboard();
+  cashInput.addEventListener('blur', () => renderDashboard());
+
+  fxInput.addEventListener('input', (event) => {
+    state.settings.fxRubPerUsd = event.target.value;
+    syncSettingInputs('fxRubPerUsd', event.target.value, event.target);
+    renderSummaryBar();
+    renderPairDetail();
   });
+  fxInput.addEventListener('blur', () => renderDashboard());
+
   document.getElementById('manualEntryForm').addEventListener('submit', createManualEntry);
 }
 
@@ -51,10 +63,10 @@ async function loadDashboard() {
       state.selectedPairId = payload.arb_snapshots[0]?.pair_id || null;
     }
     syncDraftsWithPayload();
-    document.getElementById('generatedAt').textContent = `Обновлено ${new Date(payload.generatedAt).toLocaleString('ru-RU')}`;
+    document.getElementById('generatedAt').textContent = `Updated ${new Date(payload.generatedAt).toLocaleString('en-GB')}`;
     renderDashboard();
   } catch (error) {
-    document.getElementById('generatedAt').textContent = `Ошибка загрузки: ${error.message}`;
+    document.getElementById('generatedAt').textContent = `Load failed: ${error.message}`;
   }
 }
 
@@ -63,9 +75,9 @@ function syncDraftsWithPayload() {
   for (const snapshot of state.payload?.arb_snapshots || []) {
     const existing = state.drafts[snapshot.pair_id] || {};
     nextDrafts[snapshot.pair_id] = {
-      bookmakerOdds: existing.bookmakerOdds ?? normalizeInputValue(snapshot.bookmaker_market.effective_decimal_odds),
-      polyMarket: existing.polyMarket ?? normalizeInputValue(snapshot.poly_no_market_exec),
-      polyLimit: existing.polyLimit ?? normalizeInputValue(snapshot.poly_no_limit_candidate),
+      bookmakerOdds: existing.bookmakerOdds ?? formatRawNumber(snapshot.bookmaker_market.effective_decimal_odds, 2),
+      polyMarket: existing.polyMarket ?? formatPercentInput(snapshot.poly_no_market_exec),
+      polyLimit: existing.polyLimit ?? formatPercentInput(snapshot.poly_no_limit_candidate),
     };
   }
   state.drafts = nextDrafts;
@@ -74,12 +86,12 @@ function syncDraftsWithPayload() {
 async function refreshDashboard() {
   const button = document.getElementById('refreshButton');
   button.disabled = true;
-  button.textContent = 'Обновляю…';
+  button.textContent = 'Refreshing…';
   try {
     const payload = await fetchJson('/api/refresh', { method: 'POST' });
     state.payload = payload;
     syncDraftsWithPayload();
-    document.getElementById('generatedAt').textContent = `Обновлено ${new Date(payload.generatedAt).toLocaleString('ru-RU')}`;
+    document.getElementById('generatedAt').textContent = `Updated ${new Date(payload.generatedAt).toLocaleString('en-GB')}`;
     renderDashboard();
   } catch (error) {
     document.getElementById('generatedAt').textContent = `Refresh failed: ${error.message}`;
@@ -95,9 +107,9 @@ function getSnapshots() {
     .sort((a, b) => {
       const timeDiff = new Date(a.bookmaker_market.event_start_at).getTime() - new Date(b.bookmaker_market.event_start_at).getTime();
       if (timeDiff !== 0) return timeDiff;
-      const titleDiff = a.bookmaker_market.event_title.localeCompare(b.bookmaker_market.event_title, 'ru');
+      const titleDiff = getEventDisplayName(a).localeCompare(getEventDisplayName(b), 'en');
       if (titleDiff !== 0) return titleDiff;
-      return a.bookmaker_market.outcome_label.localeCompare(b.bookmaker_market.outcome_label, 'ru');
+      return a.bookmaker_market.outcome_label.localeCompare(b.bookmaker_market.outcome_label, 'en');
     });
 }
 
@@ -107,16 +119,14 @@ function renderDashboard() {
   renderOpportunities();
   renderPairDetail();
   renderSecondaryVisibility();
+  syncSettingInputs('cashStakeRub', state.settings.cashStakeRub);
+  syncSettingInputs('fxRubPerUsd', state.settings.fxRubPerUsd);
 }
 
 function renderSummaryBar() {
-  const rows = getSnapshots();
-  const uniqueEvents = new Set(rows.map((item) => item.bookmaker_market.event_title)).size;
   document.getElementById('summaryBar').innerHTML = `
-    <span class="summary-pill">матчей ${uniqueEvents}</span>
-    <span class="summary-pill">строк ${rows.length}</span>
-    <span class="summary-pill">ставка ₽${formatRub(state.settings.cashStakeRub, 0)}</span>
-    <span class="summary-pill">курс ${formatNumber(state.settings.fxRubPerUsd, 2)}</span>
+    <span class="summary-pill">Stake ₽${formatRub(getCashStakeRub(), 0)}</span>
+    <span class="summary-pill">FX ${formatNumber(getFxRubPerUsd(), 2)}</span>
   `;
 }
 
@@ -124,7 +134,7 @@ function renderOpportunities() {
   const rows = getSnapshots();
   const body = document.getElementById('opportunitiesBody');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="14" class="loading-cell">Нет строк MLB.</td></tr>';
+    body.innerHTML = '<tr><td colspan="14" class="loading-cell">No MLB rows.</td></tr>';
     return;
   }
 
@@ -137,20 +147,24 @@ function renderOpportunities() {
       <tr class="${selected}" data-pair-id="${item.pair_id}">
         <td>${escapeHtml(prettyBookName(item.bookmaker_market.bookmaker_key))}</td>
         <td class="event-cell" data-select-row="${item.pair_id}">
-          <div class="event-title">${escapeHtml(item.bookmaker_market.event_title)}</div>
-          <div class="event-meta">${escapeHtml(item.bookmaker_market.outcome_label)}</div>
+          <div class="event-title">${escapeHtml(getEventDisplayName(item))}</div>
+          <div class="event-meta">Book side: ${escapeHtml(item.bookmaker_market.outcome_label)}</div>
         </td>
         <td class="odds-cell">
-          <input class="odds-input ${dirty.bookmaker ? 'dirty' : ''}" data-field="bookmakerOdds" data-pair-id="${item.pair_id}" type="number" step="0.01" min="1.01" value="${escapeAttr(draft.bookmakerOdds ?? '')}" />
+          <input class="odds-input ${dirty.bookmaker ? 'dirty' : ''}" data-field="bookmakerOdds" data-pair-id="${item.pair_id}" type="text" inputmode="decimal" value="${escapeAttr(draft.bookmakerOdds ?? '')}" />
         </td>
         <td class="odds-cell poly-cell">
-          <input class="odds-input ${dirty.polyMarket ? 'dirty' : ''}" data-field="polyMarket" data-pair-id="${item.pair_id}" type="number" step="0.01" min="0.01" max="0.99" value="${escapeAttr(asCentsInput(draft.polyMarket))}" />
-          <input class="odds-input ${dirty.polyLimit ? 'dirty' : ''}" data-field="polyLimit" data-pair-id="${item.pair_id}" type="number" step="0.01" min="0.01" max="0.99" value="${escapeAttr(asCentsInput(draft.polyLimit))}" />
-          <div class="input-note">mkt / lim (%)</div>
+          <input class="odds-input ${dirty.polyMarket ? 'dirty' : ''}" data-field="polyMarket" data-pair-id="${item.pair_id}" type="text" inputmode="decimal" value="${escapeAttr(draft.polyMarket ?? '')}" />
+          <input class="odds-input ${dirty.polyLimit ? 'dirty' : ''}" data-field="polyLimit" data-pair-id="${item.pair_id}" type="text" inputmode="decimal" value="${escapeAttr(draft.polyLimit ?? '')}" />
+          <div class="input-note">market / limit (%)</div>
         </td>
-        <td>${formatRub(state.settings.cashStakeRub, 0)}</td>
+        <td class="odds-cell">
+          <input class="odds-input" data-setting-field="cashStakeRub" type="text" inputmode="decimal" value="${escapeAttr(state.settings.cashStakeRub)}" />
+        </td>
         <td>${formatRub(metrics.toWinRub, 0)}</td>
-        <td>${formatNumber(state.settings.fxRubPerUsd, 2)}</td>
+        <td class="odds-cell">
+          <input class="odds-input" data-setting-field="fxRubPerUsd" type="text" inputmode="decimal" value="${escapeAttr(state.settings.fxRubPerUsd)}" />
+        </td>
         <td>${formatUsdPair(metrics.hedgeUsdMarketRaw, metrics.hedgeUsdLimitRaw)}</td>
         <td>${formatNumber(metrics.shares, 2)}</td>
         <td>${formatPctPair(metrics.feeMarketPct, metrics.feeLimitPct)}</td>
@@ -174,7 +188,14 @@ function renderOpportunities() {
       state.selectedPairId = input.dataset.pairId;
       renderPairDetail();
     });
+    input.addEventListener('blur', () => renderDashboard());
   });
+
+  body.querySelectorAll('[data-setting-field]').forEach((input) => {
+    input.addEventListener('input', handleSettingInput);
+    input.addEventListener('blur', () => renderDashboard());
+  });
+
   body.querySelectorAll('[data-select-row]').forEach((cell) => {
     cell.addEventListener('click', () => {
       state.selectedPairId = cell.dataset.selectRow;
@@ -190,13 +211,13 @@ function renderOpportunities() {
 }
 
 function buildCashMetrics(snapshot, draft) {
-  const bookOdds = Number(draft.bookmakerOdds || snapshot.bookmaker_market.effective_decimal_odds || 0);
+  const bookOdds = parseLocalizedDecimal(draft.bookmakerOdds, snapshot.bookmaker_market.effective_decimal_odds);
   const marketRaw = parseDraftPrice(draft.polyMarket, snapshot.poly_no_market_exec);
   const limitRaw = parseDraftPrice(draft.polyLimit, snapshot.poly_no_limit_candidate);
-  const fx = Number(state.settings.fxRubPerUsd || 0);
-  const stake = Number(state.settings.cashStakeRub || 0);
-  const toWinRub = stake * bookOdds;
-  const shares = fx > 0 ? toWinRub / fx : null;
+  const fx = getFxRubPerUsd();
+  const stake = getCashStakeRub();
+  const toWinRub = Number.isFinite(bookOdds) ? stake * bookOdds : null;
+  const shares = Number.isFinite(toWinRub) && fx > 0 ? toWinRub / fx : null;
   const feeRate = deriveFeeRate(snapshot);
   const marketTrue = applyFee(marketRaw, feeRate);
   const limitTrue = applyFee(limitRaw, feeRate);
@@ -205,9 +226,9 @@ function buildCashMetrics(snapshot, draft) {
   const hedgeUsdMarketTrue = shares == null || marketTrue == null ? null : shares * marketTrue;
   const hedgeUsdLimitTrue = shares == null || limitTrue == null ? null : shares * limitTrue;
   const wonPolyRub = shares == null ? null : shares * fx;
-  const wonBettingRub = toWinRub || null;
-  const profitMarketRub = hedgeUsdMarketTrue == null ? null : toWinRub - stake - hedgeUsdMarketTrue * fx;
-  const profitLimitRub = hedgeUsdLimitTrue == null ? null : toWinRub - stake - hedgeUsdLimitTrue * fx;
+  const wonBettingRub = toWinRub;
+  const profitMarketRub = hedgeUsdMarketTrue == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdMarketTrue * fx;
+  const profitLimitRub = hedgeUsdLimitTrue == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdLimitTrue * fx;
 
   return {
     bookOdds,
@@ -237,15 +258,15 @@ function renderPairDetail() {
   const root = document.getElementById('pairDetail');
   const snapshot = getSelectedSnapshot();
   if (!snapshot) {
-    root.innerHTML = '<div class="mini-note">Нет выбранной строки.</div>';
+    root.innerHTML = '<div class="mini-note">No row selected.</div>';
     return;
   }
   const draft = state.drafts[snapshot.pair_id] || {};
   const metrics = buildCashMetrics(snapshot, draft);
   root.innerHTML = `
     <div class="detail-list">
-      <div class="detail-row"><strong>Event</strong><span>${escapeHtml(snapshot.bookmaker_market.event_title)}</span></div>
-      <div class="detail-row"><strong>Outcome</strong><span>${escapeHtml(snapshot.bookmaker_market.outcome_label)}</span></div>
+      <div class="detail-row"><strong>Event</strong><span>${escapeHtml(getEventDisplayName(snapshot))}</span></div>
+      <div class="detail-row"><strong>Book side</strong><span>${escapeHtml(snapshot.bookmaker_market.outcome_label)}</span></div>
       <div class="detail-row"><strong>Poly price</strong><span>market ${formatPercentPrice(metrics.marketRaw)} · limit ${formatPercentPrice(metrics.limitRaw)}</span></div>
       <div class="detail-row"><strong>Poly true $</strong><span>market ${formatUsd(metrics.hedgeUsdMarketTrue)} · limit ${formatUsd(metrics.hedgeUsdLimitTrue)}</span></div>
       <div class="detail-row"><strong>Locked profit cash</strong><span>market ${formatRub(metrics.profitMarketRub, 0)} · limit ${formatRub(metrics.profitLimitRub, 0)}</span></div>
@@ -272,14 +293,14 @@ async function saveRow(pairId, button) {
       fetchJson(`/api/markets/${encodeURIComponent(snapshot.bookmaker_market.bookmaker_market_id)}/odds`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ edited_decimal_odds: draft.bookmakerOdds }),
+        body: JSON.stringify({ edited_decimal_odds: parseDraftNumberForSave(draft.bookmakerOdds) }),
       }),
       fetchJson(`/api/pairs/${encodeURIComponent(pairId)}/prices`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          poly_no_market_override: parseDraftPrice(draft.polyMarket, null),
-          poly_no_limit_override: parseDraftPrice(draft.polyLimit, null),
+          poly_no_market_override: parseDraftNumberForSave(draft.polyMarket, { asPercent: true }),
+          poly_no_limit_override: parseDraftNumberForSave(draft.polyLimit, { asPercent: true }),
         }),
       }),
     ]);
@@ -296,9 +317,9 @@ async function resetRow(pairId) {
   const snapshot = getSnapshots().find((item) => item.pair_id === pairId);
   if (!snapshot) return;
   state.drafts[pairId] = {
-    bookmakerOdds: normalizeInputValue(snapshot.bookmaker_market.captured_decimal_odds),
-    polyMarket: normalizeInputValue(snapshot.price_views.derived_market_exec),
-    polyLimit: normalizeInputValue(snapshot.price_views.derived_limit_candidate),
+    bookmakerOdds: formatRawNumber(snapshot.bookmaker_market.captured_decimal_odds, 2),
+    polyMarket: formatPercentInput(snapshot.price_views.derived_market_exec),
+    polyLimit: formatPercentInput(snapshot.price_views.derived_limit_candidate),
   };
   renderDashboard();
   try {
@@ -350,14 +371,54 @@ function handleDraftInput(event) {
   state.selectedPairId = pairId;
   state.drafts[pairId] = state.drafts[pairId] || {};
   state.drafts[pairId][field] = event.target.value;
-  renderDashboard();
+  event.target.classList.toggle('dirty', isFieldDirty(pairId, field));
+  updateSaveButton(pairId);
+  renderPairDetail();
+}
+
+function handleSettingInput(event) {
+  const field = event.target.dataset.settingField;
+  state.settings[field] = event.target.value;
+  syncSettingInputs(field, event.target.value, event.target);
+  renderSummaryBar();
+  renderPairDetail();
+}
+
+function updateSaveButton(pairId) {
+  const snapshot = getSnapshots().find((item) => item.pair_id === pairId);
+  const button = document.querySelector(`[data-save-row="${CSS.escape(pairId)}"]`);
+  if (!snapshot || !button) return;
+  const dirty = isDirty(snapshot, state.drafts[pairId] || {});
+  button.classList.toggle('primary', hasAnyDirty(dirty));
+  button.classList.toggle('ghost', !hasAnyDirty(dirty));
+}
+
+function syncSettingInputs(field, value, sourceEl = null) {
+  const topEl = document.getElementById(field);
+  if (topEl && topEl !== sourceEl) topEl.value = value;
+  document.querySelectorAll(`[data-setting-field="${field}"]`).forEach((input) => {
+    if (input !== sourceEl) input.value = value;
+  });
+}
+
+function isFieldDirty(pairId, field) {
+  const snapshot = getSnapshots().find((item) => item.pair_id === pairId);
+  if (!snapshot) return false;
+  return isDirty(snapshot, state.drafts[pairId] || {})[fieldToDirtyKey(field)];
+}
+
+function fieldToDirtyKey(field) {
+  if (field === 'bookmakerOdds') return 'bookmaker';
+  if (field === 'polyMarket') return 'polyMarket';
+  if (field === 'polyLimit') return 'polyLimit';
+  return field;
 }
 
 function isDirty(snapshot, draft) {
   return {
-    bookmaker: normalizeInputValue(snapshot.bookmaker_market.effective_decimal_odds) !== normalizeInputValue(draft.bookmakerOdds),
-    polyMarket: normalizeInputValue(snapshot.poly_no_market_exec) !== normalizeInputValue(parseDraftPrice(draft.polyMarket, null)),
-    polyLimit: normalizeInputValue(snapshot.poly_no_limit_candidate) !== normalizeInputValue(parseDraftPrice(draft.polyLimit, null)),
+    bookmaker: normalizeInputValue(parseLocalizedDecimal(draft.bookmakerOdds, null)) !== normalizeInputValue(snapshot.bookmaker_market.effective_decimal_odds),
+    polyMarket: normalizeInputValue(parseDraftPrice(draft.polyMarket, null)) !== normalizeInputValue(snapshot.poly_no_market_exec),
+    polyLimit: normalizeInputValue(parseDraftPrice(draft.polyLimit, null)) !== normalizeInputValue(snapshot.poly_no_limit_candidate),
   };
 }
 
@@ -370,18 +431,51 @@ function normalizeInputValue(value) {
   return String(Number(value));
 }
 
-function parseDraftPrice(value, fallback) {
+function parseLocalizedDecimal(value, fallback = null) {
   if (value === '' || value == null) return fallback;
-  const number = Number(value);
-  if (Number.isNaN(number)) return fallback;
+  const normalized = String(value).trim().replace(',', '.');
+  if (normalized === '' || normalized === '.' || normalized === '-') return fallback;
+  const number = Number(normalized);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function parseDraftPrice(value, fallback) {
+  const number = parseLocalizedDecimal(value, null);
+  if (number == null) return fallback;
   return number > 1 ? number / 100 : number;
 }
 
-function asCentsInput(value) {
+function parseDraftNumberForSave(value, options = {}) {
   if (value === '' || value == null) return '';
-  const number = Number(value);
-  if (Number.isNaN(number)) return '';
-  return String(Math.round(number * 100));
+  const number = parseLocalizedDecimal(value, null);
+  if (number == null) return '';
+  return options.asPercent && number > 1 ? number / 100 : number;
+}
+
+function formatPercentInput(value) {
+  if (value == null || Number.isNaN(Number(value))) return '';
+  return trimTrailingZeros((Number(value) * 100).toFixed(2));
+}
+
+function formatRawNumber(value, digits = 2) {
+  if (value == null || Number.isNaN(Number(value))) return '';
+  return trimTrailingZeros(Number(value).toFixed(digits));
+}
+
+function trimTrailingZeros(value) {
+  return String(value).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+}
+
+function getCashStakeRub() {
+  return parseLocalizedDecimal(state.settings.cashStakeRub, 0) || 0;
+}
+
+function getFxRubPerUsd() {
+  return parseLocalizedDecimal(state.settings.fxRubPerUsd, 0) || 0;
+}
+
+function getEventDisplayName(snapshot) {
+  return snapshot.polymarket_market?.question || snapshot.bookmaker_market.event_title;
 }
 
 function deriveFeeRate(snapshot) {
