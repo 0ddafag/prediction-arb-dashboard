@@ -111,6 +111,558 @@
       "parse_confidence": 0.71,
       "review_status": "candidate",
       "review_notes": "Kept as editable 1X2 sandbox row for manual mapping later."
+    },
+    {
+      "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Филадельфия — Н-Й Янкис",
+      "event_time_raw": "2026-07-26T02:20:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Филадельфия"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.5
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Филадельфия — Н-Й Янкис",
+      "event_time_raw": "2026-07-26T02:20:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Н-Й Янкис"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.75
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-sea-tex-2026-07-26-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Техас — Сиэтл",
+      "event_time_raw": "2026-07-26T21:35:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Техас"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.07
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-sea-tex-2026-07-26-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Техас — Сиэтл",
+      "event_time_raw": "2026-07-26T21:35:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Сиэтл"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.76
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-bal-det-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Детройт — Балтимор",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Детройт"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.85
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-bal-det-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Детройт — Балтимор",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Балтимор"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.97
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-ari-pit-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Питтсбург — Аризона",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Питтсбург"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.78
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-ari-pit-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Питтсбург — Аризона",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Аризона"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.05
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-phi-mia-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Майами — Филадельфия",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Майами"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.34
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-phi-mia-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Майами — Филадельфия",
+      "event_time_raw": "2026-07-27T01:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Филадельфия"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.6
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Вашингтон — Торонто",
+      "event_time_raw": "2026-07-27T01:45:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Вашингтон"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.78
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Вашингтон — Торонто",
+      "event_time_raw": "2026-07-27T01:45:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Торонто"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.05
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-cle-cin-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Цинциннати — Кливленд",
+      "event_time_raw": "2026-07-27T02:10:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Цинциннати"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.61
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-cle-cin-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Цинциннати — Кливленд",
+      "event_time_raw": "2026-07-27T02:10:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Кливленд"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.34
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-atl-nym-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Н-Й Метс — Атланта",
+      "event_time_raw": "2026-07-27T02:10:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Н-Й Метс"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.95
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-atl-nym-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Н-Й Метс — Атланта",
+      "event_time_raw": "2026-07-27T02:10:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Атланта"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.86
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Чикаго Уайт Сокс — Н-Й Янкис",
+      "event_time_raw": "2026-07-27T02:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Чикаго Уайт Сокс"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.14
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Чикаго Уайт Сокс — Н-Й Янкис",
+      "event_time_raw": "2026-07-27T02:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Н-Й Янкис"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.72
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-hou-laa-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Л-А Эйнджелс — Хьюстон",
+      "event_time_raw": "2026-07-27T04:38:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Л-А Эйнджелс"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.97
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-hou-laa-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Л-А Эйнджелс — Хьюстон",
+      "event_time_raw": "2026-07-27T04:38:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Хьюстон"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.84
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-bos-oak-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Окленд — Бостон",
+      "event_time_raw": "2026-07-27T04:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Окленд"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.35
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-bos-oak-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Окленд — Бостон",
+      "event_time_raw": "2026-07-27T04:40:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Бостон"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.6
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-mil-sf-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Сан-Франциско — Милуоки",
+      "event_time_raw": "2026-07-27T04:45:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Сан-Франциско"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 2.1
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+    },
+    {
+      "input_id": "mlbshot-mlb-mil-sf-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "source_mode": "screenshot_manual",
+      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "sport_raw": "mlb",
+      "event_raw": "Сан-Франциско — Милуоки",
+      "event_time_raw": "2026-07-27T04:45:00Z",
+      "market_type_raw": "12",
+      "outcomes_raw_json": [
+        {
+          "outcome_key": "team",
+          "outcome_label": "Милуоки"
+        }
+      ],
+      "odds_raw_json": {
+        "team": 1.74
+      },
+      "captured_at": "2026-07-27T00:00:00Z",
+      "parse_confidence": 0.99,
+      "review_status": "mapped",
+      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
     }
   ],
   "bookmaker_market_normalized": [
@@ -221,6 +773,438 @@
       "limit_notes": "Demonstrates saved manual override in 1X2 mode",
       "source_mode": "screenshot_manual",
       "normalized_at": "2026-07-23T10:45:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-phi-2026-07-26-1",
+      "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Филадельфия — Н-Й Янкис",
+      "event_start_at": "2026-07-26T02:20:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Филадельфия",
+      "captured_decimal_odds": 1.5,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.5,
+      "implied_prob": 0.666667,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-phi-2026-07-26-0",
+      "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Филадельфия — Н-Й Янкис",
+      "event_start_at": "2026-07-26T02:20:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Н-Й Янкис",
+      "captured_decimal_odds": 2.75,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.75,
+      "implied_prob": 0.363636,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-1",
+      "input_id": "mlbshot-mlb-sea-tex-2026-07-26-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Техас — Сиэтл",
+      "event_start_at": "2026-07-26T21:35:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Техас",
+      "captured_decimal_odds": 2.07,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.07,
+      "implied_prob": 0.483092,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-0",
+      "input_id": "mlbshot-mlb-sea-tex-2026-07-26-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Техас — Сиэтл",
+      "event_start_at": "2026-07-26T21:35:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Сиэтл",
+      "captured_decimal_odds": 1.76,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.76,
+      "implied_prob": 0.568182,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-1",
+      "input_id": "mlbshot-mlb-bal-det-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Детройт — Балтимор",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Детройт",
+      "captured_decimal_odds": 1.85,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.85,
+      "implied_prob": 0.540541,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-0",
+      "input_id": "mlbshot-mlb-bal-det-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Детройт — Балтимор",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Балтимор",
+      "captured_decimal_odds": 1.97,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.97,
+      "implied_prob": 0.507614,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-1",
+      "input_id": "mlbshot-mlb-ari-pit-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Питтсбург — Аризона",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Питтсбург",
+      "captured_decimal_odds": 1.78,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.78,
+      "implied_prob": 0.561798,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-0",
+      "input_id": "mlbshot-mlb-ari-pit-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Питтсбург — Аризона",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Аризона",
+      "captured_decimal_odds": 2.05,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.05,
+      "implied_prob": 0.487805,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-1",
+      "input_id": "mlbshot-mlb-phi-mia-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Майами — Филадельфия",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Майами",
+      "captured_decimal_odds": 2.34,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.34,
+      "implied_prob": 0.42735,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-0",
+      "input_id": "mlbshot-mlb-phi-mia-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Майами — Филадельфия",
+      "event_start_at": "2026-07-27T01:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Филадельфия",
+      "captured_decimal_odds": 1.6,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.6,
+      "implied_prob": 0.625,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-1",
+      "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Вашингтон — Торонто",
+      "event_start_at": "2026-07-27T01:45:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Вашингтон",
+      "captured_decimal_odds": 1.78,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.78,
+      "implied_prob": 0.561798,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-0",
+      "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Вашингтон — Торонто",
+      "event_start_at": "2026-07-27T01:45:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Торонто",
+      "captured_decimal_odds": 2.05,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.05,
+      "implied_prob": 0.487805,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-1",
+      "input_id": "mlbshot-mlb-cle-cin-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Цинциннати — Кливленд",
+      "event_start_at": "2026-07-27T02:10:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Цинциннати",
+      "captured_decimal_odds": 1.61,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.61,
+      "implied_prob": 0.621118,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-0",
+      "input_id": "mlbshot-mlb-cle-cin-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Цинциннати — Кливленд",
+      "event_start_at": "2026-07-27T02:10:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Кливленд",
+      "captured_decimal_odds": 2.34,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.34,
+      "implied_prob": 0.42735,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-1",
+      "input_id": "mlbshot-mlb-atl-nym-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Н-Й Метс — Атланта",
+      "event_start_at": "2026-07-27T02:10:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Н-Й Метс",
+      "captured_decimal_odds": 1.95,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.95,
+      "implied_prob": 0.512821,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-0",
+      "input_id": "mlbshot-mlb-atl-nym-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Н-Й Метс — Атланта",
+      "event_start_at": "2026-07-27T02:10:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Атланта",
+      "captured_decimal_odds": 1.86,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.86,
+      "implied_prob": 0.537634,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-1",
+      "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Чикаго Уайт Сокс — Н-Й Янкис",
+      "event_start_at": "2026-07-27T02:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Чикаго Уайт Сокс",
+      "captured_decimal_odds": 2.14,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.14,
+      "implied_prob": 0.46729,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-0",
+      "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Чикаго Уайт Сокс — Н-Й Янкис",
+      "event_start_at": "2026-07-27T02:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Н-Й Янкис",
+      "captured_decimal_odds": 1.72,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.72,
+      "implied_prob": 0.581395,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-1",
+      "input_id": "mlbshot-mlb-hou-laa-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Л-А Эйнджелс — Хьюстон",
+      "event_start_at": "2026-07-27T04:38:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Л-А Эйнджелс",
+      "captured_decimal_odds": 1.97,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.97,
+      "implied_prob": 0.507614,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-0",
+      "input_id": "mlbshot-mlb-hou-laa-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Л-А Эйнджелс — Хьюстон",
+      "event_start_at": "2026-07-27T04:38:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Хьюстон",
+      "captured_decimal_odds": 1.84,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.84,
+      "implied_prob": 0.543478,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-1",
+      "input_id": "mlbshot-mlb-bos-oak-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Окленд — Бостон",
+      "event_start_at": "2026-07-27T04:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Окленд",
+      "captured_decimal_odds": 2.35,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.35,
+      "implied_prob": 0.425532,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-0",
+      "input_id": "mlbshot-mlb-bos-oak-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Окленд — Бостон",
+      "event_start_at": "2026-07-27T04:40:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Бостон",
+      "captured_decimal_odds": 1.6,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.6,
+      "implied_prob": 0.625,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-1",
+      "input_id": "mlbshot-mlb-mil-sf-2026-07-27-1",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Сан-Франциско — Милуоки",
+      "event_start_at": "2026-07-27T04:45:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Сан-Франциско",
+      "captured_decimal_odds": 2.1,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 2.1,
+      "implied_prob": 0.47619,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-0",
+      "input_id": "mlbshot-mlb-mil-sf-2026-07-27-0",
+      "bookmaker_key": "ligastavok",
+      "event_title": "Сан-Франциско — Милуоки",
+      "event_start_at": "2026-07-27T04:45:00Z",
+      "sport": "mlb",
+      "market_type": "12",
+      "outcome_key": "team",
+      "outcome_label": "Милуоки",
+      "captured_decimal_odds": 1.74,
+      "edited_decimal_odds": null,
+      "effective_decimal_odds": 1.74,
+      "implied_prob": 0.574713,
+      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
+      "source_mode": "screenshot_manual",
+      "normalized_at": "2026-07-27T00:00:00Z"
     }
   ],
   "market_pairs": [
@@ -259,6 +1243,318 @@
       "same_outcome_side": "yes",
       "poly_hedge_side": "NO",
       "created_at": "2026-07-23T10:34:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-nyy-phi-2026-07-26-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-phi-2026-07-26-1",
+      "poly_market_id": "3000575",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as New York Yankees vs. Philadelphia Phillies; mapped by team outcome, not by row order.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-nyy-phi-2026-07-26-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-phi-2026-07-26-0",
+      "poly_market_id": "3000575",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as New York Yankees vs. Philadelphia Phillies; mapped by team outcome, not by row order.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-sea-tex-2026-07-26-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-1",
+      "poly_market_id": "3000571",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Seattle Mariners vs. Texas Rangers; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-sea-tex-2026-07-26-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-0",
+      "poly_market_id": "3000571",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Seattle Mariners vs. Texas Rangers; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-bal-det-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-1",
+      "poly_market_id": "3017182",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Baltimore Orioles vs. Detroit Tigers; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-bal-det-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-0",
+      "poly_market_id": "3017182",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Baltimore Orioles vs. Detroit Tigers; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-ari-pit-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-1",
+      "poly_market_id": "3017186",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Arizona Diamondbacks vs. Pittsburgh Pirates; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-ari-pit-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-0",
+      "poly_market_id": "3017186",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Arizona Diamondbacks vs. Pittsburgh Pirates; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-phi-mia-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-1",
+      "poly_market_id": "3017184",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Philadelphia Phillies vs. Miami Marlins; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-phi-mia-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-0",
+      "poly_market_id": "3017184",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Philadelphia Phillies vs. Miami Marlins; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-tor-wsh-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-1",
+      "poly_market_id": "3017188",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Toronto Blue Jays vs. Washington Nationals; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-tor-wsh-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-0",
+      "poly_market_id": "3017188",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Toronto Blue Jays vs. Washington Nationals; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-cle-cin-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-1",
+      "poly_market_id": "3017190",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Cleveland Guardians vs. Cincinnati Reds; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-cle-cin-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-0",
+      "poly_market_id": "3017190",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Cleveland Guardians vs. Cincinnati Reds; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-atl-nym-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-1",
+      "poly_market_id": "3017192",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Atlanta Braves vs. New York Mets; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-atl-nym-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-0",
+      "poly_market_id": "3017192",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Atlanta Braves vs. New York Mets; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-nyy-cws-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-1",
+      "poly_market_id": "3017194",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as New York Yankees vs. Chicago White Sox; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-nyy-cws-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-0",
+      "poly_market_id": "3017194",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as New York Yankees vs. Chicago White Sox; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-hou-laa-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-1",
+      "poly_market_id": "3017198",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Houston Astros vs. Los Angeles Angels; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-hou-laa-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-0",
+      "poly_market_id": "3017198",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Houston Astros vs. Los Angeles Angels; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-bos-oak-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-1",
+      "poly_market_id": "3017200",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Boston Red Sox vs. Athletics; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-bos-oak-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-0",
+      "poly_market_id": "3017200",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Boston Red Sox vs. Athletics; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-mil-sf-2026-07-27-1",
+      "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-1",
+      "poly_market_id": "3017202",
+      "poly_outcome_index": 1,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Milwaukee Brewers vs. San Francisco Giants; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
+    },
+    {
+      "pair_id": "pair-mlbshot-mlb-mil-sf-2026-07-27-0",
+      "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-0",
+      "poly_market_id": "3017202",
+      "poly_outcome_index": 0,
+      "pairing_mode": "manual",
+      "mapping_confidence": 0.99,
+      "mapping_status": "mapped",
+      "settlement_caveat": "Polymarket listed as Milwaukee Brewers vs. San Francisco Giants; mapped by team outcome.",
+      "same_outcome_side": "team",
+      "poly_hedge_side": "OPPOSITE_OUTCOME",
+      "created_at": "2026-07-27T00:00:00Z"
     }
   ]
 }

@@ -69,8 +69,30 @@ function deriveNoPriceViews(polyMarket) {
   };
 }
 
+function buildSelectedOutcomePriceViews(pair, polyMarket) {
+  const outcomeIndex = Number(pair?.poly_outcome_index);
+  const selected = Number.isInteger(outcomeIndex) ? polyMarket?.token_price_views?.[outcomeIndex] : null;
+  if (!selected) return null;
+
+  const marketExec = selected.sell ?? selected.mid ?? selected.buy ?? null;
+  const limitCandidate = selected.mid ?? selected.buy ?? marketExec;
+  const easyCandidate = selected.buy == null || marketExec == null
+    ? (limitCandidate ?? marketExec)
+    : clamp(selected.buy + 0.01, 0.001, marketExec);
+
+  return {
+    market_exec: round(marketExec),
+    limit_candidate: round(limitCandidate),
+    easy_limit_candidate: round(easyCandidate),
+    easy_limit_score: 72,
+    best_no_bid: round(selected.buy),
+    best_no_ask: round(selected.sell),
+  };
+}
+
 function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
-  const derivedViews = deriveNoPriceViews(polyMarket);
+  const outcomeSpecificViews = buildSelectedOutcomePriceViews(pair, polyMarket);
+  const derivedViews = outcomeSpecificViews || deriveNoPriceViews(polyMarket);
   const priceViews = {
     ...derivedViews,
     market_exec: pair.poly_no_market_override == null ? derivedViews.market_exec : Number(pair.poly_no_market_override),

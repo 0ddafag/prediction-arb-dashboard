@@ -67,3 +67,30 @@ test('buildArbSnapshot respects manual polymarket overrides for table experiment
   assert.equal(snapshot.price_views.derived_market_exec, 0.39);
   assert.equal(snapshot.price_views.derived_limit_candidate, 0.375);
 });
+
+test('buildArbSnapshot can use a selected Polymarket outcome for two-way sports rows', () => {
+  const snapshot = buildArbSnapshot(
+    {
+      pair_id: 'pair-mlb-away',
+      poly_outcome_index: 1,
+    },
+    {
+      effective_decimal_odds: 2.05,
+    },
+    {
+      takerBaseFee: 0,
+      liquidityClob: 10000,
+      volume24hr: 2000,
+      token_price_views: [
+        { buy: 0.45, sell: 0.46, mid: 0.455 },
+        { buy: 0.54, sell: 0.55, mid: 0.545 },
+      ],
+    }
+  );
+
+  assert.equal(snapshot.poly_no_market_exec, 0.55);
+  assert.equal(snapshot.poly_no_limit_candidate, 0.545);
+  assert.equal(snapshot.poly_no_easy_limit_candidate, 0.545);
+  assert.equal(snapshot.price_views.derived_market_exec, 0.55);
+  assert.equal(snapshot.price_views.derived_limit_candidate, 0.545);
+});
