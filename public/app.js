@@ -2,16 +2,14 @@ const state = {
   payload: null,
   selectedPairId: null,
   secondaryOpen: false,
-  filters: {
-    sourceMode: 'all',
-    minEdge: 0,
-    mappedOnly: true,
-  },
   drafts: {},
+  settings: {
+    cashStakeRub: 1725,
+    fxRubPerUsd: 81,
+  },
 };
 
-const numberFmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
-const pctFmt = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 2 });
+const numberFmt = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 });
 
 window.addEventListener('DOMContentLoaded', () => {
   bindControls();
@@ -20,21 +18,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function bindControls() {
   document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
-  document.getElementById('sourceFilter').addEventListener('change', (event) => {
-    state.filters.sourceMode = event.target.value;
-    renderDashboard();
-  });
-  document.getElementById('edgeFilter').addEventListener('input', (event) => {
-    state.filters.minEdge = Number(event.target.value || 0) / 100;
-    renderDashboard();
-  });
-  document.getElementById('mappedOnly').addEventListener('change', (event) => {
-    state.filters.mappedOnly = event.target.checked;
-    renderDashboard();
-  });
   document.getElementById('toggleSecondary').addEventListener('click', () => {
     state.secondaryOpen = !state.secondaryOpen;
     renderSecondaryVisibility();
+  });
+  document.getElementById('cashStakeRub').addEventListener('input', (event) => {
+    state.settings.cashStakeRub = Number(event.target.value || 0);
+    renderDashboard();
+  });
+  document.getElementById('fxRubPerUsd').addEventListener('input', (event) => {
+    state.settings.fxRubPerUsd = Number(event.target.value || 0);
+    renderDashboard();
   });
   document.getElementById('manualEntryForm').addEventListener('submit', createManualEntry);
 }
@@ -57,7 +51,7 @@ async function loadDashboard() {
       state.selectedPairId = payload.arb_snapshots[0]?.pair_id || null;
     }
     syncDraftsWithPayload();
-    document.getElementById('generatedAt').textContent = `Updated ${new Date(payload.generatedAt).toLocaleString()}`;
+    document.getElementById('generatedAt').textContent = `Обновлено ${new Date(payload.generatedAt).toLocaleString('ru-RU')}`;
     renderDashboard();
   } catch (error) {
     document.getElementById('generatedAt').textContent = `Ошибка загрузки: ${error.message}`;
@@ -80,12 +74,12 @@ function syncDraftsWithPayload() {
 async function refreshDashboard() {
   const button = document.getElementById('refreshButton');
   button.disabled = true;
-  button.textContent = 'Refreshing…';
+  button.textContent = 'Обновляю…';
   try {
     const payload = await fetchJson('/api/refresh', { method: 'POST' });
     state.payload = payload;
     syncDraftsWithPayload();
-    document.getElementById('generatedAt').textContent = `Updated ${new Date(payload.generatedAt).toLocaleString()}`;
+    document.getElementById('generatedAt').textContent = `Обновлено ${new Date(payload.generatedAt).toLocaleString('ru-RU')}`;
     renderDashboard();
   } catch (error) {
     document.getElementById('generatedAt').textContent = `Refresh failed: ${error.message}`;
@@ -95,14 +89,16 @@ async function refreshDashboard() {
   }
 }
 
-function getFilteredSnapshots() {
-  const sourceMode = state.filters.sourceMode;
-  const minEdge = state.filters.minEdge;
-  return (state.payload?.arb_snapshots || []).filter((item) => {
-    if (state.filters.mappedOnly && item.pair.mapping_status !== 'mapped') return false;
-    if (sourceMode !== 'all' && item.bookmaker_market.source_mode !== sourceMode) return false;
-    return (item.net_edge_limit ?? -999) >= minEdge;
-  });
+function getSnapshots() {
+  return (state.payload?.arb_snapshots || [])
+    .filter((item) => item.bookmaker_market?.sport === 'mlb')
+    .sort((a, b) => {
+      const timeDiff = new Date(a.bookmaker_market.event_start_at).getTime() - new Date(b.bookmaker_market.event_start_at).getTime();
+      if (timeDiff !== 0) return timeDiff;
+      const titleDiff = a.bookmaker_market.event_title.localeCompare(b.bookmaker_market.event_title, 'ru');
+      if (titleDiff !== 0) return titleDiff;
+      return a.bookmaker_market.outcome_label.localeCompare(b.bookmaker_market.outcome_label, 'ru');
+    });
 }
 
 function renderDashboard() {
@@ -114,24 +110,21 @@ function renderDashboard() {
 }
 
 function renderSummaryBar() {
-  const rows = getFilteredSnapshots();
-  const summary = state.payload.summary;
-  const best = rows[0]?.net_edge_limit ?? summary.best_net_edge_limit;
-  const warnings = state.payload.diagnostics?.warnings || [];
+  const rows = getSnapshots();
+  const uniqueEvents = new Set(rows.map((item) => item.bookmaker_market.event_title)).size;
   document.getElementById('summaryBar').innerHTML = `
-    <span class="summary-pill">rows ${rows.length}</span>
-    <span class="summary-pill">mapped ${summary.mapped_pairs}</span>
-    <span class="summary-pill">editable ${summary.editable_markets}</span>
-    <span class="summary-pill">best limit edge ${pct(best)}</span>
-    <span class="summary-pill">live warnings ${warnings.length}</span>
+    <span class="summary-pill">матчей ${uniqueEvents}</span>
+    <span class="summary-pill">строк ${rows.length}</span>
+    <span class="summary-pill">ставка ₽${formatRub(state.settings.cashStakeRub, 0)}</span>
+    <span class="summary-pill">курс ${formatNumber(state.settings.fxRubPerUsd, 2)}</span>
   `;
 }
 
 function renderOpportunities() {
-  const rows = getFilteredSnapshots();
+  const rows = getSnapshots();
   const body = document.getElementById('opportunitiesBody');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="10" class="loading-cell">No rows match current filters.</td></tr>';
+    body.innerHTML = '<tr><td colspan="14" class="loading-cell">Нет строк MLB.</td></tr>';
     return;
   }
 
@@ -139,45 +132,32 @@ function renderOpportunities() {
     const draft = state.drafts[item.pair_id] || {};
     const dirty = isDirty(item, draft);
     const selected = item.pair_id === state.selectedPairId ? 'selected' : '';
+    const metrics = buildCashMetrics(item, draft);
     return `
       <tr class="${selected}" data-pair-id="${item.pair_id}">
+        <td>${escapeHtml(prettyBookName(item.bookmaker_market.bookmaker_key))}</td>
         <td class="event-cell" data-select-row="${item.pair_id}">
           <div class="event-title">${escapeHtml(item.bookmaker_market.event_title)}</div>
-          <div class="event-meta">${escapeHtml(item.bookmaker_market.outcome_label)} · ${escapeHtml(item.bookmaker_market.market_type)} · ${escapeHtml(item.bookmaker_market.source_mode)}</div>
-          <div class="event-meta">captured ${formatOdds(item.bookmaker_market.captured_decimal_odds)} · updated ${relativeTime(item.computed_at)}</div>
+          <div class="event-meta">${escapeHtml(item.bookmaker_market.outcome_label)}</div>
         </td>
         <td class="odds-cell">
           <input class="odds-input ${dirty.bookmaker ? 'dirty' : ''}" data-field="bookmakerOdds" data-pair-id="${item.pair_id}" type="number" step="0.01" min="1.01" value="${escapeAttr(draft.bookmakerOdds ?? '')}" />
-          <div class="input-note">saved ${formatOdds(item.bookmaker_market.effective_decimal_odds)}</div>
         </td>
-        <td class="odds-cell">
-          <input class="odds-input ${dirty.polyMarket ? 'dirty' : ''}" data-field="polyMarket" data-pair-id="${item.pair_id}" type="number" step="0.001" min="0.001" max="0.999" value="${escapeAttr(draft.polyMarket ?? '')}" />
-          <div class="input-note">NO market</div>
+        <td class="odds-cell poly-cell">
+          <input class="odds-input ${dirty.polyMarket ? 'dirty' : ''}" data-field="polyMarket" data-pair-id="${item.pair_id}" type="number" step="0.01" min="0.01" max="0.99" value="${escapeAttr(asCentsInput(draft.polyMarket))}" />
+          <input class="odds-input ${dirty.polyLimit ? 'dirty' : ''}" data-field="polyLimit" data-pair-id="${item.pair_id}" type="number" step="0.01" min="0.01" max="0.99" value="${escapeAttr(asCentsInput(draft.polyLimit))}" />
+          <div class="input-note">mkt / lim (%)</div>
         </td>
-        <td class="odds-cell">
-          <input class="odds-input ${dirty.polyLimit ? 'dirty' : ''}" data-field="polyLimit" data-pair-id="${item.pair_id}" type="number" step="0.001" min="0.001" max="0.999" value="${escapeAttr(draft.polyLimit ?? '')}" />
-          <div class="input-note">NO limit</div>
-        </td>
-        <td>
-          <div class="edge-value ${edgeTone(item.net_edge_easy_limit)}">${pct(item.net_edge_easy_limit)}</div>
-          <div class="edge-subtext">price ${formatPct(item.poly_no_easy_limit_candidate)} · easy ${item.price_views.easy_limit_score ?? '—'}</div>
-        </td>
-        <td>
-          <div class="edge-value ${edgeTone(item.net_edge_market)}">${pct(item.net_edge_market)}</div>
-          <div class="edge-subtext">${formatPct(item.poly_no_market_exec)}</div>
-        </td>
-        <td>
-          <div class="edge-value ${edgeTone(item.net_edge_limit)}">${pct(item.net_edge_limit)}</div>
-          <div class="edge-subtext">${formatPct(item.poly_no_limit_candidate)}</div>
-        </td>
-        <td>
-          <div class="edge-value ${edgeTone(item.net_edge_easy_limit)}">${pct(item.net_edge_easy_limit)}</div>
-          <div class="edge-subtext">threshold ${formatPct(item.price_views.threshold)}</div>
-        </td>
-        <td>
-          <div>${item.max_executable_size == null ? '—' : numberFmt.format(item.max_executable_size)}</div>
-          <div class="event-meta">${renderStatusPill(item)}</div>
-        </td>
+        <td>${formatRub(state.settings.cashStakeRub, 0)}</td>
+        <td>${formatRub(metrics.toWinRub, 0)}</td>
+        <td>${formatNumber(state.settings.fxRubPerUsd, 2)}</td>
+        <td>${formatUsdPair(metrics.hedgeUsdMarketRaw, metrics.hedgeUsdLimitRaw)}</td>
+        <td>${formatNumber(metrics.shares, 2)}</td>
+        <td>${formatPctPair(metrics.feeMarketPct, metrics.feeLimitPct)}</td>
+        <td>${formatRub(metrics.wonPolyRub, 0)}</td>
+        <td>${formatRub(metrics.wonBettingRub, 0)}</td>
+        <td class="${profitTone(metrics.profitMarketRub, metrics.profitLimitRub)}">${formatRubPair(metrics.profitMarketRub, metrics.profitLimitRub)}</td>
+        <td>${arbFlag(metrics)}</td>
         <td>
           <div class="row-actions">
             <button class="action-button ${hasAnyDirty(dirty) ? 'primary' : 'ghost'}" data-save-row="${item.pair_id}" type="button">Save</button>
@@ -209,33 +189,47 @@ function renderOpportunities() {
   });
 }
 
-function renderStatusPill(item) {
-  const tone = item.pair.mapping_status === 'mapped' ? 'good' : item.pair.mapping_status === 'candidate' ? 'warn' : 'bad';
-  return `<span class="status-pill ${tone}">${escapeHtml(item.pair.mapping_status)}</span>`;
-}
+function buildCashMetrics(snapshot, draft) {
+  const bookOdds = Number(draft.bookmakerOdds || snapshot.bookmaker_market.effective_decimal_odds || 0);
+  const marketRaw = parseDraftPrice(draft.polyMarket, snapshot.poly_no_market_exec);
+  const limitRaw = parseDraftPrice(draft.polyLimit, snapshot.poly_no_limit_candidate);
+  const fx = Number(state.settings.fxRubPerUsd || 0);
+  const stake = Number(state.settings.cashStakeRub || 0);
+  const toWinRub = stake * bookOdds;
+  const shares = fx > 0 ? toWinRub / fx : null;
+  const feeRate = deriveFeeRate(snapshot);
+  const marketTrue = applyFee(marketRaw, feeRate);
+  const limitTrue = applyFee(limitRaw, feeRate);
+  const hedgeUsdMarketRaw = shares == null || marketRaw == null ? null : shares * marketRaw;
+  const hedgeUsdLimitRaw = shares == null || limitRaw == null ? null : shares * limitRaw;
+  const hedgeUsdMarketTrue = shares == null || marketTrue == null ? null : shares * marketTrue;
+  const hedgeUsdLimitTrue = shares == null || limitTrue == null ? null : shares * limitTrue;
+  const wonPolyRub = shares == null ? null : shares * fx;
+  const wonBettingRub = toWinRub || null;
+  const profitMarketRub = hedgeUsdMarketTrue == null ? null : toWinRub - stake - hedgeUsdMarketTrue * fx;
+  const profitLimitRub = hedgeUsdLimitTrue == null ? null : toWinRub - stake - hedgeUsdLimitTrue * fx;
 
-function handleDraftInput(event) {
-  const { pairId, field } = event.target.dataset;
-  state.selectedPairId = pairId;
-  state.drafts[pairId] = state.drafts[pairId] || {};
-  state.drafts[pairId][field] = event.target.value;
-
-  const snapshot = (state.payload?.arb_snapshots || []).find((item) => item.pair_id === pairId);
-  const dirty = snapshot ? isDirty(snapshot, state.drafts[pairId]) : null;
-  event.target.classList.toggle('dirty', !!dirty?.[field.replace('Odds', '')]);
-
-  const row = event.target.closest('tr');
-  row?.classList.add('selected');
-  const saveButton = row?.querySelector('[data-save-row]');
-  if (saveButton && dirty) {
-    saveButton.classList.toggle('primary', hasAnyDirty(dirty));
-    saveButton.classList.toggle('ghost', !hasAnyDirty(dirty));
-  }
-  renderPairDetail();
+  return {
+    bookOdds,
+    marketRaw,
+    limitRaw,
+    toWinRub,
+    shares,
+    feeMarketPct: feePct(marketRaw, marketTrue),
+    feeLimitPct: feePct(limitRaw, limitTrue),
+    hedgeUsdMarketRaw,
+    hedgeUsdLimitRaw,
+    hedgeUsdMarketTrue,
+    hedgeUsdLimitTrue,
+    wonPolyRub,
+    wonBettingRub,
+    profitMarketRub,
+    profitLimitRub,
+  };
 }
 
 function getSelectedSnapshot() {
-  const rows = state.payload?.arb_snapshots || [];
+  const rows = getSnapshots();
   return rows.find((item) => item.pair_id === state.selectedPairId) || rows[0] || null;
 }
 
@@ -247,15 +241,16 @@ function renderPairDetail() {
     return;
   }
   const draft = state.drafts[snapshot.pair_id] || {};
+  const metrics = buildCashMetrics(snapshot, draft);
   root.innerHTML = `
     <div class="detail-list">
       <div class="detail-row"><strong>Event</strong><span>${escapeHtml(snapshot.bookmaker_market.event_title)}</span></div>
-      <div class="detail-row"><strong>Book</strong><span>captured ${formatOdds(snapshot.bookmaker_market.captured_decimal_odds)} · saved ${formatOdds(snapshot.bookmaker_market.effective_decimal_odds)} · draft ${formatDraftOdds(draft.bookmakerOdds)}</span></div>
-      <div class="detail-row"><strong>Poly</strong><span>market ${formatDraftPct(draft.polyMarket)} · limit ${formatDraftPct(draft.polyLimit)} · easy ${formatPct(snapshot.poly_no_easy_limit_candidate)}</span></div>
-      <div class="detail-row"><strong>Mapping</strong><span>${escapeHtml(snapshot.pair.mapping_status)} · confidence ${Math.round((snapshot.pair.mapping_confidence || 0) * 100)}%</span></div>
-      <div class="detail-row"><strong>Settlement caveat</strong><span>${escapeHtml(snapshot.pair.settlement_caveat || '—')}</span></div>
-      <div class="detail-row"><strong>Source</strong><span>${escapeHtml(snapshot.bookmaker_input?.source_ref || 'manual')}</span></div>
-      <div class="detail-row"><strong>Live note</strong><span>${escapeHtml(snapshot.calc_notes || '—')}</span></div>
+      <div class="detail-row"><strong>Outcome</strong><span>${escapeHtml(snapshot.bookmaker_market.outcome_label)}</span></div>
+      <div class="detail-row"><strong>Poly price</strong><span>market ${formatPercentPrice(metrics.marketRaw)} · limit ${formatPercentPrice(metrics.limitRaw)}</span></div>
+      <div class="detail-row"><strong>Poly true $</strong><span>market ${formatUsd(metrics.hedgeUsdMarketTrue)} · limit ${formatUsd(metrics.hedgeUsdLimitTrue)}</span></div>
+      <div class="detail-row"><strong>Locked profit cash</strong><span>market ${formatRub(metrics.profitMarketRub, 0)} · limit ${formatRub(metrics.profitLimitRub, 0)}</span></div>
+      <div class="detail-row"><strong>Mapping</strong><span>${escapeHtml(snapshot.pair.mapping_status)} · ${Math.round((snapshot.pair.mapping_confidence || 0) * 100)}%</span></div>
+      <div class="detail-row"><strong>Comment</strong><span>${escapeHtml(snapshot.pair.settlement_caveat || '—')}</span></div>
     </div>
   `;
 }
@@ -263,11 +258,11 @@ function renderPairDetail() {
 function renderSecondaryVisibility() {
   const panel = document.getElementById('secondaryPanel');
   panel.classList.toggle('hidden', !state.secondaryOpen);
-  document.getElementById('toggleSecondary').textContent = state.secondaryOpen ? 'Hide secondary' : 'Secondary';
+  document.getElementById('toggleSecondary').textContent = state.secondaryOpen ? 'Hide notes' : 'Notes';
 }
 
 async function saveRow(pairId, button) {
-  const snapshot = (state.payload?.arb_snapshots || []).find((item) => item.pair_id === pairId);
+  const snapshot = getSnapshots().find((item) => item.pair_id === pairId);
   if (!snapshot) return;
   const draft = state.drafts[pairId] || {};
   button.disabled = true;
@@ -283,8 +278,8 @@ async function saveRow(pairId, button) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          poly_no_market_override: draft.polyMarket,
-          poly_no_limit_override: draft.polyLimit,
+          poly_no_market_override: parseDraftPrice(draft.polyMarket, null),
+          poly_no_limit_override: parseDraftPrice(draft.polyLimit, null),
         }),
       }),
     ]);
@@ -298,7 +293,7 @@ async function saveRow(pairId, button) {
 }
 
 async function resetRow(pairId) {
-  const snapshot = (state.payload?.arb_snapshots || []).find((item) => item.pair_id === pairId);
+  const snapshot = getSnapshots().find((item) => item.pair_id === pairId);
   if (!snapshot) return;
   state.drafts[pairId] = {
     bookmakerOdds: normalizeInputValue(snapshot.bookmaker_market.captured_decimal_odds),
@@ -343,18 +338,26 @@ async function createManualEntry(event) {
       body: JSON.stringify(payload),
     });
     form.reset();
-    status.textContent = 'Saved. Row added to the table.';
+    status.textContent = 'Saved.';
     await loadDashboard();
   } catch (error) {
     status.textContent = `Error: ${error.message}`;
   }
 }
 
+function handleDraftInput(event) {
+  const { pairId, field } = event.target.dataset;
+  state.selectedPairId = pairId;
+  state.drafts[pairId] = state.drafts[pairId] || {};
+  state.drafts[pairId][field] = event.target.value;
+  renderDashboard();
+}
+
 function isDirty(snapshot, draft) {
   return {
     bookmaker: normalizeInputValue(snapshot.bookmaker_market.effective_decimal_odds) !== normalizeInputValue(draft.bookmakerOdds),
-    polyMarket: normalizeInputValue(snapshot.poly_no_market_exec) !== normalizeInputValue(draft.polyMarket),
-    polyLimit: normalizeInputValue(snapshot.poly_no_limit_candidate) !== normalizeInputValue(draft.polyLimit),
+    polyMarket: normalizeInputValue(snapshot.poly_no_market_exec) !== normalizeInputValue(parseDraftPrice(draft.polyMarket, null)),
+    polyLimit: normalizeInputValue(snapshot.poly_no_limit_candidate) !== normalizeInputValue(parseDraftPrice(draft.polyLimit, null)),
   };
 }
 
@@ -367,38 +370,90 @@ function normalizeInputValue(value) {
   return String(Number(value));
 }
 
-function pct(value) {
-  return value == null || Number.isNaN(value) ? '—' : `${(value * 100).toFixed(2)}%`;
+function parseDraftPrice(value, fallback) {
+  if (value === '' || value == null) return fallback;
+  const number = Number(value);
+  if (Number.isNaN(number)) return fallback;
+  return number > 1 ? number / 100 : number;
 }
 
-function formatPct(value) {
-  return value == null || Number.isNaN(value) ? '—' : pctFmt.format(value);
+function asCentsInput(value) {
+  if (value === '' || value == null) return '';
+  const number = Number(value);
+  if (Number.isNaN(number)) return '';
+  return String(Math.round(number * 100));
 }
 
-function formatOdds(value) {
-  return value == null || Number.isNaN(value) ? '—' : numberFmt.format(value);
+function deriveFeeRate(snapshot) {
+  const raw = Number(snapshot.poly_no_market_exec);
+  const net = Number(snapshot.price_views?.market_net);
+  if (!Number.isFinite(raw) || !Number.isFinite(net) || raw <= 0 || raw >= 1) return 0;
+  const denom = raw * (1 - raw);
+  return denom > 0 ? Math.max(0, (net - raw) / denom) : 0;
 }
 
-function formatDraftPct(value) {
-  return value === '' || value == null ? '—' : pct(Number(value));
+function applyFee(raw, feeRate) {
+  if (raw == null || !Number.isFinite(raw)) return null;
+  return raw + feeRate * raw * (1 - raw);
 }
 
-function formatDraftOdds(value) {
-  return value === '' || value == null ? '—' : formatOdds(Number(value));
+function feePct(raw, trueCost) {
+  if (!Number.isFinite(raw) || !Number.isFinite(trueCost) || raw <= 0) return null;
+  return ((trueCost / raw) - 1) * 100;
 }
 
-function relativeTime(iso) {
-  const seconds = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (seconds < 60) return `${seconds}s ago`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)}m ago`;
-  return `${Math.round(seconds / 3600)}h ago`;
+function formatPercentPrice(value) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return `${Math.round(Number(value) * 100)}%`;
 }
 
-function edgeTone(value) {
-  if (value == null) return 'bad';
-  if (value > 0.03) return 'good';
-  if (value > 0) return 'warn';
-  return 'bad';
+function formatPctPair(a, b) {
+  return `${formatPlainPct(a)} / ${formatPlainPct(b)}`;
+}
+
+function formatPlainPct(value) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return `${value.toFixed(2)}%`;
+}
+
+function formatRub(value, digits = 0) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return numberFmt.format(Number(value).toFixed ? Number(Number(value).toFixed(digits)) : value);
+}
+
+function formatUsd(value) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return `$${Number(value).toFixed(2)}`;
+}
+
+function formatUsdPair(a, b) {
+  return `${formatUsd(a)} / ${formatUsd(b)}`;
+}
+
+function formatRubPair(a, b) {
+  return `${formatRub(a, 0)} / ${formatRub(b, 0)}`;
+}
+
+function formatNumber(value, digits = 2) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return Number(value).toFixed(digits);
+}
+
+function arbFlag(metrics) {
+  const positive = [metrics.profitMarketRub, metrics.profitLimitRub].some((value) => Number.isFinite(value) && value > 0);
+  return positive ? 'ARB' : 'NO ARB';
+}
+
+function profitTone(a, b) {
+  const best = Math.max(a ?? -1e9, b ?? -1e9);
+  if (best > 0) return 'profit-good';
+  if (best > -50) return 'profit-warn';
+  return 'profit-bad';
+}
+
+function prettyBookName(key) {
+  if (key === 'ligastavok') return 'Liga Stavok';
+  return key;
 }
 
 function escapeHtml(value) {

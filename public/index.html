@@ -6,7 +6,7 @@
     <title>Prediction Arb Table</title>
     <meta
       name="description"
-      content="Single-table dashboard for bookmaker ↔ Polymarket arb experiments with inline editing."
+      content="Compact MLB arb dashboard for bookmaker ↔ Polymarket with inline odds editing."
     />
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" defer></script>
@@ -15,8 +15,8 @@
     <div class="page-shell">
       <header class="topbar">
         <div>
-          <div class="topbar-title">Prediction arb table</div>
-          <div class="topbar-subtitle">Один экран для live и manual limit-экспериментов</div>
+          <div class="topbar-title">MLB arb table</div>
+          <div class="topbar-subtitle">bookmaker odds vs opposite Polymarket side</div>
         </div>
         <div class="topbar-meta" id="generatedAt">Загрузка…</div>
       </header>
@@ -26,25 +26,17 @@
           <div class="toolbar">
             <div class="toolbar-left">
               <button class="action-button primary" id="refreshButton" type="button">Refresh</button>
-              <label class="inline-control">
-                <span>Source</span>
-                <select id="sourceFilter">
-                  <option value="all">All</option>
-                  <option value="screenshot_manual">screenshot_manual</option>
-                  <option value="manual_form">manual_form</option>
-                </select>
+              <label class="inline-control small-input">
+                <span>Cash bet RUB</span>
+                <input id="cashStakeRub" type="number" value="1725" step="25" />
               </label>
               <label class="inline-control small-input">
-                <span>Min edge %</span>
-                <input id="edgeFilter" type="number" value="0" step="0.1" />
-              </label>
-              <label class="checkbox-pill">
-                <input id="mappedOnly" type="checkbox" checked />
-                <span>mapped only</span>
+                <span>RUB per USD</span>
+                <input id="fxRubPerUsd" type="number" value="81" step="0.1" />
               </label>
             </div>
             <div class="toolbar-right">
-              <button class="action-button" id="toggleSecondary" type="button">Secondary</button>
+              <button class="action-button" id="toggleSecondary" type="button">Notes</button>
             </div>
           </div>
 
@@ -54,21 +46,25 @@
             <table>
               <thead>
                 <tr>
-                  <th>Event</th>
-                  <th>Bookmaker</th>
-                  <th>Poly market</th>
-                  <th>Poly limit</th>
-                  <th>Easy</th>
-                  <th>Edge mkt</th>
-                  <th>Edge lim</th>
-                  <th>Edge easy</th>
-                  <th>Size</th>
+                  <th>Book name</th>
+                  <th>Name</th>
+                  <th>Book odds</th>
+                  <th>Poly price</th>
+                  <th>Cash bet RUB</th>
+                  <th>To win</th>
+                  <th>RUB/USD</th>
+                  <th>Total hedge USD</th>
+                  <th>Shares</th>
+                  <th>Fee</th>
+                  <th>Won Poly</th>
+                  <th>Won betting</th>
+                  <th>Locked profit cash RUB</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody id="opportunitiesBody">
                 <tr>
-                  <td colspan="10" class="loading-cell">Loading…</td>
+                  <td colspan="14" class="loading-cell">Loading…</td>
                 </tr>
               </tbody>
             </table>
@@ -79,15 +75,15 @@
               <section class="secondary-card">
                 <div class="secondary-head">
                   <h2>Selected row</h2>
-                  <span class="mini-note">compact details only</span>
+                  <span class="mini-note">compact details</span>
                 </div>
                 <div id="pairDetail" class="detail-shell"></div>
               </section>
 
               <section class="secondary-card">
                 <div class="secondary-head">
-                  <h2>Add / ingest row</h2>
-                  <span class="mini-note">creates or updates the same table flow</span>
+                  <h2>Add row</h2>
+                  <span class="mini-note">manual intake into the same table</span>
                 </div>
                 <form id="manualEntryForm" class="form-grid">
                   <label class="field">
@@ -100,7 +96,7 @@
                   </label>
                   <label class="field">
                     <span>Sport</span>
-                    <input name="sport" value="manual" />
+                    <input name="sport" value="mlb" />
                   </label>
                   <label class="field">
                     <span>Source mode</span>
@@ -112,17 +108,8 @@
                   <label class="field">
                     <span>Market type</span>
                     <select name="market_type">
-                      <option value="yes_no">yes_no</option>
+                      <option value="12">12</option>
                       <option value="1x2">1x2</option>
-                    </select>
-                  </label>
-                  <label class="field">
-                    <span>Outcome key</span>
-                    <select name="outcome_key">
-                      <option value="yes">yes</option>
-                      <option value="home">home</option>
-                      <option value="draw">draw</option>
-                      <option value="away">away</option>
                     </select>
                   </label>
                   <label class="field full-width">
@@ -131,11 +118,11 @@
                   </label>
                   <label class="field full-width">
                     <span>Optional Polymarket market id</span>
-                    <input name="poly_market_id" placeholder="540817" />
+                    <input name="poly_market_id" placeholder="3017180" />
                   </label>
                   <div class="form-actions full-width">
                     <button class="action-button" type="submit">Add row</button>
-                    <span class="mini-note" id="manualFormStatus">Новая строка появится в этой же таблице.</span>
+                    <span class="mini-note" id="manualFormStatus">Новая строка появится в таблице.</span>
                   </div>
                 </form>
               </section>

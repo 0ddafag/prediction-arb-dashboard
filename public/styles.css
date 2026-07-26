@@ -75,14 +75,15 @@ tr.selected td { background: #f5f9ff; }
 .event-title { font-weight: 700; margin-bottom: 4px; }
 .event-meta, .edge-subtext, .input-note { color: var(--muted); font-size: 12px; line-height: 1.4; }
 .odds-cell { min-width: 130px; }
+.poly-cell { min-width: 150px; }
+.poly-cell .odds-input + .odds-input { margin-top: 6px; }
 .odds-input {
   width: 100%; min-height: 36px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; font: inherit; color: var(--text); background: #fff;
 }
 .odds-input.dirty { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-.edge-value { font-weight: 700; }
-.edge-value.good { color: var(--green); }
-.edge-value.warn { color: var(--amber); }
-.edge-value.bad { color: var(--red); }
+.profit-good { color: var(--green); font-weight: 700; }
+.profit-warn { color: var(--amber); font-weight: 700; }
+.profit-bad { color: var(--red); font-weight: 700; }
 .row-actions { display: flex; gap: 8px; justify-content: flex-end; min-width: 148px; }
 .secondary-panel { border-top: 1px solid var(--line); background: #fbfcff; }
 .secondary-panel.hidden { display: none; }
