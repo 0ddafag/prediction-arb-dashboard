@@ -33,6 +33,39 @@ test('server exposes health and data endpoints', async () => {
     assert.ok(Array.isArray(payload.arb_snapshots));
     assert.ok(payload.summary);
     assert.ok(payload.diagnostics);
+    assert.equal(payload.arb_snapshots.every((row) => row.bookmaker_market.bookmaker_key === 'winline'), true);
+    assert.equal(payload.arb_snapshots.every((row) => row.bookmaker_label === 'Winline'), true);
+    assert.deepEqual(payload.filters.sports.map((item) => item.key), ['baseball', 'ufc', 'tennis', 'football', 'basketball']);
+    assert.deepEqual(payload.filters.bookmakers.map((item) => item.key), ['winline', 'fonbet', 'ligastavok']);
+  });
+});
+
+test('server exposes filtered and categorized opportunities', async () => {
+  await withServer(async (port) => {
+    const footballResponse = await fetch(`http://127.0.0.1:${port}/api/opportunities?sport=football`);
+    assert.equal(footballResponse.status, 200);
+    const football = await footballResponse.json();
+    assert.deepEqual(football.rows, []);
+    assert.equal(football.summary.rows, 0);
+
+    const topResponse = await fetch(`http://127.0.0.1:${port}/api/opportunities?view=top`);
+    assert.equal(topResponse.status, 200);
+    const top = await topResponse.json();
+    assert.ok(Array.isArray(top.rows));
+    assert.equal(top.rows.every((row) => ['market', 'limit', 'basis_risk'].includes(row.opportunity_category)), true);
+    assert.deepEqual(top.filters.bookmakers.map((item) => item.label), ['Winline', 'Fonbet', 'Liga Stavok']);
+  });
+});
+
+test('server exposes multi-sport and bookmaker tab shell', async () => {
+  await withServer(async (port) => {
+    const response = await fetch(`http://127.0.0.1:${port}/`);
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /id="sportTabs"/);
+    assert.match(html, /id="bookmakerTabs"/);
+    assert.match(html, /Prediction arb dashboard/);
+    assert.doesNotMatch(html, /MLB arb table/);
   });
 });
 

@@ -2,6 +2,8 @@ const state = {
   payload: null,
   selectedPairId: null,
   secondaryOpen: false,
+  activeSport: 'baseball',
+  activeBookmaker: 'all',
   drafts: {},
   settings: {
     cashStakeRub: '1725',
@@ -101,9 +103,48 @@ async function refreshDashboard() {
   }
 }
 
+function getAllSnapshots() {
+  return state.payload?.arb_snapshots || [];
+}
+
+function opportunityCategory(item) {
+  const metrics = buildCashMetrics(item, state.drafts[item.pair_id] || {});
+  const risk = String(item.pair?.basis_risk || 'NONE').toUpperCase();
+  const marketPositive = Number.isFinite(metrics.profitMarketRub) && metrics.profitMarketRub > 0;
+  const limitPositive = Number.isFinite(metrics.profitLimitRub) && metrics.profitLimitRub > 0;
+  if (!marketPositive && !limitPositive) return null;
+  if (risk !== 'NONE') return 'basis_risk';
+  return marketPositive ? 'market' : 'limit';
+}
+
+function relevantOpportunityProfit(item, category = opportunityCategory(item)) {
+  const metrics = buildCashMetrics(item, state.drafts[item.pair_id] || {});
+  if (category === 'market') return metrics.profitMarketRub;
+  if (category === 'limit') return metrics.profitLimitRub;
+  return Math.max(metrics.profitMarketRub ?? -Infinity, metrics.profitLimitRub ?? -Infinity);
+}
+
 function getSnapshots() {
-  return (state.payload?.arb_snapshots || [])
-    .filter((item) => item.bookmaker_market?.sport === 'mlb')
+  let rows = getAllSnapshots();
+  if (state.activeBookmaker !== 'all') {
+    rows = rows.filter((item) => item.bookmaker_market?.bookmaker_key === state.activeBookmaker);
+  }
+
+  if (state.activeSport === 'top') {
+    const priority = { market: 0, limit: 1, basis_risk: 2 };
+    return rows
+      .map((item) => ({ item, category: opportunityCategory(item) }))
+      .filter(({ item, category }) => category && !item.stale_flag)
+      .sort((left, right) => {
+        const categoryDiff = priority[left.category] - priority[right.category];
+        if (categoryDiff) return categoryDiff;
+        return relevantOpportunityProfit(right.item, right.category) - relevantOpportunityProfit(left.item, left.category);
+      })
+      .map(({ item }) => item);
+  }
+
+  return rows
+    .filter((item) => item.sport === state.activeSport || item.bookmaker_market?.sport === state.activeSport)
     .sort((a, b) => {
       const timeDiff = new Date(a.bookmaker_market.event_start_at).getTime() - new Date(b.bookmaker_market.event_start_at).getTime();
       if (timeDiff !== 0) return timeDiff;
@@ -115,6 +156,11 @@ function getSnapshots() {
 
 function renderDashboard() {
   if (!state.payload) return;
+  renderTabs();
+  const visibleRows = getSnapshots();
+  if (state.selectedPairId && !visibleRows.some((item) => item.pair_id === state.selectedPairId)) {
+    state.selectedPairId = visibleRows[0]?.pair_id || null;
+  }
   renderSummaryBar();
   renderOpportunities();
   renderPairDetail();
@@ -123,12 +169,46 @@ function renderDashboard() {
   syncSettingInputs('fxRubPerUsd', state.settings.fxRubPerUsd);
 }
 
+function renderTabs() {
+  const sportTabs = [{ key: 'top', label: 'Top Opportunities' }, ...(state.payload?.filters?.sports || [])];
+  const bookmakerTabs = [{ key: 'all', label: 'All books' }, ...(state.payload?.filters?.bookmakers || [])];
+
+  const sportRoot = document.getElementById('sportTabs');
+  sportRoot.innerHTML = sportTabs.map((item) => `
+    <button class="tab-button ${item.key === state.activeSport ? 'active' : ''}" data-sport-tab="${escapeAttr(item.key)}" type="button">${escapeHtml(item.label)}</button>
+  `).join('');
+  sportRoot.querySelectorAll('[data-sport-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.activeSport = button.dataset.sportTab;
+      renderDashboard();
+    });
+  });
+
+  const bookRoot = document.getElementById('bookmakerTabs');
+  bookRoot.innerHTML = bookmakerTabs.map((item) => `
+    <button class="tab-button compact ${item.key === state.activeBookmaker ? 'active' : ''}" data-book-tab="${escapeAttr(item.key)}" type="button">${escapeHtml(item.label)}</button>
+  `).join('');
+  bookRoot.querySelectorAll('[data-book-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.activeBookmaker = button.dataset.bookTab;
+      renderDashboard();
+    });
+  });
+}
+
 function renderSummaryBar() {
   const rows = getSnapshots();
   const matches = new Set(rows.map((item) => item.bookmaker_market.event_title)).size;
+  const categoryPills = state.activeSport === 'top'
+    ? ['market', 'limit', 'basis_risk'].map((category) => {
+      const count = rows.filter((item) => opportunityCategory(item) === category).length;
+      return `<span class="summary-pill category-${category}">${opportunityCategoryLabel(category)} ${count}</span>`;
+    }).join('')
+    : '';
   document.getElementById('summaryBar').innerHTML = `
     <span class="summary-pill">Matches ${matches}</span>
     <span class="summary-pill">Rows ${rows.length}</span>
+    ${categoryPills}
   `;
 }
 
@@ -136,7 +216,7 @@ function renderOpportunities() {
   const rows = getSnapshots();
   const body = document.getElementById('opportunitiesBody');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="12" class="loading-cell">No MLB rows.</td></tr>';
+    body.innerHTML = '<tr><td colspan="12" class="loading-cell">No exact Polymarket matches for this filter.</td></tr>';
     return;
   }
 
@@ -145,12 +225,16 @@ function renderOpportunities() {
     const dirty = isDirty(item, draft);
     const selected = item.pair_id === state.selectedPairId ? 'selected' : '';
     const metrics = buildCashMetrics(item, draft);
+    const category = opportunityCategory(item);
     return `
       <tr class="${selected}" data-pair-id="${item.pair_id}">
-        <td>${escapeHtml(prettyBookName(item.bookmaker_market.bookmaker_key))}</td>
+        <td>${escapeHtml(item.bookmaker_label || prettyBookName(item.bookmaker_market.bookmaker_key))}</td>
         <td class="event-cell" data-select-row="${item.pair_id}">
           <div class="event-title">${escapeHtml(getEventDisplayName(item))}</div>
-          <div class="event-meta">Book side: ${escapeHtml(item.bookmaker_market.outcome_label)}</div>
+          <div class="event-meta">
+            ${escapeHtml(sportLabel(item.sport))} · Book side: ${escapeHtml(item.bookmaker_market.outcome_label)}
+            ${category ? opportunityBadge(category, item.pair?.basis_risk) : ''}
+          </div>
         </td>
         <td class="odds-cell">
           <input class="odds-input ${dirty.bookmaker ? 'dirty' : ''}" data-field="bookmakerOdds" data-pair-id="${item.pair_id}" type="text" inputmode="decimal" value="${escapeAttr(draft.bookmakerOdds ?? '')}" />
@@ -259,6 +343,8 @@ function renderPairDetail() {
       <div class="detail-row"><strong>Total hedge USD</strong><span>market ${formatUsd(metrics.hedgeUsdMarket)} · limit ${formatUsd(metrics.hedgeUsdLimit)}</span></div>
       <div class="detail-row"><strong>Locked profit cash</strong><span>market ${formatRub(metrics.profitMarketRub, 0)} · limit ${formatRub(metrics.profitLimitRub, 0)}</span></div>
       <div class="detail-row"><strong>Mapping</strong><span>${escapeHtml(snapshot.pair.mapping_status)} · ${Math.round((snapshot.pair.mapping_confidence || 0) * 100)}%</span></div>
+      <div class="detail-row"><strong>Hedge</strong><span>${escapeHtml(snapshot.pair.hedge_strategy || snapshot.pair.poly_hedge_side || '—')} · ${escapeHtml(snapshot.pair.settlement_scope || '—')}</span></div>
+      <div class="detail-row"><strong>Basis risk</strong><span>${escapeHtml(snapshot.pair.basis_risk || 'NONE')}</span></div>
       <div class="detail-row"><strong>Comment</strong><span>${escapeHtml(snapshot.pair.settlement_caveat || '—')}</span></div>
     </div>
   `;
@@ -566,9 +652,26 @@ function profitTone(a, b) {
   return 'profit-bad';
 }
 
+function opportunityCategoryLabel(category) {
+  if (category === 'market') return 'Market';
+  if (category === 'limit') return 'Limit';
+  if (category === 'basis_risk') return 'Basis risk';
+  return category || '';
+}
+
+function opportunityBadge(category, risk) {
+  const suffix = category === 'basis_risk' && risk && risk !== 'NONE' ? `: ${risk}` : '';
+  return `<span class="opportunity-badge ${escapeAttr(category)}">${escapeHtml(opportunityCategoryLabel(category) + suffix)}</span>`;
+}
+
+function sportLabel(key) {
+  const match = state.payload?.filters?.sports?.find((item) => item.key === key);
+  return match?.label || key || 'Sport';
+}
+
 function prettyBookName(key) {
-  if (key === 'ligastavok') return 'Liga Stavok';
-  return key;
+  const labels = { winline: 'Winline', fonbet: 'Fonbet', ligastavok: 'Liga Stavok' };
+  return labels[key] || key;
 }
 
 function escapeHtml(value) {

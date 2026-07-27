@@ -1,3 +1,17 @@
+const BOOKMAKERS = Object.freeze([
+  { key: 'winline', label: 'Winline', status: 'active' },
+  { key: 'fonbet', label: 'Fonbet', status: 'planned' },
+  { key: 'ligastavok', label: 'Liga Stavok', status: 'planned' },
+]);
+
+function listBookmakers() {
+  return BOOKMAKERS.map((item) => ({ ...item }));
+}
+
+function getBookmakerLabel(key) {
+  return BOOKMAKERS.find((item) => item.key === key)?.label || key || 'Unknown';
+}
+
 function buildBookmakerAdapters() {
   return {
     screenshot_manual: {
@@ -15,4 +29,4 @@ function buildBookmakerAdapters() {
   };
 }
 
-module.exports = { buildBookmakerAdapters };
+module.exports = { BOOKMAKERS, listBookmakers, getBookmakerLabel, buildBookmakerAdapters };

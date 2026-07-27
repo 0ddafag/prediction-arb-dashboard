@@ -1,7 +1,9 @@
 const { readStore } = require('./storage');
 const { buildArbSnapshot, impliedProbability } = require('./math');
 const { fetchMappedMarkets, fetchFeaturedMarkets } = require('./polymarket');
-const { buildBookmakerAdapters } = require('./bookmaker');
+const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('./bookmaker');
+const { SPORT_TABS } = require('./domain');
+const { sortTopOpportunities } = require('./opportunities');
 
 function buildInputIndex(items, key) {
   return new Map(items.map((item) => [item[key], item]));
@@ -59,6 +61,8 @@ async function buildDashboardPayload() {
       pair,
       bookmaker_market: bookmakerMarket,
       bookmaker_input: rawInput,
+      bookmaker_label: getBookmakerLabel(bookmakerMarket.bookmaker_key),
+      sport: pair.sport || bookmakerMarket.sport || 'baseball',
       polymarket_market: polyMarket,
     };
   }).sort((a, b) => (b.net_edge_limit ?? -999) - (a.net_edge_limit ?? -999));
@@ -84,6 +88,10 @@ async function buildDashboardPayload() {
   return {
     generatedAt: new Date().toISOString(),
     source_mode_adapters: buildBookmakerAdapters(),
+    filters: {
+      sports: SPORT_TABS.map((item) => ({ ...item })),
+      bookmakers: listBookmakers(),
+    },
     summary,
     diagnostics,
     featured_polymarket_markets: featuredMarkets,
@@ -95,4 +103,25 @@ async function buildDashboardPayload() {
   };
 }
 
-module.exports = { buildDashboardPayload };
+async function buildOpportunitiesPayload({ sport = null, bookmaker = null, view = null } = {}) {
+  const payload = await buildDashboardPayload();
+  let rows = payload.arb_snapshots;
+
+  if (sport) rows = rows.filter((row) => row.sport === sport);
+  if (bookmaker) rows = rows.filter((row) => row.bookmaker_market.bookmaker_key === bookmaker);
+  if (view === 'top') rows = sortTopOpportunities(rows);
+
+  return {
+    generatedAt: payload.generatedAt,
+    filters: payload.filters,
+    diagnostics: payload.diagnostics,
+    summary: {
+      rows: rows.length,
+      matches: new Set(rows.map((row) => row.bookmaker_market.event_title)).size,
+      updated_at: payload.summary.updated_at,
+    },
+    rows,
+  };
+}
+
+module.exports = { buildDashboardPayload, buildOpportunitiesPayload };

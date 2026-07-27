@@ -74,8 +74,19 @@ function buildSelectedOutcomePriceViews(pair, polyMarket) {
   const selected = Number.isInteger(outcomeIndex) ? polyMarket?.token_price_views?.[outcomeIndex] : null;
   if (!selected) return null;
 
-  const marketExec = selected.sell ?? selected.mid ?? selected.buy ?? null;
-  const limitCandidate = selected.buy ?? selected.mid ?? marketExec;
+  const selectedSide = pair?.hedge_strategy === 'same_outcome_no' || String(pair?.poly_hedge_side || '').toUpperCase() === 'NO'
+    ? 'NO'
+    : 'YES';
+
+  let marketExec;
+  let limitCandidate;
+  if (selectedSide === 'NO') {
+    marketExec = selected.buy == null ? null : clamp(1 - Number(selected.buy), 0.01, 0.99);
+    limitCandidate = selected.sell == null ? null : clamp(1 - Number(selected.sell), 0.01, 0.99);
+  } else {
+    marketExec = selected.sell ?? selected.mid ?? selected.buy ?? null;
+    limitCandidate = selected.buy ?? selected.mid ?? marketExec;
+  }
   const easyCandidate = limitCandidate;
 
   return {
@@ -83,8 +94,9 @@ function buildSelectedOutcomePriceViews(pair, polyMarket) {
     limit_candidate: round(limitCandidate),
     easy_limit_candidate: round(easyCandidate),
     easy_limit_score: 72,
-    best_no_bid: round(selected.buy),
-    best_no_ask: round(selected.sell),
+    best_no_bid: selectedSide === 'NO' ? round(limitCandidate) : round(selected.buy),
+    best_no_ask: selectedSide === 'NO' ? round(marketExec) : round(selected.sell),
+    selected_side: selectedSide,
   };
 }
 
@@ -128,6 +140,11 @@ function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
   return {
     arb_snapshot_id: `${pair.pair_id}:${Date.now()}`,
     pair_id: pair.pair_id,
+    sport: pair.sport || bookmakerMarket.sport || null,
+    market_family: pair.market_family || bookmakerMarket.market_family || null,
+    settlement_scope: pair.settlement_scope || null,
+    hedge_strategy: pair.hedge_strategy || null,
+    basis_risk: pair.basis_risk || 'NONE',
     bookmaker_decimal_odds: odds,
     bookmaker_implied_prob: impliedProb,
     poly_no_market_exec: marketCostGross,

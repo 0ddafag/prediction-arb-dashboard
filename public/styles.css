@@ -37,6 +37,15 @@ body { min-height: 100vh; }
   padding: 16px 18px 12px; border-bottom: 1px solid var(--line);
 }
 .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tabs-shell { display: grid; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: #fbfcff; }
+.tab-row { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 1px; }
+.secondary-tabs { padding-top: 2px; }
+.tab-button {
+  flex: 0 0 auto; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px;
+  background: #fff; color: var(--muted); font: inherit; font-size: 13px; font-weight: 650; cursor: pointer;
+}
+.tab-button.compact { min-height: 32px; padding: 0 12px; font-size: 12px; }
+.tab-button.active { color: #1d4ed8; border-color: #a9c8ff; background: var(--blue-soft); }
 .summary-bar {
   display: flex; gap: 8px; flex-wrap: wrap; padding: 0 18px 12px; border-bottom: 1px solid var(--line);
 }
@@ -45,6 +54,9 @@ body { min-height: 100vh; }
   border-radius: 999px; font-size: 12px; border: 1px solid var(--line);
 }
 .summary-pill { background: #f8fafc; color: var(--muted); }
+.summary-pill.category-market { background: var(--green-soft); color: var(--green); border-color: #cceadf; }
+.summary-pill.category-limit { background: var(--blue-soft); color: #1d4ed8; border-color: #c7dbff; }
+.summary-pill.category-basis_risk { background: var(--amber-soft); color: var(--amber); border-color: #f2df9c; }
 .mini-chip { background: #f8fafc; color: var(--text); }
 .status-pill.good { background: var(--green-soft); color: var(--green); border-color: #cceadf; }
 .status-pill.warn { background: var(--amber-soft); color: var(--amber); border-color: #f2df9c; }
@@ -74,6 +86,10 @@ tr.selected td { background: #f5f9ff; }
 .event-cell { min-width: 320px; }
 .event-title { font-weight: 700; margin-bottom: 4px; }
 .event-meta, .edge-subtext, .input-note { color: var(--muted); font-size: 12px; line-height: 1.4; }
+.opportunity-badge { display: inline-flex; margin-left: 6px; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 750; border: 1px solid var(--line); }
+.opportunity-badge.market { color: var(--green); background: var(--green-soft); border-color: #cceadf; }
+.opportunity-badge.limit { color: #1d4ed8; background: var(--blue-soft); border-color: #c7dbff; }
+.opportunity-badge.basis_risk { color: var(--amber); background: var(--amber-soft); border-color: #f2df9c; }
 .odds-cell { min-width: 130px; }
 .poly-cell { min-width: 150px; }
 .poly-cell .odds-input + .odds-input { margin-top: 6px; }

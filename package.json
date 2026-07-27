@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "coverage:report": "node scripts/coverage-report.js"
   }
 }

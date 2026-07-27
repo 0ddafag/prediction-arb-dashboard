@@ -68,6 +68,61 @@ test('buildArbSnapshot respects manual polymarket overrides for table experiment
   assert.equal(snapshot.price_views.derived_limit_candidate, 0.36);
 });
 
+test('buildArbSnapshot uses same-outcome NO pricing for football 1X2 rows', () => {
+  const snapshot = buildArbSnapshot(
+    {
+      pair_id: 'pair-football-draw',
+      sport: 'football',
+      market_family: 'football_1x2',
+      settlement_scope: 'regulation',
+      hedge_strategy: 'same_outcome_no',
+      basis_risk: 'NONE',
+      poly_outcome_index: 1,
+    },
+    { effective_decimal_odds: 3.4 },
+    {
+      takerBaseFee: 0,
+      liquidityClob: 5000,
+      volume24hr: 2500,
+      token_price_views: [
+        { buy: 0.51, sell: 0.53, mid: 0.52 },
+        { buy: 0.27, sell: 0.29, mid: 0.28 },
+        { buy: 0.20, sell: 0.22, mid: 0.21 },
+      ],
+    }
+  );
+
+  assert.equal(snapshot.poly_no_market_exec, 0.73);
+  assert.equal(snapshot.poly_no_limit_candidate, 0.71);
+  assert.equal(snapshot.price_views.selected_side, 'NO');
+  assert.equal(snapshot.hedge_strategy, 'same_outcome_no');
+  assert.equal(snapshot.basis_risk, 'NONE');
+});
+
+test('buildArbSnapshot preserves basketball overtime basis risk for categorized opportunities', () => {
+  const snapshot = buildArbSnapshot(
+    {
+      pair_id: 'pair-basketball-ot-risk',
+      sport: 'basketball',
+      market_family: 'regulation_result',
+      settlement_scope: 'regulation_vs_including_ot',
+      hedge_strategy: 'opposite_yes',
+      basis_risk: 'OVERTIME',
+      poly_outcome_index: 0,
+    },
+    { effective_decimal_odds: 2.1 },
+    {
+      takerBaseFee: 0,
+      liquidityClob: 5000,
+      volume24hr: 2500,
+      token_price_views: [{ buy: 0.49, sell: 0.5, mid: 0.495 }],
+    }
+  );
+
+  assert.equal(snapshot.basis_risk, 'OVERTIME');
+  assert.equal(snapshot.settlement_scope, 'regulation_vs_including_ot');
+});
+
 test('buildArbSnapshot can use a selected Polymarket outcome for two-way sports rows', () => {
   const snapshot = buildArbSnapshot(
     {

@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
-const { buildDashboardPayload } = require('./src/dashboard');
+const { buildDashboardPayload, buildOpportunitiesPayload } = require('./src/dashboard');
 const { updateNormalizedMarket, updateMarketPair, createManualInput } = require('./src/storage');
 const { impliedProbability } = require('./src/math');
 
@@ -69,13 +69,21 @@ function readBody(req) {
   });
 }
 
-async function handleApi(req, res, pathname) {
+async function handleApi(req, res, pathname, searchParams = new URLSearchParams()) {
   if (req.method === 'GET' && pathname === '/api/health') {
     return sendJson(res, 200, { ok: true, service: 'prediction-arb-dashboard' });
   }
 
   if (req.method === 'GET' && pathname === '/api/data') {
     return sendJson(res, 200, await buildDashboardPayload());
+  }
+
+  if (req.method === 'GET' && pathname === '/api/opportunities') {
+    return sendJson(res, 200, await buildOpportunitiesPayload({
+      sport: searchParams.get('sport'),
+      bookmaker: searchParams.get('bookmaker'),
+      view: searchParams.get('view'),
+    }));
   }
 
   if (req.method === 'POST' && pathname === '/api/refresh') {
@@ -132,7 +140,7 @@ function createServer() {
       const url = new URL(req.url, `http://${req.headers.host}`);
       const pathname = decodeURIComponent(url.pathname);
       if (pathname.startsWith('/api/')) {
-        return await handleApi(req, res, pathname);
+        return await handleApi(req, res, pathname, url.searchParams);
       }
       return serveStatic(res, pathname);
     } catch (error) {

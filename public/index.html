@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prediction Arb Table</title>
+    <title>Prediction Arb Dashboard</title>
     <meta
       name="description"
-      content="Compact MLB arb dashboard for bookmaker ↔ Polymarket with inline odds editing."
+      content="Compact multi-sport Polymarket arbitrage dashboard for Winline, Fonbet and Liga Stavok."
     />
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" defer></script>
@@ -15,8 +15,8 @@
     <div class="page-shell">
       <header class="topbar">
         <div>
-          <div class="topbar-title">MLB arb table</div>
-          <div class="topbar-subtitle">bookmaker odds vs opposite Polymarket side</div>
+          <div class="topbar-title">Prediction arb dashboard</div>
+          <div class="topbar-subtitle">Polymarket vs Winline, Fonbet and Liga Stavok</div>
         </div>
         <div class="topbar-meta" id="generatedAt">Loading…</div>
       </header>
@@ -39,6 +39,11 @@
               <button class="action-button" id="toggleSecondary" type="button">Notes</button>
             </div>
           </div>
+
+          <nav class="tabs-shell" aria-label="Dashboard filters">
+            <div class="tab-row" id="sportTabs"></div>
+            <div class="tab-row secondary-tabs" id="bookmakerTabs"></div>
+          </nav>
 
           <div class="summary-bar" id="summaryBar"></div>
 
@@ -94,7 +99,7 @@
                   </label>
                   <label class="field">
                     <span>Sport</span>
-                    <input name="sport" value="mlb" />
+                    <input name="sport" value="baseball" />
                   </label>
                   <label class="field">
                     <span>Source mode</span>
