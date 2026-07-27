@@ -110,7 +110,7 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
       ? null
       : Number(payload.edited_decimal_odds);
 
-    const updated = bookmakerMarketId.startsWith('bm-live-fonbet-')
+    const updated = (bookmakerMarketId.startsWith('bm-live-fonbet-') || bookmakerMarketId.startsWith('bm-live-winline-'))
       ? updateLiveBookmakerOverride(bookmakerMarketId, edited)
       : updateNormalizedMarket(bookmakerMarketId, (market) => {
         market.edited_decimal_odds = edited;
@@ -134,7 +134,7 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
       poly_no_limit_override: toNullableNumber(payload.poly_no_limit_override),
       poly_no_easy_override: toNullableNumber(payload.poly_no_easy_override),
     };
-    const updated = pairId.startsWith('pair-live-fonbet-')
+    const updated = (pairId.startsWith('pair-live-fonbet-') || pairId.startsWith('pair-live-winline-'))
       ? updateLivePairOverride(pairId, values)
       : updateMarketPair(pairId, (pair) => ({ ...pair, ...values }));
 

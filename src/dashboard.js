@@ -4,7 +4,7 @@ const { fetchMappedMarkets, fetchFeaturedMarkets } = require('./polymarket');
 const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('./bookmaker');
 const { SPORT_TABS } = require('./domain');
 const { sortTopOpportunities } = require('./opportunities');
-const { fetchLiveFonbetPolymarketSource } = require('./live-fonbet-polymarket');
+const { fetchLiveSportsbookPolymarketSource } = require('./live-sportsbook-polymarket');
 
 function buildInputIndex(items, key) {
   return new Map(items.map((item) => [item[key], item]));
@@ -40,7 +40,7 @@ function buildManualSandboxRows(normalizedMarkets, pairMap) {
 
 async function buildDashboardPayload({
   dataMode = process.env.LIVE_DATA_MODE || 'live',
-  liveFetcher = fetchLiveFonbetPolymarketSource,
+  liveFetcher = fetchLiveSportsbookPolymarketSource,
   featuredFetcher = fetchFeaturedMarkets,
 } = {}) {
   const persistedStore = readStore();

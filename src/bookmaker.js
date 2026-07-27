@@ -1,5 +1,5 @@
 const BOOKMAKERS = Object.freeze([
-  { key: 'winline', label: 'Winline', status: 'seed' },
+  { key: 'winline', label: 'Winline', status: 'active' },
   { key: 'fonbet', label: 'Fonbet', status: 'active' },
   { key: 'ligastavok', label: 'Liga Stavok', status: 'planned' },
 ]);
