@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js",
+    "start": "playwright install chromium && node server.js",
     "test": "node --test",
     "coverage:report": "node scripts/coverage-report.js",
     "venues:probe": "node scripts/probe-prediction-venues.js",
@@ -17,6 +17,6 @@
     "postinstall": "playwright install chromium"
   },
   "dependencies": {
-    "playwright": "^1.52.0"
+    "playwright": "1.52.0"
   }
 }
