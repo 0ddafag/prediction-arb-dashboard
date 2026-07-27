@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { once } = require('node:events');
+process.env.LIVE_DATA_MODE = 'seed';
 const { createServer } = require('../server');
 const { STORE_PATH } = require('../src/storage');
 
@@ -109,6 +110,29 @@ test('server persists bookmaker and polymarket inline overrides', async () => {
       assert.equal(updated.poly_no_market_exec, 0.44);
       assert.equal(updated.poly_no_limit_candidate, 0.41);
       assert.equal(updated.price_views.derived_market_exec != null, true);
+    });
+  } finally {
+    fs.writeFileSync(STORE_PATH, originalStore, 'utf8');
+  }
+});
+
+test('server accepts manual overrides for dynamic live row ids', async () => {
+  const originalStore = fs.readFileSync(STORE_PATH, 'utf8');
+  try {
+    await withServer(async (port) => {
+      const oddsResponse = await fetch('http://127.0.0.1:' + port + '/api/markets/bm-live-fonbet-101-921/odds', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ edited_decimal_odds: 2.77 }),
+      });
+      assert.equal(oddsResponse.status, 200);
+
+      const pairResponse = await fetch('http://127.0.0.1:' + port + '/api/pairs/pair-live-fonbet-101-921/prices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poly_no_market_override: 0.44, poly_no_limit_override: 0.41 }),
+      });
+      assert.equal(pairResponse.status, 200);
     });
   } finally {
     fs.writeFileSync(STORE_PATH, originalStore, 'utf8');

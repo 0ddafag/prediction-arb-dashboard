@@ -30,7 +30,11 @@ test('coverage lookup filters by venue and sport without fuzzy matching', () => 
   const rules = findCoverageRules({ venue: 'winline', sport: 'baseball', mode: 'sync' });
   assert.ok(rules.length >= 1);
   assert.equal(rules.every((rule) => rule.venue === 'winline' && rule.sport === 'baseball'), true);
-  assert.deepEqual(findCoverageRules({ venue: 'fonbet', sport: 'baseball', mode: 'sync' }), []);
+  const fonbetMlb = findCoverageRules({ venue: 'fonbet', sport: 'baseball', mode: 'sync' });
+  const fonbetUfc = findCoverageRules({ venue: 'fonbet', sport: 'ufc', mode: 'sync' });
+  assert.equal(fonbetMlb.length, 1);
+  assert.equal(fonbetUfc.length, 1);
+  assert.equal(findCoverageRules({ venue: 'fonbet', sport: 'tennis', mode: 'sync' }).length, 0);
 });
 
 test('coverage rule validation rejects incomplete confirmed intersections', () => {

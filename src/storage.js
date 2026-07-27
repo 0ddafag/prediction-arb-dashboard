@@ -35,6 +35,30 @@ function updateMarketPair(pairId, updater) {
   return updated;
 }
 
+function ensureLiveOverrides(store) {
+  store.live_overrides ||= {};
+  store.live_overrides.bookmaker_odds ||= {};
+  store.live_overrides.pair_prices ||= {};
+  return store.live_overrides;
+}
+
+function updateLiveBookmakerOverride(bookmakerMarketId, value) {
+  const store = readStore();
+  const overrides = ensureLiveOverrides(store);
+  if (value === '' || value == null) delete overrides.bookmaker_odds[bookmakerMarketId];
+  else overrides.bookmaker_odds[bookmakerMarketId] = Number(value);
+  writeStore(store);
+  return { bookmaker_market_id: bookmakerMarketId, edited_decimal_odds: overrides.bookmaker_odds[bookmakerMarketId] ?? null };
+}
+
+function updateLivePairOverride(pairId, values) {
+  const store = readStore();
+  const overrides = ensureLiveOverrides(store);
+  overrides.pair_prices[pairId] = { ...values };
+  writeStore(store);
+  return { pair_id: pairId, ...overrides.pair_prices[pairId] };
+}
+
 function createManualInput(payload) {
   const store = readStore();
   const now = new Date().toISOString();
@@ -109,6 +133,8 @@ module.exports = {
   writeStore,
   updateNormalizedMarket,
   updateMarketPair,
+  updateLiveBookmakerOverride,
+  updateLivePairOverride,
   createManualInput,
   STORE_PATH,
 };

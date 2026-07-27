@@ -1,6 +1,6 @@
 const BOOKMAKERS = Object.freeze([
-  { key: 'winline', label: 'Winline', status: 'active' },
-  { key: 'fonbet', label: 'Fonbet', status: 'planned' },
+  { key: 'winline', label: 'Winline', status: 'seed' },
+  { key: 'fonbet', label: 'Fonbet', status: 'active' },
   { key: 'ligastavok', label: 'Liga Stavok', status: 'planned' },
 ]);
 
@@ -23,8 +23,14 @@ function buildBookmakerAdapters() {
     machine_fetch: {
       key: 'machine_fetch',
       label: 'Machine fetch',
-      status: 'stub',
-      description: 'Reserved adapter contract. Returns empty data until bookmaker automation is added.',
+      status: 'active',
+      description: 'Read-only public client transport collector.',
+    },
+    browser_public_transport: {
+      key: 'browser_public_transport',
+      label: 'Browser-observed public transport',
+      status: 'active',
+      description: 'Current Fonbet odds from the public browser client line route; no login or betting actions.',
     },
   };
 }

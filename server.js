@@ -3,7 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const { buildDashboardPayload, buildOpportunitiesPayload } = require('./src/dashboard');
-const { updateNormalizedMarket, updateMarketPair, createManualInput } = require('./src/storage');
+const {
+  updateNormalizedMarket,
+  updateMarketPair,
+  updateLiveBookmakerOverride,
+  updateLivePairOverride,
+  createManualInput,
+} = require('./src/storage');
 const { impliedProbability } = require('./src/math');
 
 const PORT = Number(process.env.PORT || 4173);
@@ -104,13 +110,15 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
       ? null
       : Number(payload.edited_decimal_odds);
 
-    const updated = updateNormalizedMarket(bookmakerMarketId, (market) => {
-      market.edited_decimal_odds = edited;
-      market.effective_decimal_odds = edited ?? market.captured_decimal_odds ?? null;
-      market.implied_prob = impliedProbability(market.effective_decimal_odds);
-      market.limit_notes = payload.limit_notes || market.limit_notes || '';
-      return market;
-    });
+    const updated = bookmakerMarketId.startsWith('bm-live-fonbet-')
+      ? updateLiveBookmakerOverride(bookmakerMarketId, edited)
+      : updateNormalizedMarket(bookmakerMarketId, (market) => {
+        market.edited_decimal_odds = edited;
+        market.effective_decimal_odds = edited ?? market.captured_decimal_odds ?? null;
+        market.implied_prob = impliedProbability(market.effective_decimal_odds);
+        market.limit_notes = payload.limit_notes || market.limit_notes || '';
+        return market;
+      });
 
     return sendJson(res, 200, { ok: true, updated });
   }
@@ -121,12 +129,14 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
     const payload = await readBody(req);
     const toNullableNumber = (value) => (value === '' || value == null ? null : Number(value));
 
-    const updated = updateMarketPair(pairId, (pair) => ({
-      ...pair,
+    const values = {
       poly_no_market_override: toNullableNumber(payload.poly_no_market_override),
       poly_no_limit_override: toNullableNumber(payload.poly_no_limit_override),
       poly_no_easy_override: toNullableNumber(payload.poly_no_easy_override),
-    }));
+    };
+    const updated = pairId.startsWith('pair-live-fonbet-')
+      ? updateLivePairOverride(pairId, values)
+      : updateMarketPair(pairId, (pair) => ({ ...pair, ...values }));
 
     return sendJson(res, 200, { ok: true, updated });
   }

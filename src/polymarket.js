@@ -32,24 +32,42 @@ function parseMaybeJsonArray(value) {
   }
 }
 
+function normalizeClobBook(book = {}) {
+  const bids = (book.bids || [])
+    .map((level) => ({ price: Number(level.price), size: Number(level.size) }))
+    .filter((level) => Number.isFinite(level.price) && Number.isFinite(level.size));
+  const asks = (book.asks || [])
+    .map((level) => ({ price: Number(level.price), size: Number(level.size) }))
+    .filter((level) => Number.isFinite(level.price) && Number.isFinite(level.size));
+  const bestBid = bids.sort((a, b) => b.price - a.price)[0] || null;
+  const bestAsk = asks.sort((a, b) => a.price - b.price)[0] || null;
+  return {
+    best_bid: bestBid?.price ?? null,
+    best_bid_size: bestBid?.size ?? null,
+    best_ask: bestAsk?.price ?? null,
+    best_ask_size: bestAsk?.size ?? null,
+  };
+}
+
 async function fetchOutcomePriceViews(tokenId, mid = null) {
   if (!tokenId) {
-    return { token_id: null, buy: null, sell: null, mid };
+    return { token_id: null, buy: null, sell: null, mid, best_bid_size: null, best_ask_size: null };
   }
 
-  const [buyResult, sellResult] = await Promise.allSettled([
-    fetchJson(`${CLOB_BASE}/price?token_id=${tokenId}&side=buy`),
-    fetchJson(`${CLOB_BASE}/price?token_id=${tokenId}&side=sell`),
-  ]);
-
-  const buy = buyResult.status === 'fulfilled' ? Number(buyResult.value?.price) : null;
-  const sell = sellResult.status === 'fulfilled' ? Number(sellResult.value?.price) : null;
+  let book;
+  try {
+    book = normalizeClobBook(await fetchJson(`${CLOB_BASE}/book?token_id=${tokenId}`));
+  } catch {
+    book = { best_bid: null, best_bid_size: null, best_ask: null, best_ask_size: null };
+  }
 
   return {
     token_id: tokenId,
-    buy: Number.isFinite(buy) ? buy : null,
-    sell: Number.isFinite(sell) ? sell : null,
+    buy: book.best_bid,
+    sell: book.best_ask,
     mid: Number.isFinite(Number(mid)) ? Number(mid) : null,
+    best_bid_size: book.best_bid_size,
+    best_ask_size: book.best_ask_size,
   };
 }
 
@@ -81,6 +99,18 @@ async function fetchFeaturedMarkets(limit = 6) {
   return Promise.all(markets.map((market) => enrichMarket(market)));
 }
 
+async function fetchSportsEvents(tag, { limit = 100, fetchJsonImpl = fetchJson } = {}) {
+  const url = new URL('/events', GAMMA_BASE);
+  url.searchParams.set('active', 'true');
+  url.searchParams.set('closed', 'false');
+  url.searchParams.set('tag_slug', tag);
+  url.searchParams.set('limit', String(limit));
+  url.searchParams.set('order', 'startDate');
+  url.searchParams.set('ascending', 'false');
+  const data = await fetchJsonImpl(url.toString());
+  return Array.isArray(data) ? data : [];
+}
+
 async function fetchMappedMarkets(ids = DEFAULT_IDS) {
   const uniqueIds = [...new Set(ids.filter(Boolean).map(String))];
   const markets = await Promise.all(uniqueIds.map((id) => fetchMarketById(id)));
@@ -90,4 +120,7 @@ async function fetchMappedMarkets(ids = DEFAULT_IDS) {
 module.exports = {
   fetchMappedMarkets,
   fetchFeaturedMarkets,
+  fetchSportsEvents,
+  enrichMarket,
+  normalizeClobBook,
 };

@@ -77,11 +77,11 @@
     "market_family": "moneyline_2way",
     "settlement_scope": "full_game",
     "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
-    "intersection_status": "candidate",
-    "last_checked_at": "2026-07-27T04:25:06Z",
-    "last_matched_at": null,
-    "recheck_policy": "coverage_audit",
-    "notes": "Public JSON line/event transport confirmed; MLB event IDs and 921/923 moneyline factors observed. Exact Polymarket settlement mapping still required."
+    "intersection_status": "confirmed",
+    "last_checked_at": "2026-07-27T20:06:49Z",
+    "last_matched_at": "2026-07-27T20:06:49Z",
+    "recheck_policy": "normal_sync",
+    "notes": "Live exact alias mapping confirmed 23 future MLB intersections against Polymarket moneyline events. Pair and start time must match; settlement remains visibly flagged RULES_MISMATCH until cancellation/postponement rules are fully reconciled."
   },
   {
     "venue": "fonbet",
@@ -91,11 +91,11 @@
     "market_family": "moneyline_2way",
     "settlement_scope": "fight",
     "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
-    "intersection_status": "candidate",
-    "last_checked_at": "2026-07-27T04:25:06Z",
-    "last_matched_at": null,
-    "recheck_policy": "coverage_audit",
-    "notes": "Public UFC events confirmed. Main 921/922/923 factors expose fighter A/draw/fighter B; draw/no-contest requires explicit basis-risk review."
+    "intersection_status": "confirmed",
+    "last_checked_at": "2026-07-27T20:06:49Z",
+    "last_matched_at": "2026-07-27T20:06:49Z",
+    "recheck_policy": "normal_sync",
+    "notes": "Live exact participant/date mapping confirmed 10 UFC intersections against Polymarket winner markets. Every row is visibly flagged DRAW_NO_CONTEST because Fonbet also quotes factor 922 draw."
   },
   {
     "venue": "fonbet",

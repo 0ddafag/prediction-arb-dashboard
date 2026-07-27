@@ -4,9 +4,20 @@ const { fetchMappedMarkets, fetchFeaturedMarkets } = require('./polymarket');
 const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('./bookmaker');
 const { SPORT_TABS } = require('./domain');
 const { sortTopOpportunities } = require('./opportunities');
+const { fetchLiveFonbetPolymarketSource } = require('./live-fonbet-polymarket');
 
 function buildInputIndex(items, key) {
   return new Map(items.map((item) => [item[key], item]));
+}
+
+function matchIdentity(row) {
+  const providerEventId = row.pair?.provider_event_id;
+  if (providerEventId != null) return `${row.bookmaker_market?.bookmaker_key || 'book'}:${providerEventId}`;
+  return `${row.bookmaker_market?.event_title || 'event'}:${row.bookmaker_market?.event_start_at || ''}`;
+}
+
+function countDistinctMatches(rows) {
+  return new Set(rows.map(matchIdentity)).size;
 }
 
 function buildManualSandboxRows(normalizedMarkets, pairMap) {
@@ -27,24 +38,50 @@ function buildManualSandboxRows(normalizedMarkets, pairMap) {
     }));
 }
 
-async function buildDashboardPayload() {
-  const store = readStore();
+async function buildDashboardPayload({
+  dataMode = process.env.LIVE_DATA_MODE || 'live',
+  liveFetcher = fetchLiveFonbetPolymarketSource,
+  featuredFetcher = fetchFeaturedMarkets,
+} = {}) {
+  const persistedStore = readStore();
+  const mappedIds = persistedStore.market_pairs.map((pair) => pair.poly_market_id);
+  const sourcePromise = dataMode === 'seed'
+    ? fetchMappedMarkets(mappedIds).then((mappedMarkets) => ({
+      ...persistedStore,
+      mapped_markets: mappedMarkets,
+      metadata: {
+        source: 'seed_store',
+        captured_at: null,
+        matches: persistedStore.market_pairs.length / 2,
+      },
+    }))
+    : liveFetcher({ overrides: persistedStore.live_overrides || {} });
+
+  const [sourceResult, featuredMarketsResult] = await Promise.allSettled([
+    sourcePromise,
+    featuredFetcher(6),
+  ]);
+  const sourceOk = sourceResult.status === 'fulfilled';
+  const source = sourceOk ? sourceResult.value : {
+    bookmaker_inputs: [],
+    bookmaker_market_normalized: [],
+    market_pairs: [],
+    mapped_markets: [],
+    metadata: {},
+  };
+  const store = source;
   const pairMap = buildInputIndex(store.market_pairs, 'bookmaker_market_id');
   const normalizedMap = buildInputIndex(store.bookmaker_market_normalized, 'bookmaker_market_id');
   const inputMap = buildInputIndex(store.bookmaker_inputs, 'input_id');
-  const mappedIds = store.market_pairs.map((pair) => pair.poly_market_id);
-
-  const [mappedMarketsResult, featuredMarketsResult] = await Promise.allSettled([
-    fetchMappedMarkets(mappedIds),
-    fetchFeaturedMarkets(6),
-  ]);
-
-  const mappedMarkets = mappedMarketsResult.status === 'fulfilled' ? mappedMarketsResult.value : [];
+  const mappedMarkets = source.mapped_markets || [];
   const featuredMarkets = featuredMarketsResult.status === 'fulfilled' ? featuredMarketsResult.value : [];
   const diagnostics = {
-    mapped_markets_ok: mappedMarketsResult.status === 'fulfilled',
+    source_mode: dataMode,
+    mapped_markets_ok: sourceOk,
+    live_data_ok: dataMode === 'live' ? sourceOk : null,
     featured_markets_ok: featuredMarketsResult.status === 'fulfilled',
-    warnings: [mappedMarketsResult, featuredMarketsResult]
+    source_metadata: source.metadata || {},
+    warnings: [sourceResult, featuredMarketsResult]
       .filter((result) => result.status === 'rejected')
       .map((result) => result.reason?.message || 'Unknown upstream error'),
   };
@@ -77,7 +114,14 @@ async function buildDashboardPayload() {
     };
   });
 
+  const matchesBySport = source.metadata?.matches_by_sport || Object.fromEntries(
+    [...new Set(arbSnapshots.map((row) => row.sport))]
+      .map((sport) => [sport, countDistinctMatches(arbSnapshots.filter((row) => row.sport === sport))])
+  );
   const summary = {
+    source_mode: dataMode,
+    source_captured_at: source.metadata?.captured_at || null,
+    matches_by_sport: matchesBySport,
     mapped_pairs: store.market_pairs.length,
     ingestion_items: store.bookmaker_inputs.length,
     editable_markets: store.bookmaker_market_normalized.length,
@@ -117,11 +161,11 @@ async function buildOpportunitiesPayload({ sport = null, bookmaker = null, view 
     diagnostics: payload.diagnostics,
     summary: {
       rows: rows.length,
-      matches: new Set(rows.map((row) => row.bookmaker_market.event_title)).size,
+      matches: countDistinctMatches(rows),
       updated_at: payload.summary.updated_at,
     },
     rows,
   };
 }
 
-module.exports = { buildDashboardPayload, buildOpportunitiesPayload };
+module.exports = { buildDashboardPayload, buildOpportunitiesPayload, countDistinctMatches };

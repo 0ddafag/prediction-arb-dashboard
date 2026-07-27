@@ -123,6 +123,32 @@ test('buildArbSnapshot preserves basketball overtime basis risk for categorized 
   assert.equal(snapshot.settlement_scope, 'regulation_vs_including_ot');
 });
 
+test('buildArbSnapshot uses live feeSchedule rate before legacy base-fee metadata', () => {
+  const snapshot = buildArbSnapshot(
+    {
+      pair_id: 'pair-live-fee',
+      sport: 'baseball',
+      market_family: 'moneyline_2way',
+      settlement_scope: 'full_game',
+      hedge_strategy: 'opposite_yes',
+      basis_risk: 'RULES_MISMATCH',
+      poly_outcome_index: 0,
+    },
+    { effective_decimal_odds: 2.5 },
+    {
+      token_price_views: [{ buy: 0.39, sell: 0.4, mid: 0.395 }],
+      feeSchedule: { rate: 0.05, takerOnly: true },
+      takerBaseFee: 1000,
+      liquidityClob: 1000,
+      volume24hr: 500,
+    }
+  );
+
+  assert.equal(snapshot.price_views.market_exec, 0.4);
+  assert.equal(snapshot.price_views.market_net, 0.412);
+  assert.match(snapshot.calc_notes, /5%/);
+});
+
 test('buildArbSnapshot can use a selected Polymarket outcome for two-way sports rows', () => {
   const snapshot = buildArbSnapshot(
     {

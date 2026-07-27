@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const { normalizeBookmakerRow } = require('../src/connectors/bookmakers/normalize');
 const { getBookmakerConnector, listBookmakerConnectors } = require('../src/connectors/bookmakers');
 const { extractMainWinnerCandidates } = require('../src/connectors/bookmakers/fonbet');
+const { extractPublicSitemapEvents } = require('../src/connectors/bookmakers/ligastavok');
 
 test('bookmaker connector registry is extensible across requested venues', () => {
   assert.deepEqual(listBookmakerConnectors().map((item) => item.key), ['winline', 'fonbet', 'ligastavok']);
@@ -96,4 +97,33 @@ test('Fonbet UFC candidate is not misrepresented as risk-free two-way when draw 
   assert.equal(row.sport, 'ufc');
   assert.equal(row.market_family_hint, 'combat_1x2');
   assert.deepEqual(row.risk_hints, ['DRAW_NO_CONTEST']);
+});
+
+test('Liga Stavok public sitemap discovery preserves event and service IDs without inventing odds', () => {
+  const xml = `<?xml version="1.0"?><urlset>
+    <url><loc>https://www.ligastavok.ru/sports/baseball/oclend-atletiks-boston-red-soks-id-23400090-service-id-26-ext-id-919570</loc></url>
+    <url><loc>https://www.ligastavok.ru/sports/combats/dern-m-robertson-dzh-id-23342195-service-id-26-ext-id-876582</loc></url>
+    <url><loc>https://www.ligastavok.ru/sports/soccer/arsenal-tula-torpedo-id-23395210-service-id-26-ext-id-1002624</loc></url>
+  </urlset>`;
+
+  assert.deepEqual(extractPublicSitemapEvents(xml, ['baseball', 'combats']), [
+    {
+      sport: 'baseball',
+      slug: 'oclend-atletiks-boston-red-soks',
+      provider_event_id: 23400090,
+      service_id: 26,
+      external_event_id: 919570,
+      source_url: 'https://www.ligastavok.ru/sports/baseball/oclend-atletiks-boston-red-soks-id-23400090-service-id-26-ext-id-919570',
+      decimal_odds: null,
+    },
+    {
+      sport: 'combats',
+      slug: 'dern-m-robertson-dzh',
+      provider_event_id: 23342195,
+      service_id: 26,
+      external_event_id: 876582,
+      source_url: 'https://www.ligastavok.ru/sports/combats/dern-m-robertson-dzh-id-23342195-service-id-26-ext-id-876582',
+      decimal_odds: null,
+    },
+  ]);
 });

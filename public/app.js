@@ -107,6 +107,25 @@ function getAllSnapshots() {
   return state.payload?.arb_snapshots || [];
 }
 
+function clientMatchIdentity(item) {
+  const providerEventId = item.pair?.provider_event_id;
+  if (providerEventId != null) return `${item.bookmaker_market?.bookmaker_key || 'book'}:${providerEventId}`;
+  return `${item.bookmaker_market?.event_title || 'event'}:${item.bookmaker_market?.event_start_at || ''}`;
+}
+
+function formatEventStart(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'time unavailable';
+  return `${new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'UTC',
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date)} UTC`;
+}
+
 function opportunityCategory(item) {
   const metrics = buildCashMetrics(item, state.drafts[item.pair_id] || {});
   const risk = String(item.pair?.basis_risk || 'NONE').toUpperCase();
@@ -198,7 +217,7 @@ function renderTabs() {
 
 function renderSummaryBar() {
   const rows = getSnapshots();
-  const matches = new Set(rows.map((item) => item.bookmaker_market.event_title)).size;
+  const matches = new Set(rows.map(clientMatchIdentity)).size;
   const categoryPills = state.activeSport === 'top'
     ? ['market', 'limit', 'basis_risk'].map((category) => {
       const count = rows.filter((item) => opportunityCategory(item) === category).length;
@@ -232,7 +251,7 @@ function renderOpportunities() {
         <td class="event-cell" data-select-row="${item.pair_id}">
           <div class="event-title">${escapeHtml(getEventDisplayName(item))}</div>
           <div class="event-meta">
-            ${escapeHtml(sportLabel(item.sport))} · Book side: ${escapeHtml(item.bookmaker_market.outcome_label)}
+            ${escapeHtml(sportLabel(item.sport))} · ${escapeHtml(formatEventStart(item.bookmaker_market.event_start_at))} · Book side: ${escapeHtml(item.bookmaker_market.outcome_label)}
             ${category ? opportunityBadge(category, item.pair?.basis_risk) : ''}
           </div>
         </td>
@@ -338,6 +357,8 @@ function renderPairDetail() {
     <div class="detail-list">
       <div class="detail-row"><strong>Event</strong><span>${escapeHtml(getEventDisplayName(snapshot))}</span></div>
       <div class="detail-row"><strong>Book side</strong><span>${escapeHtml(snapshot.bookmaker_market.outcome_label)}</span></div>
+      <div class="detail-row"><strong>Starts</strong><span>${escapeHtml(formatEventStart(snapshot.bookmaker_market.event_start_at))}</span></div>
+      <div class="detail-row"><strong>Source captured</strong><span>${escapeHtml(formatEventStart(snapshot.bookmaker_input?.captured_at || state.payload?.summary?.source_captured_at))}</span></div>
       <div class="detail-row"><strong>Poly price</strong><span>market ${formatPercentPrice(metrics.marketNet)} · limit ${formatPercentPrice(metrics.limitNet)}</span></div>
       <div class="detail-row"><strong>Fee</strong><span>${formatFeeDisplay(metrics.feeTotalUsd)}</span></div>
       <div class="detail-row"><strong>Total hedge USD</strong><span>market ${formatUsd(metrics.hedgeUsdMarket)} · limit ${formatUsd(metrics.hedgeUsdLimit)}</span></div>

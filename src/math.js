@@ -31,6 +31,12 @@ function feeRateFromBps(rawFee) {
   return Number(rawFee) / 100000;
 }
 
+function feeRateForMarket(polyMarket) {
+  const scheduleRate = Number(polyMarket?.feeSchedule?.rate ?? polyMarket?.fee_schedule?.rate);
+  if (Number.isFinite(scheduleRate) && scheduleRate >= 0) return scheduleRate;
+  return feeRateFromBps(polyMarket?.takerBaseFee ?? polyMarket?.taker_base_fee ?? 0);
+}
+
 function applyFee(cost, feeRate) {
   if (cost == null) return null;
   return round(cost + feeRate * cost * (1 - cost), 4);
@@ -115,7 +121,7 @@ function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
   const odds = Number(bookmakerMarket.effective_decimal_odds ?? bookmakerMarket.edited_decimal_odds ?? bookmakerMarket.captured_decimal_odds);
   const impliedProb = impliedProbability(odds);
   const threshold = bookmakerThreshold(odds);
-  const feeRate = feeRateFromBps(polyMarket?.takerBaseFee ?? polyMarket?.taker_base_fee ?? 0);
+  const feeRate = feeRateForMarket(polyMarket);
 
   const marketCostGross = priceViews.market_exec;
   const limitCostGross = priceViews.limit_candidate;
