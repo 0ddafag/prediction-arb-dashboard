@@ -76,8 +76,8 @@ function syncDraftsWithPayload() {
     const existing = state.drafts[snapshot.pair_id] || {};
     nextDrafts[snapshot.pair_id] = {
       bookmakerOdds: existing.bookmakerOdds ?? formatRawNumber(snapshot.bookmaker_market.effective_decimal_odds, 2),
-      polyMarket: existing.polyMarket ?? formatPercentInput(snapshot.poly_no_market_exec),
-      polyLimit: existing.polyLimit ?? formatPercentInput(snapshot.poly_no_limit_candidate),
+      polyMarket: existing.polyMarket ?? formatMarketDisplayInput(snapshot.price_views?.market_net),
+      polyLimit: existing.polyLimit ?? formatLimitDisplayInput(snapshot.price_views?.limit_candidate),
     };
   }
   state.drafts = nextDrafts;
@@ -165,9 +165,9 @@ function renderOpportunities() {
         <td class="odds-cell">
           <input class="odds-input" data-setting-field="fxRubPerUsd" type="text" inputmode="decimal" value="${escapeAttr(state.settings.fxRubPerUsd)}" />
         </td>
-        <td>${formatUsdPair(metrics.hedgeUsdMarketRaw, metrics.hedgeUsdLimitRaw)}</td>
+        <td>${formatUsdPair(metrics.hedgeUsdMarket, metrics.hedgeUsdLimit)}</td>
         <td>${formatNumber(metrics.shares, 2)}</td>
-        <td>${formatPctPair(metrics.feeMarketPct, metrics.feeLimitPct)}</td>
+        <td>${formatFeeDisplay(metrics.feeTotalUsd)}</td>
         <td>${formatRub(metrics.wonPolyRub, 0)}</td>
         <td>${formatRub(metrics.wonBettingRub, 0)}</td>
         <td class="${profitTone(metrics.profitMarketRub, metrics.profitLimitRub)}">${formatRubPair(metrics.profitMarketRub, metrics.profitLimitRub)}</td>
@@ -212,36 +212,32 @@ function renderOpportunities() {
 
 function buildCashMetrics(snapshot, draft) {
   const bookOdds = parseLocalizedDecimal(draft.bookmakerOdds, snapshot.bookmaker_market.effective_decimal_odds);
-  const marketRaw = parseDraftPrice(draft.polyMarket, snapshot.poly_no_market_exec);
-  const limitRaw = parseDraftPrice(draft.polyLimit, snapshot.poly_no_limit_candidate);
+  const marketNet = parseDisplayPercentPrice(draft.polyMarket, snapshot.price_views?.market_net);
+  const limitNet = parseDisplayPercentPrice(draft.polyLimit, snapshot.price_views?.limit_candidate);
+  const marketGross = grossFromAllIn(marketNet, deriveFeeRate(snapshot));
   const fx = getFxRubPerUsd();
   const stake = getCashStakeRub();
   const toWinRub = Number.isFinite(bookOdds) ? stake * bookOdds : null;
   const shares = Number.isFinite(toWinRub) && fx > 0 ? toWinRub / fx : null;
-  const feeRate = deriveFeeRate(snapshot);
-  const marketTrue = applyFee(marketRaw, feeRate);
-  const limitTrue = applyFee(limitRaw, feeRate);
-  const hedgeUsdMarketRaw = shares == null || marketRaw == null ? null : shares * marketRaw;
-  const hedgeUsdLimitRaw = shares == null || limitRaw == null ? null : shares * limitRaw;
-  const hedgeUsdMarketTrue = shares == null || marketTrue == null ? null : shares * marketTrue;
-  const hedgeUsdLimitTrue = shares == null || limitTrue == null ? null : shares * limitTrue;
+  const hedgeUsdMarket = shares == null || marketNet == null ? null : shares * marketNet;
+  const hedgeUsdLimit = shares == null || limitNet == null ? null : shares * limitNet;
   const wonPolyRub = shares == null ? null : shares * fx;
   const wonBettingRub = toWinRub;
-  const profitMarketRub = hedgeUsdMarketTrue == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdMarketTrue * fx;
-  const profitLimitRub = hedgeUsdLimitTrue == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdLimitTrue * fx;
+  const profitMarketRub = hedgeUsdMarket == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdMarket * fx;
+  const profitLimitRub = hedgeUsdLimit == null || toWinRub == null ? null : toWinRub - stake - hedgeUsdLimit * fx;
+  const feePerShare = marketNet == null || marketGross == null ? null : marketNet - marketGross;
+  const feeTotalUsd = shares == null || feePerShare == null ? null : shares * feePerShare;
 
   return {
     bookOdds,
-    marketRaw,
-    limitRaw,
+    marketNet,
+    limitNet,
+    marketGross,
     toWinRub,
     shares,
-    feeMarketPct: feePct(marketRaw, marketTrue),
-    feeLimitPct: feePct(limitRaw, limitTrue),
-    hedgeUsdMarketRaw,
-    hedgeUsdLimitRaw,
-    hedgeUsdMarketTrue,
-    hedgeUsdLimitTrue,
+    feeTotalUsd,
+    hedgeUsdMarket,
+    hedgeUsdLimit,
     wonPolyRub,
     wonBettingRub,
     profitMarketRub,
@@ -267,8 +263,9 @@ function renderPairDetail() {
     <div class="detail-list">
       <div class="detail-row"><strong>Event</strong><span>${escapeHtml(getEventDisplayName(snapshot))}</span></div>
       <div class="detail-row"><strong>Book side</strong><span>${escapeHtml(snapshot.bookmaker_market.outcome_label)}</span></div>
-      <div class="detail-row"><strong>Poly price</strong><span>market ${formatPercentPrice(metrics.marketRaw)} · limit ${formatPercentPrice(metrics.limitRaw)}</span></div>
-      <div class="detail-row"><strong>Poly true $</strong><span>market ${formatUsd(metrics.hedgeUsdMarketTrue)} · limit ${formatUsd(metrics.hedgeUsdLimitTrue)}</span></div>
+      <div class="detail-row"><strong>Poly price</strong><span>market ${formatPercentPrice(metrics.marketNet)} · limit ${formatPercentPrice(metrics.limitNet)}</span></div>
+      <div class="detail-row"><strong>Fee</strong><span>${formatFeeDisplay(metrics.feeTotalUsd)}</span></div>
+      <div class="detail-row"><strong>Total hedge USD</strong><span>market ${formatUsd(metrics.hedgeUsdMarket)} · limit ${formatUsd(metrics.hedgeUsdLimit)}</span></div>
       <div class="detail-row"><strong>Locked profit cash</strong><span>market ${formatRub(metrics.profitMarketRub, 0)} · limit ${formatRub(metrics.profitLimitRub, 0)}</span></div>
       <div class="detail-row"><strong>Mapping</strong><span>${escapeHtml(snapshot.pair.mapping_status)} · ${Math.round((snapshot.pair.mapping_confidence || 0) * 100)}%</span></div>
       <div class="detail-row"><strong>Comment</strong><span>${escapeHtml(snapshot.pair.settlement_caveat || '—')}</span></div>
@@ -299,8 +296,8 @@ async function saveRow(pairId, button) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          poly_no_market_override: parseDraftNumberForSave(draft.polyMarket, { asPercent: true }),
-          poly_no_limit_override: parseDraftNumberForSave(draft.polyLimit, { asPercent: true }),
+          poly_no_market_override: parseDraftNumberForSave(draft.polyMarket, { mode: 'marketNet', feeRate: deriveFeeRate(snapshot) }),
+          poly_no_limit_override: parseDraftNumberForSave(draft.polyLimit, { mode: 'limitRaw' }),
         }),
       }),
     ]);
@@ -318,8 +315,8 @@ async function resetRow(pairId) {
   if (!snapshot) return;
   state.drafts[pairId] = {
     bookmakerOdds: formatRawNumber(snapshot.bookmaker_market.captured_decimal_odds, 2),
-    polyMarket: formatPercentInput(snapshot.price_views.derived_market_exec),
-    polyLimit: formatPercentInput(snapshot.price_views.derived_limit_candidate),
+    polyMarket: formatMarketDisplayInput(snapshot.price_views?.market_net),
+    polyLimit: formatLimitDisplayInput(snapshot.price_views?.limit_candidate),
   };
   renderDashboard();
   try {
@@ -417,8 +414,8 @@ function fieldToDirtyKey(field) {
 function isDirty(snapshot, draft) {
   return {
     bookmaker: normalizeInputValue(parseLocalizedDecimal(draft.bookmakerOdds, null)) !== normalizeInputValue(snapshot.bookmaker_market.effective_decimal_odds),
-    polyMarket: normalizeInputValue(parseDraftPrice(draft.polyMarket, null)) !== normalizeInputValue(snapshot.poly_no_market_exec),
-    polyLimit: normalizeInputValue(parseDraftPrice(draft.polyLimit, null)) !== normalizeInputValue(snapshot.poly_no_limit_candidate),
+    polyMarket: normalizeInputValue(grossFromAllIn(parseDisplayPercentPrice(draft.polyMarket, null), deriveFeeRate(snapshot))) !== normalizeInputValue(snapshot.poly_no_market_exec),
+    polyLimit: normalizeInputValue(parseDisplayPercentPrice(draft.polyLimit, null)) !== normalizeInputValue(snapshot.poly_no_limit_candidate),
   };
 }
 
@@ -445,16 +442,35 @@ function parseDraftPrice(value, fallback) {
   return number > 1 ? number / 100 : number;
 }
 
+function parseDisplayPercentPrice(value, fallback) {
+  const number = parseLocalizedDecimal(value, null);
+  if (number == null) return fallback;
+  return number > 1 ? number / 100 : number;
+}
+
 function parseDraftNumberForSave(value, options = {}) {
   if (value === '' || value == null) return '';
-  const number = parseLocalizedDecimal(value, null);
+  const number = parseDisplayPercentPrice(value, null);
   if (number == null) return '';
-  return options.asPercent && number > 1 ? number / 100 : number;
+  if (options.mode === 'marketNet') {
+    return grossFromAllIn(number, Number(options.feeRate || 0));
+  }
+  return number;
 }
 
 function formatPercentInput(value) {
   if (value == null || Number.isNaN(Number(value))) return '';
   return trimTrailingZeros((Number(value) * 100).toFixed(2));
+}
+
+function formatMarketDisplayInput(value) {
+  if (value == null || Number.isNaN(Number(value))) return '';
+  return String(Math.ceil(Number(value) * 100));
+}
+
+function formatLimitDisplayInput(value) {
+  if (value == null || Number.isNaN(Number(value))) return '';
+  return String(Math.round(Number(value) * 100));
 }
 
 function formatRawNumber(value, digits = 2) {
@@ -476,6 +492,15 @@ function getFxRubPerUsd() {
 
 function getEventDisplayName(snapshot) {
   return snapshot.polymarket_market?.question || snapshot.bookmaker_market.event_title;
+}
+
+function grossFromAllIn(allInPrice, feeRate) {
+  if (allInPrice == null || !Number.isFinite(allInPrice)) return null;
+  const rate = Number(feeRate || 0);
+  if (!rate) return allInPrice;
+  const discriminant = ((1 + rate) ** 2) - (4 * rate * allInPrice);
+  if (discriminant < 0) return allInPrice;
+  return ((1 + rate) - Math.sqrt(discriminant)) / (2 * rate);
 }
 
 function deriveFeeRate(snapshot) {
@@ -503,6 +528,11 @@ function formatPercentPrice(value) {
 
 function formatPctPair(a, b) {
   return `${formatPlainPct(a)} / ${formatPlainPct(b)}`;
+}
+
+function formatFeeDisplay(value) {
+  if (value == null || Number.isNaN(value)) return '—';
+  return `${formatUsd(value)} / —`;
 }
 
 function formatPlainPct(value) {

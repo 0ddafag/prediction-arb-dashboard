@@ -54,14 +54,14 @@ function deriveNoPriceViews(polyMarket) {
   const rawNoAsk = clamp(1 - bestYesBid, rawNoBid, 0.99);
   const spread = rawNoAsk - rawNoBid;
   const midpoint = rawNoBid + spread / 2;
-  const easyCandidate = spread >= 0.02 ? clamp(rawNoBid + 0.01, 0.01, rawNoAsk) : midpoint;
+  const easyCandidate = spread >= 0.02 ? clamp(rawNoBid + 0.01, 0.01, rawNoAsk) : rawNoBid;
   const liquidity = Number(polyMarket.liquidityClob ?? polyMarket.liquidity_clob ?? 0);
   const volume24h = Number(polyMarket.volume24hr ?? polyMarket.volume_24h ?? 0);
   const score = clamp(Math.round(spread * 1400 + Math.min(liquidity / 1200, 20) + Math.min(volume24h / 2500, 20) + 22), 0, 100);
 
   return {
     market_exec: round(rawNoAsk),
-    limit_candidate: round(midpoint),
+    limit_candidate: round(rawNoBid),
     easy_limit_candidate: round(easyCandidate),
     easy_limit_score: score,
     best_no_bid: round(rawNoBid),
@@ -75,10 +75,8 @@ function buildSelectedOutcomePriceViews(pair, polyMarket) {
   if (!selected) return null;
 
   const marketExec = selected.sell ?? selected.mid ?? selected.buy ?? null;
-  const limitCandidate = selected.mid ?? selected.buy ?? marketExec;
-  const easyCandidate = selected.buy == null || marketExec == null
-    ? (limitCandidate ?? marketExec)
-    : clamp(selected.buy + 0.01, 0.001, marketExec);
+  const limitCandidate = selected.buy ?? selected.mid ?? marketExec;
+  const easyCandidate = limitCandidate;
 
   return {
     market_exec: round(marketExec),
@@ -111,8 +109,8 @@ function buildArbSnapshot(pair, bookmakerMarket, polyMarket) {
   const limitCostGross = priceViews.limit_candidate;
   const easyCostGross = priceViews.easy_limit_candidate;
   const marketCostNet = applyFee(marketCostGross, feeRate);
-  const limitCostNet = applyFee(limitCostGross, feeRate);
-  const easyCostNet = applyFee(easyCostGross, feeRate);
+  const limitCostNet = limitCostGross == null ? null : round(limitCostGross);
+  const easyCostNet = easyCostGross == null ? null : round(easyCostGross);
 
   const grossMarket = threshold == null || marketCostGross == null ? null : round(threshold - marketCostGross);
   const grossLimit = threshold == null || limitCostGross == null ? null : round(threshold - limitCostGross);

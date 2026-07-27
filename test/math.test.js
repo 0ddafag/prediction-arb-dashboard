@@ -37,7 +37,7 @@ test('deriveNoPriceViews handles missing market and calculates candidates', () =
   });
 
   assert.equal(views.market_exec, 0.39);
-  assert.equal(views.limit_candidate, 0.375);
+  assert.equal(views.limit_candidate, 0.36);
   assert.equal(views.easy_limit_candidate, 0.37);
   assert.ok(views.easy_limit_score >= 0 && views.easy_limit_score <= 100);
 });
@@ -65,7 +65,7 @@ test('buildArbSnapshot respects manual polymarket overrides for table experiment
   assert.equal(snapshot.poly_no_limit_candidate, 0.37);
   assert.equal(snapshot.poly_no_easy_limit_candidate, 0.37);
   assert.equal(snapshot.price_views.derived_market_exec, 0.39);
-  assert.equal(snapshot.price_views.derived_limit_candidate, 0.375);
+  assert.equal(snapshot.price_views.derived_limit_candidate, 0.36);
 });
 
 test('buildArbSnapshot can use a selected Polymarket outcome for two-way sports rows', () => {
@@ -89,8 +89,8 @@ test('buildArbSnapshot can use a selected Polymarket outcome for two-way sports 
   );
 
   assert.equal(snapshot.poly_no_market_exec, 0.55);
-  assert.equal(snapshot.poly_no_limit_candidate, 0.545);
-  assert.equal(snapshot.poly_no_easy_limit_candidate, 0.545);
+  assert.equal(snapshot.poly_no_limit_candidate, 0.54);
+  assert.equal(snapshot.poly_no_easy_limit_candidate, 0.54);
   assert.equal(snapshot.price_views.derived_market_exec, 0.55);
-  assert.equal(snapshot.price_views.derived_limit_candidate, 0.545);
+  assert.equal(snapshot.price_views.derived_limit_candidate, 0.54);
 });
