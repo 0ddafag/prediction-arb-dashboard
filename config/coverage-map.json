@@ -76,12 +76,12 @@
     "competition": "MLB",
     "market_family": "moneyline_2way",
     "settlement_scope": "full_game",
-    "source_path": null,
+    "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Public JSON line/event transport confirmed; MLB event IDs and 921/923 moneyline factors observed. Exact Polymarket settlement mapping still required."
   },
   {
     "venue": "fonbet",
@@ -90,12 +90,12 @@
     "competition": "UFC",
     "market_family": "moneyline_2way",
     "settlement_scope": "fight",
-    "source_path": null,
+    "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Public UFC events confirmed. Main 921/922/923 factors expose fighter A/draw/fighter B; draw/no-contest requires explicit basis-risk review."
   },
   {
     "venue": "fonbet",
@@ -104,12 +104,12 @@
     "competition": "TBD",
     "market_family": "moneyline_2way",
     "settlement_scope": "match",
-    "source_path": null,
+    "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Public tennis events and 921/923 match-winner factors confirmed; retirement/walkover rules still require exact comparison."
   },
   {
     "venue": "fonbet",
@@ -118,12 +118,12 @@
     "competition": "TBD",
     "market_family": "football_1x2",
     "settlement_scope": "regulation",
-    "source_path": null,
+    "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Public football events and exact 921/922/923 home/draw/away factors confirmed; competition-level Polymarket coverage remains unapproved."
   },
   {
     "venue": "fonbet",
@@ -132,12 +132,12 @@
     "competition": "TBD",
     "market_family": "match_winner_including_ot",
     "settlement_scope": "including_ot",
-    "source_path": null,
+    "source_path": "https://line-lb51.bk6bba-resources.com/events/listBase?scopeMarket=1600&lang=ru",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Public basketball 921/923 full-game winner factors confirmed. Regulation 1X2 must be mapped separately and must not be inferred from this market."
   },
   {
     "venue": "ligastavok",
@@ -146,12 +146,12 @@
     "competition": "MLB",
     "market_family": "moneyline_2way",
     "settlement_scope": "full_game",
-    "source_path": null,
+    "source_path": "https://www.ligastavok.ru/",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Qrator returned a 403 access-block page from the current host; no public odds transport was confirmed and no controls were bypassed."
   },
   {
     "venue": "ligastavok",
@@ -160,12 +160,12 @@
     "competition": "UFC",
     "market_family": "moneyline_2way",
     "settlement_scope": "fight",
-    "source_path": null,
+    "source_path": "https://www.ligastavok.ru/",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Qrator returned a 403 access-block page from the current host; no public odds transport was confirmed and no controls were bypassed."
   },
   {
     "venue": "ligastavok",
@@ -174,12 +174,12 @@
     "competition": "TBD",
     "market_family": "moneyline_2way",
     "settlement_scope": "match",
-    "source_path": null,
+    "source_path": "https://www.ligastavok.ru/",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Qrator returned a 403 access-block page from the current host; no public odds transport was confirmed and no controls were bypassed."
   },
   {
     "venue": "ligastavok",
@@ -188,12 +188,12 @@
     "competition": "TBD",
     "market_family": "football_1x2",
     "settlement_scope": "regulation",
-    "source_path": null,
+    "source_path": "https://www.ligastavok.ru/",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Qrator returned a 403 access-block page from the current host; no public odds transport was confirmed and no controls were bypassed."
   },
   {
     "venue": "ligastavok",
@@ -202,11 +202,11 @@
     "competition": "TBD",
     "market_family": "match_winner_including_ot",
     "settlement_scope": "including_ot",
-    "source_path": null,
+    "source_path": "https://www.ligastavok.ru/",
     "intersection_status": "candidate",
-    "last_checked_at": null,
+    "last_checked_at": "2026-07-27T04:25:06Z",
     "last_matched_at": null,
     "recheck_policy": "coverage_audit",
-    "notes": "Public route/API reconnaissance pending."
+    "notes": "Qrator returned a 403 access-block page from the current host; no public odds transport was confirmed and no controls were bypassed."
   }
 ]

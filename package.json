@@ -12,6 +12,7 @@
     "start": "node server.js",
     "test": "node --test",
     "coverage:report": "node scripts/coverage-report.js",
-    "venues:probe": "node scripts/probe-prediction-venues.js"
+    "venues:probe": "node scripts/probe-prediction-venues.js",
+    "fonbet:probe": "node scripts/probe-fonbet.js"
   }
 }
