@@ -49,8 +49,8 @@
     {
       "input_id": "mlbshot-mlb-sea-tex-2026-07-26-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Техас — Сиэтл",
       "event_time_raw": "2026-07-26T21:35:00Z",
@@ -62,18 +62,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.07
+        "team": 2.1
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-sea-tex-2026-07-26-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Техас — Сиэтл",
       "event_time_raw": "2026-07-26T21:35:00Z",
@@ -85,18 +85,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.76
+        "team": 1.74
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-bal-det-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Детройт — Балтимор",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -110,16 +110,16 @@
       "odds_raw_json": {
         "team": 1.85
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-bal-det-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Детройт — Балтимор",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -133,16 +133,16 @@
       "odds_raw_json": {
         "team": 1.97
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-ari-pit-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Питтсбург — Аризона",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -154,18 +154,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.78
+        "team": 1.79
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-ari-pit-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Питтсбург — Аризона",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -177,18 +177,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.05
+        "team": 2.04
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-phi-mia-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Майами — Филадельфия",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -200,18 +200,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.34
+        "team": 2.41
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-phi-mia-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Майами — Филадельфия",
       "event_time_raw": "2026-07-27T01:40:00Z",
@@ -223,18 +223,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.6
+        "team": 1.58
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Вашингтон — Торонто",
       "event_time_raw": "2026-07-27T01:45:00Z",
@@ -246,18 +246,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.78
+        "team": 1.76
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-tor-wsh-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Вашингтон — Торонто",
       "event_time_raw": "2026-07-27T01:45:00Z",
@@ -269,18 +269,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.05
+        "team": 2.07
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-cle-cin-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Цинциннати — Кливленд",
       "event_time_raw": "2026-07-27T02:10:00Z",
@@ -292,18 +292,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.61
+        "team": 1.57
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-cle-cin-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Цинциннати — Кливленд",
       "event_time_raw": "2026-07-27T02:10:00Z",
@@ -315,18 +315,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.34
+        "team": 2.41
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-atl-nym-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Н-Й Метс — Атланта",
       "event_time_raw": "2026-07-27T02:10:00Z",
@@ -340,16 +340,16 @@
       "odds_raw_json": {
         "team": 1.95
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-atl-nym-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Н-Й Метс — Атланта",
       "event_time_raw": "2026-07-27T02:10:00Z",
@@ -363,16 +363,16 @@
       "odds_raw_json": {
         "team": 1.86
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Чикаго Уайт Сокс — Н-Й Янкис",
       "event_time_raw": "2026-07-27T02:40:00Z",
@@ -384,18 +384,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.14
+        "team": 2.13
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-nyy-cws-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Чикаго Уайт Сокс — Н-Й Янкис",
       "event_time_raw": "2026-07-27T02:40:00Z",
@@ -409,16 +409,16 @@
       "odds_raw_json": {
         "team": 1.72
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-hou-laa-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Л-А Эйнджелс — Хьюстон",
       "event_time_raw": "2026-07-27T04:38:00Z",
@@ -432,16 +432,16 @@
       "odds_raw_json": {
         "team": 1.97
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-hou-laa-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Л-А Эйнджелс — Хьюстон",
       "event_time_raw": "2026-07-27T04:38:00Z",
@@ -455,16 +455,16 @@
       "odds_raw_json": {
         "team": 1.84
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-bos-oak-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Окленд — Бостон",
       "event_time_raw": "2026-07-27T04:40:00Z",
@@ -476,18 +476,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.35
+        "team": 2.36
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-bos-oak-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Окленд — Бостон",
       "event_time_raw": "2026-07-27T04:40:00Z",
@@ -501,16 +501,16 @@
       "odds_raw_json": {
         "team": 1.6
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-mil-sf-2026-07-27-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Сан-Франциско — Милуоки",
       "event_time_raw": "2026-07-27T04:45:00Z",
@@ -522,18 +522,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.1
+        "team": 2.11
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     },
     {
       "input_id": "mlbshot-mlb-mil-sf-2026-07-27-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol/ssha/mlb",
       "sport_raw": "mlb",
       "event_raw": "Сан-Франциско — Милуоки",
       "event_time_raw": "2026-07-27T04:45:00Z",
@@ -547,10 +547,10 @@
       "odds_raw_json": {
         "team": 1.74
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:35:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol/ssha/mlb (upcoming MLB page)."
     }
   ],
   "bookmaker_market_normalized": [
@@ -600,13 +600,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Техас",
-      "captured_decimal_odds": 2.07,
+      "captured_decimal_odds": 2.1,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.07,
-      "implied_prob": 0.483092,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.1,
+      "implied_prob": 0.47619,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-0",
@@ -618,13 +618,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Сиэтл",
-      "captured_decimal_odds": 1.76,
+      "captured_decimal_odds": 1.74,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.76,
-      "implied_prob": 0.568182,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.74,
+      "implied_prob": 0.574713,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-1",
@@ -640,9 +640,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.85,
       "implied_prob": 0.540541,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-bal-det-2026-07-27-0",
@@ -658,9 +658,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.97,
       "implied_prob": 0.507614,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-1",
@@ -672,13 +672,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Питтсбург",
-      "captured_decimal_odds": 1.78,
+      "captured_decimal_odds": 1.79,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.78,
-      "implied_prob": 0.561798,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.79,
+      "implied_prob": 0.558659,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-ari-pit-2026-07-27-0",
@@ -690,13 +690,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Аризона",
-      "captured_decimal_odds": 2.05,
+      "captured_decimal_odds": 2.04,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.05,
-      "implied_prob": 0.487805,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.04,
+      "implied_prob": 0.490196,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-1",
@@ -708,13 +708,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Майами",
-      "captured_decimal_odds": 2.34,
+      "captured_decimal_odds": 2.41,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.34,
-      "implied_prob": 0.42735,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.41,
+      "implied_prob": 0.414938,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-phi-mia-2026-07-27-0",
@@ -726,13 +726,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Филадельфия",
-      "captured_decimal_odds": 1.6,
+      "captured_decimal_odds": 1.58,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.6,
-      "implied_prob": 0.625,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.58,
+      "implied_prob": 0.632911,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-1",
@@ -744,13 +744,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Вашингтон",
-      "captured_decimal_odds": 1.78,
+      "captured_decimal_odds": 1.76,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.78,
-      "implied_prob": 0.561798,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.76,
+      "implied_prob": 0.568182,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-tor-wsh-2026-07-27-0",
@@ -762,13 +762,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Торонто",
-      "captured_decimal_odds": 2.05,
+      "captured_decimal_odds": 2.07,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.05,
-      "implied_prob": 0.487805,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.07,
+      "implied_prob": 0.483092,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-1",
@@ -780,13 +780,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Цинциннати",
-      "captured_decimal_odds": 1.61,
+      "captured_decimal_odds": 1.57,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.61,
-      "implied_prob": 0.621118,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.57,
+      "implied_prob": 0.636943,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-cle-cin-2026-07-27-0",
@@ -798,13 +798,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Кливленд",
-      "captured_decimal_odds": 2.34,
+      "captured_decimal_odds": 2.41,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.34,
-      "implied_prob": 0.42735,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.41,
+      "implied_prob": 0.414938,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-1",
@@ -820,9 +820,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.95,
       "implied_prob": 0.512821,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-atl-nym-2026-07-27-0",
@@ -838,9 +838,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.86,
       "implied_prob": 0.537634,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-1",
@@ -852,13 +852,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Чикаго Уайт Сокс",
-      "captured_decimal_odds": 2.14,
+      "captured_decimal_odds": 2.13,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.14,
-      "implied_prob": 0.46729,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.13,
+      "implied_prob": 0.469484,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-nyy-cws-2026-07-27-0",
@@ -874,9 +874,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.72,
       "implied_prob": 0.581395,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-1",
@@ -892,9 +892,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.97,
       "implied_prob": 0.507614,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-hou-laa-2026-07-27-0",
@@ -910,9 +910,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.84,
       "implied_prob": 0.543478,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-1",
@@ -924,13 +924,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Окленд",
-      "captured_decimal_odds": 2.35,
+      "captured_decimal_odds": 2.36,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.35,
-      "implied_prob": 0.425532,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.36,
+      "implied_prob": 0.423729,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-bos-oak-2026-07-27-0",
@@ -946,9 +946,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.6,
       "implied_prob": 0.625,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-1",
@@ -960,13 +960,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Сан-Франциско",
-      "captured_decimal_odds": 2.1,
+      "captured_decimal_odds": 2.11,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.1,
-      "implied_prob": 0.47619,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 2.11,
+      "implied_prob": 0.473934,
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-mil-sf-2026-07-27-0",
@@ -982,9 +982,9 @@
       "edited_decimal_odds": null,
       "effective_decimal_odds": 1.74,
       "implied_prob": 0.574713,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "limit_notes": "Live Chromium capture from Winline MLB upcoming page.",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:35:00Z"
     }
   ],
   "market_pairs": [
