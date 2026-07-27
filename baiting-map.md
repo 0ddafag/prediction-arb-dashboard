@@ -11,8 +11,8 @@ Reference file for screenshot-driven MLB rows currently seeded into the dashboar
 
 | Winline event | Winline outcome | Book odds | Polymarket market id | Polymarket listing / note | pair_id |
 |---|---:|---:|---:|---|---|
-| Филадельфия — Н-Й Янкис | Филадельфия | 1.50 | 3000575 | New York Yankees vs. Philadelphia Phillies | `pair-mlbshot-mlb-nyy-phi-2026-07-26-1` |
-| Филадельфия — Н-Й Янкис | Н-Й Янкис | 2.75 | 3000575 | New York Yankees vs. Philadelphia Phillies | `pair-mlbshot-mlb-nyy-phi-2026-07-26-0` |
+| Сент-Луис — Чикаго Кабс | Сент-Луис | 2.01 | 3017196 | Chicago Cubs vs. St. Louis Cardinals | `pair-mlbshot-mlb-stl-chc-2026-07-27-1` |
+| Сент-Луис — Чикаго Кабс | Чикаго Кабс | 1.81 | 3017196 | Chicago Cubs vs. St. Louis Cardinals | `pair-mlbshot-mlb-stl-chc-2026-07-27-0` |
 | Техас — Сиэтл | Техас | 2.07 | 3017180 | exact slug note: `mlb-sea-tex-2026-07-27` | `pair-mlbshot-mlb-sea-tex-2026-07-26-1` |
 | Техас — Сиэтл | Сиэтл | 1.76 | 3017180 | exact slug note: `mlb-sea-tex-2026-07-27` | `pair-mlbshot-mlb-sea-tex-2026-07-26-0` |
 | Детройт — Балтимор | Детройт | 1.85 | 3017182 | Baltimore Orioles vs. Detroit Tigers | `pair-mlbshot-mlb-bal-det-2026-07-27-1` |
@@ -37,4 +37,4 @@ Reference file for screenshot-driven MLB rows currently seeded into the dashboar
 | Сан-Франциско — Милуоки | Милуоки | 1.74 | 3017202 | Milwaukee Brewers vs. San Francisco Giants | `pair-mlbshot-mlb-mil-sf-2026-07-27-0` |
 
 ## Browser note
-Using Chromium I was able to navigate to Winline baseball and confirm the MLB section is visible in-browser. The currently visible live MLB row on page was `Филадельфия — Н-Й Янкис`, but those on-page numbers were already different from the original screenshot batch, so this file stays anchored to the screenshot-seeded dashboard set, not to transient live quotes.
+Using Chromium I was able to navigate to the Winline MLB upcoming page and refresh the dashboard batch from live quotes. The previously seeded played game `Филадельфия — Н-Й Янкис` was removed, and the missing upcoming game `Сент-Луис — Чикаго Кабс` was added from the live MLB page.

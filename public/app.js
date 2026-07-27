@@ -124,9 +124,11 @@ function renderDashboard() {
 }
 
 function renderSummaryBar() {
+  const rows = getSnapshots();
+  const matches = new Set(rows.map((item) => item.bookmaker_market.event_title)).size;
   document.getElementById('summaryBar').innerHTML = `
-    <span class="summary-pill">Stake ₽${formatRub(getCashStakeRub(), 0)}</span>
-    <span class="summary-pill">FX ${formatNumber(getFxRubPerUsd(), 2)}</span>
+    <span class="summary-pill">Matches ${matches}</span>
+    <span class="summary-pill">Rows ${rows.length}</span>
   `;
 }
 
@@ -134,7 +136,7 @@ function renderOpportunities() {
   const rows = getSnapshots();
   const body = document.getElementById('opportunitiesBody');
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="14" class="loading-cell">No MLB rows.</td></tr>';
+    body.innerHTML = '<tr><td colspan="12" class="loading-cell">No MLB rows.</td></tr>';
     return;
   }
 
@@ -158,13 +160,7 @@ function renderOpportunities() {
           <input class="odds-input ${dirty.polyLimit ? 'dirty' : ''}" data-field="polyLimit" data-pair-id="${item.pair_id}" type="text" inputmode="decimal" value="${escapeAttr(draft.polyLimit ?? '')}" />
           <div class="input-note">market / limit (%)</div>
         </td>
-        <td class="odds-cell">
-          <input class="odds-input" data-setting-field="cashStakeRub" type="text" inputmode="decimal" value="${escapeAttr(state.settings.cashStakeRub)}" />
-        </td>
         <td>${formatRub(metrics.toWinRub, 0)}</td>
-        <td class="odds-cell">
-          <input class="odds-input" data-setting-field="fxRubPerUsd" type="text" inputmode="decimal" value="${escapeAttr(state.settings.fxRubPerUsd)}" />
-        </td>
         <td>${formatUsdPair(metrics.hedgeUsdMarket, metrics.hedgeUsdLimit)}</td>
         <td>${formatNumber(metrics.shares, 2)}</td>
         <td>${formatFeeDisplay(metrics.feeTotalUsd)}</td>
@@ -188,11 +184,6 @@ function renderOpportunities() {
       state.selectedPairId = input.dataset.pairId;
       renderPairDetail();
     });
-    input.addEventListener('blur', () => renderDashboard());
-  });
-
-  body.querySelectorAll('[data-setting-field]').forEach((input) => {
-    input.addEventListener('input', handleSettingInput);
     input.addEventListener('blur', () => renderDashboard());
   });
 
