@@ -3,8 +3,8 @@
     {
       "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-1",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol#eventId-16326666",
       "sport_raw": "mlb",
       "event_raw": "Филадельфия — Н-Й Янкис",
       "event_time_raw": "2026-07-26T02:20:00Z",
@@ -16,18 +16,18 @@
         }
       ],
       "odds_raw_json": {
-        "team": 1.5
+        "team": 11.0
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:20:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol (USA | MLB visible event card)."
     },
     {
       "input_id": "mlbshot-mlb-nyy-phi-2026-07-26-0",
       "bookmaker_key": "ligastavok",
-      "source_mode": "screenshot_manual",
-      "source_ref": "telegram-screenshot://img_cb8c0a5bee8f.jpg",
+      "source_mode": "browser_live",
+      "source_ref": "playwright://winline/stavki/sport/bejsbol#eventId-16326666",
       "sport_raw": "mlb",
       "event_raw": "Филадельфия — Н-Й Янкис",
       "event_time_raw": "2026-07-26T02:20:00Z",
@@ -39,12 +39,12 @@
         }
       ],
       "odds_raw_json": {
-        "team": 2.75
+        "team": 1.08
       },
-      "captured_at": "2026-07-27T00:00:00Z",
+      "captured_at": "2026-07-27T00:20:00Z",
       "parse_confidence": 0.99,
       "review_status": "mapped",
-      "review_notes": "Screenshot MLB moneyline. Stake 1725 RUB, FX 81 RUB/USD."
+      "review_notes": "Updated from live Winline Chromium capture on /stavki/sport/bejsbol (USA | MLB visible event card)."
     },
     {
       "input_id": "mlbshot-mlb-sea-tex-2026-07-26-1",
@@ -564,13 +564,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Филадельфия",
-      "captured_decimal_odds": 1.5,
+      "captured_decimal_odds": 11.0,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 1.5,
-      "implied_prob": 0.666667,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 11.0,
+      "implied_prob": 0.090909,
+      "limit_notes": "Live Chromium capture from Winline baseball page (USA | MLB event card, eventId-16326666).",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:20:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-nyy-phi-2026-07-26-0",
@@ -582,13 +582,13 @@
       "market_type": "12",
       "outcome_key": "team",
       "outcome_label": "Н-Й Янкис",
-      "captured_decimal_odds": 2.75,
+      "captured_decimal_odds": 1.08,
       "edited_decimal_odds": null,
-      "effective_decimal_odds": 2.75,
-      "implied_prob": 0.363636,
-      "limit_notes": "Stake 1725 RUB @ FX 81. Screenshot moneyline row.",
-      "source_mode": "screenshot_manual",
-      "normalized_at": "2026-07-27T00:00:00Z"
+      "effective_decimal_odds": 1.08,
+      "implied_prob": 0.925926,
+      "limit_notes": "Live Chromium capture from Winline baseball page (USA | MLB event card, eventId-16326666).",
+      "source_mode": "browser_live",
+      "normalized_at": "2026-07-27T00:20:00Z"
     },
     {
       "bookmaker_market_id": "bm-mlbshot-mlb-sea-tex-2026-07-26-1",
