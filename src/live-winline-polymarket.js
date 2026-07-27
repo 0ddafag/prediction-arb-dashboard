@@ -1,5 +1,6 @@
 const aliases = require('../config/participant-aliases.json');
 const { fetchSportsEvents, enrichMarket } = require('./polymarket');
+const { execFileSync } = require('child_process');
 
 const WINLINE_URLS = Object.freeze({
   baseball: 'https://winline.ru/stavki/sport/bejsbol/ssha/mlb',
@@ -106,10 +107,23 @@ async function fetchRenderedText(url) {
   } catch (error) {
     throw new Error(`Playwright is required for Winline live DOM fetch: ${error.message}`);
   }
-  const browser = await chromium.launch({
+  const launchOptions = {
     headless: true,
     args: ['--no-sandbox', '--disable-dev-shm-usage'],
-  });
+  };
+  let browser;
+  try {
+    browser = await chromium.launch(launchOptions);
+  } catch (error) {
+    if (!/Executable doesn't exist|Please run the following command to download new browsers/i.test(String(error?.message || error))) {
+      throw error;
+    }
+    execFileSync(process.execPath, [require.resolve('playwright/cli'), 'install', 'chromium'], {
+      stdio: 'ignore',
+      timeout: 180000,
+    });
+    browser = await chromium.launch(launchOptions);
+  }
   try {
     const page = await browser.newPage({ locale: 'ru-RU', timezoneId: 'UTC' });
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
