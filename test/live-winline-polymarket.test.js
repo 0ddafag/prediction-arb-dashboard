@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {
   parseWinlineText,
+  fetchWinlineSnapshotCandidates,
   fetchLiveWinlinePolymarketSource,
 } = require('../src/live-winline-polymarket');
 const { mergeSources } = require('../src/live-sportsbook-polymarket');
@@ -48,6 +49,18 @@ test('Winline live source maps exact rows and keeps Winline-specific IDs', async
   assert.equal(source.market_pairs.length, 2);
   assert.ok(source.market_pairs.every((pair) => pair.pair_id.startsWith('pair-live-winline-')));
   assert.ok(source.bookmaker_market_normalized.every((row) => row.bookmaker_key === 'winline'));
+});
+
+test('Winline snapshot feed loads candidates without launching browser', async () => {
+  const [candidate] = parseWinlineText(`Бейсбол\nСША\nMLB\nЧикаго Уайт Сокс\nН-Й Янкис\nСегодня 23:40\n+62\nМатч\n2.24\n1.72\n1.70`, { sport: 'baseball', now });
+  const candidates = await fetchWinlineSnapshotCandidates({
+    snapshotUrl: 'https://example.test/live-winline.json',
+    fetchJson: async () => ({ captured_at: '2026-07-27T23:30:00Z', candidates: [candidate] }),
+  });
+  assert.equal(candidates.length, 1);
+  assert.equal(candidates[0].source_mode, 'snapshot_feed');
+  assert.equal(candidates.feed_captured_at, '2026-07-27T23:30:00Z');
+  assert.equal(candidates.snapshot_url, 'https://example.test/live-winline.json');
 });
 
 test('multi-source merge preserves Fonbet and Winline rows without seed fallback', () => {

@@ -13,7 +13,8 @@
     "test": "node --test",
     "coverage:report": "node scripts/coverage-report.js",
     "venues:probe": "node scripts/probe-prediction-venues.js",
-    "fonbet:probe": "node scripts/probe-fonbet.js"
+    "fonbet:probe": "node scripts/probe-fonbet.js",
+    "winline:feed": "node scripts/update-winline-feed.js"
   },
   "dependencies": {
     "playwright": "1.52.0"

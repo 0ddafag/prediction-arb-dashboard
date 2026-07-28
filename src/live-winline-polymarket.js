@@ -8,6 +8,8 @@ const WINLINE_URLS = Object.freeze({
   ufc: 'https://winline.ru/stavki/sport/mma/ufc',
 });
 
+const DEFAULT_WINLINE_SNAPSHOT_URL = 'https://raw.githubusercontent.com/0ddafag/prediction-arb-dashboard/winline-feed/data/live-winline.json';
+
 function canonicalParticipant(sport, name) {
   return aliases[sport]?.[String(name || '').trim()] || null;
 }
@@ -144,6 +146,46 @@ async function fetchWinlineCandidates({ now = new Date(), fetchText = fetchRende
   return entries.flat();
 }
 
+async function fetchWinlineSnapshotCandidates({
+  snapshotUrl = process.env.WINLINE_SNAPSHOT_URL || DEFAULT_WINLINE_SNAPSHOT_URL,
+  fetchJson,
+} = {}) {
+  const load = fetchJson || (async (url) => {
+    const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    if (!response.ok) throw new Error(`Winline snapshot HTTP ${response.status} from ${url}`);
+    return response.json();
+  });
+  const payload = await load(snapshotUrl);
+  if (!payload || !Array.isArray(payload.candidates)) {
+    throw new Error('Winline snapshot payload is missing candidates[]');
+  }
+  const candidates = payload.candidates.filter((candidate) => (
+    candidate?.bookmaker === 'winline'
+    && WINLINE_URLS[candidate.sport]
+    && Array.isArray(candidate.canonical_participants)
+    && Array.isArray(candidate.outcomes)
+    && Date.parse(candidate.start_at)
+  )).map((candidate) => ({
+    ...candidate,
+    source_mode: 'snapshot_feed',
+    source_url: candidate.source_url || snapshotUrl,
+  }));
+  Object.defineProperty(candidates, 'feed_captured_at', {
+    value: payload.captured_at || null,
+    enumerable: false,
+  });
+  Object.defineProperty(candidates, 'snapshot_url', {
+    value: snapshotUrl,
+    enumerable: false,
+  });
+  return candidates;
+}
+
+async function fetchDefaultWinlineCandidates(options = {}) {
+  if (process.env.WINLINE_LIVE_MODE === 'browser') return fetchWinlineCandidates(options);
+  return fetchWinlineSnapshotCandidates(options);
+}
+
 function parseSportsTime(value) {
   if (!value) return NaN;
   return Date.parse(String(value).replace(' ', 'T').replace(/\+00$/, '+00:00'));
@@ -220,7 +262,7 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
       bookmakerInputs.push({
         input_id: inputId,
         bookmaker_key: 'winline',
-        source_mode: 'browser_rendered_dom',
+        source_mode: candidate.source_mode || 'browser_rendered_dom',
         source_ref: candidate.source_url,
         sport_raw: candidate.sport,
         event_raw: candidate.participants.join(' — '),
@@ -249,8 +291,10 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
         edited_decimal_odds: editedOdds == null ? null : Number(editedOdds),
         effective_decimal_odds: odds,
         implied_prob: 1 / odds,
-        limit_notes: 'Live Winline rendered public page; exact participant/date mapping only.',
-        source_mode: 'browser_rendered_dom',
+        limit_notes: candidate.source_mode === 'snapshot_feed'
+          ? 'Winline snapshot feed; exact participant/date mapping only.'
+          : 'Live Winline rendered public page; exact participant/date mapping only.',
+        source_mode: candidate.source_mode || 'browser_rendered_dom',
         normalized_at: capturedAt,
       });
       marketPairs.push({
@@ -287,7 +331,7 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
 async function fetchLiveWinlinePolymarketSource({
   now = new Date(),
   overrides = {},
-  fetchCandidates = fetchWinlineCandidates,
+  fetchCandidates = fetchDefaultWinlineCandidates,
   fetchEvents = fetchSportsEvents,
   enrich = enrichMarket,
 } = {}) {
@@ -305,8 +349,9 @@ async function fetchLiveWinlinePolymarketSource({
     ...buildLiveCollections(enrichedMatches, { capturedAt, overrides }),
     mapped_markets: mappedMarkets,
     metadata: {
-      source: 'winline_live_browser_dom',
-      captured_at: capturedAt,
+      source: candidates.snapshot_url ? 'winline_snapshot_feed+polymarket_gamma_clob' : 'winline_live_browser_dom',
+      captured_at: candidates.feed_captured_at || capturedAt,
+      snapshot_url: candidates.snapshot_url || null,
       candidate_count: candidates.length,
       matches: matches.length,
       matches_by_sport: matches.reduce((acc, match) => {
@@ -319,9 +364,12 @@ async function fetchLiveWinlinePolymarketSource({
 
 module.exports = {
   WINLINE_URLS,
+  DEFAULT_WINLINE_SNAPSHOT_URL,
   parseWinlineTime,
   parseWinlineText,
   fetchWinlineCandidates,
+  fetchWinlineSnapshotCandidates,
+  fetchDefaultWinlineCandidates,
   buildExactLiveMatches,
   buildLiveCollections,
   fetchLiveWinlinePolymarketSource,
