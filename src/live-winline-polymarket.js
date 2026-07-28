@@ -1,6 +1,7 @@
 const aliases = require('../config/participant-aliases.json');
 const { fetchSportsEvents, enrichMarket } = require('./polymarket');
 const { execFileSync } = require('child_process');
+const path = require('path');
 
 const WINLINE_URLS = Object.freeze({
   baseball: 'https://winline.ru/stavki/sport/bejsbol/ssha/mlb',
@@ -118,7 +119,8 @@ async function fetchRenderedText(url) {
     if (!/Executable doesn't exist|Please run the following command to download new browsers/i.test(String(error?.message || error))) {
       throw error;
     }
-    execFileSync(process.execPath, [require.resolve('playwright/cli'), 'install', 'chromium'], {
+    const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
+    execFileSync(process.execPath, [playwrightCli, 'install', 'chromium'], {
       stdio: 'ignore',
       timeout: 180000,
     });
