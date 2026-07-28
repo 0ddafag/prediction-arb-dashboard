@@ -1,0 +1,847 @@
+{
+  "schema_version": 1,
+  "source": "winline_browser_rendered_dom_snapshot",
+  "captured_at": "2026-07-28T05:16:05.994Z",
+  "bookmaker": "winline",
+  "sports": [
+    "baseball",
+    "ufc"
+  ],
+  "candidate_count": 27,
+  "candidates": [
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-CIN-CLE-202607281740",
+      "participants": [
+        "Цинциннати",
+        "Кливленд"
+      ],
+      "canonical_participants": [
+        "CIN",
+        "CLE"
+      ],
+      "start_at": "2026-07-28T17:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Цинциннати",
+          "decimal_odds": 1.62,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Кливленд",
+          "decimal_odds": 2.31,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-MIA-PHI-202607282240",
+      "participants": [
+        "Майами",
+        "Филадельфия"
+      ],
+      "canonical_participants": [
+        "MIA",
+        "PHI"
+      ],
+      "start_at": "2026-07-28T22:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Майами",
+          "decimal_odds": 1.88,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Филадельфия",
+          "decimal_odds": 1.93,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-DET-BAL-202607282240",
+      "participants": [
+        "Детройт",
+        "Балтимор"
+      ],
+      "canonical_participants": [
+        "DET",
+        "BAL"
+      ],
+      "start_at": "2026-07-28T22:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Детройт",
+          "decimal_odds": 1.7,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Балтимор",
+          "decimal_odds": 2.17,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-PIT-ARI-202607282240",
+      "participants": [
+        "Питтсбург",
+        "Аризона"
+      ],
+      "canonical_participants": [
+        "PIT",
+        "ARI"
+      ],
+      "start_at": "2026-07-28T22:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Питтсбург",
+          "decimal_odds": 1.85,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Аризона",
+          "decimal_odds": 1.96,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-TB-TEX-202607282240",
+      "participants": [
+        "Тампа-Бэй",
+        "Техас"
+      ],
+      "canonical_participants": [
+        "TB",
+        "TEX"
+      ],
+      "start_at": "2026-07-28T22:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Тампа-Бэй",
+          "decimal_odds": 1.55,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Техас",
+          "decimal_odds": 2.47,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-WSH-TOR-202607282245",
+      "participants": [
+        "Вашингтон",
+        "Торонто"
+      ],
+      "canonical_participants": [
+        "WSH",
+        "TOR"
+      ],
+      "start_at": "2026-07-28T22:45:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Вашингтон",
+          "decimal_odds": 1.7,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Торонто",
+          "decimal_odds": 2.17,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-CIN-CLE-202607282310",
+      "participants": [
+        "Цинциннати",
+        "Кливленд"
+      ],
+      "canonical_participants": [
+        "CIN",
+        "CLE"
+      ],
+      "start_at": "2026-07-28T23:10:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Цинциннати",
+          "decimal_odds": 2.1,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Кливленд",
+          "decimal_odds": 1.74,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-NYM-ATL-202607282310",
+      "participants": [
+        "Н-Й Метс",
+        "Атланта"
+      ],
+      "canonical_participants": [
+        "NYM",
+        "ATL"
+      ],
+      "start_at": "2026-07-28T23:10:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Н-Й Метс",
+          "decimal_odds": 2.32,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Атланта",
+          "decimal_odds": 1.62,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-MIN-KC-202607282340",
+      "participants": [
+        "Миннесота",
+        "Канзас"
+      ],
+      "canonical_participants": [
+        "MIN",
+        "KC"
+      ],
+      "start_at": "2026-07-28T23:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Миннесота",
+          "decimal_odds": 1.6,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Канзас",
+          "decimal_odds": 2.35,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-CWS-NYY-202607282340",
+      "participants": [
+        "Чикаго Уайт Сокс",
+        "Н-Й Янкис"
+      ],
+      "canonical_participants": [
+        "CWS",
+        "NYY"
+      ],
+      "start_at": "2026-07-28T23:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Чикаго Уайт Сокс",
+          "decimal_odds": 2.12,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Н-Й Янкис",
+          "decimal_odds": 1.73,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-STL-CHC-202607282345",
+      "participants": [
+        "Сент-Луис",
+        "Чикаго Кабс"
+      ],
+      "canonical_participants": [
+        "STL",
+        "CHC"
+      ],
+      "start_at": "2026-07-28T23:45:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Сент-Луис",
+          "decimal_odds": 1.94,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Чикаго Кабс",
+          "decimal_odds": 1.87,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-LAA-HOU-202607290138",
+      "participants": [
+        "Л-А Эйнджелс",
+        "Хьюстон"
+      ],
+      "canonical_participants": [
+        "LAA",
+        "HOU"
+      ],
+      "start_at": "2026-07-29T01:38:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Л-А Эйнджелс",
+          "decimal_odds": 1.91,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Хьюстон",
+          "decimal_odds": 1.9,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-OAK-BOS-202607290140",
+      "participants": [
+        "Окленд",
+        "Бостон"
+      ],
+      "canonical_participants": [
+        "OAK",
+        "BOS"
+      ],
+      "start_at": "2026-07-29T01:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Окленд",
+          "decimal_odds": 2.26,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Бостон",
+          "decimal_odds": 1.65,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-SD-COL-202607290140",
+      "participants": [
+        "Сан-Диего",
+        "Колорадо"
+      ],
+      "canonical_participants": [
+        "SD",
+        "COL"
+      ],
+      "start_at": "2026-07-29T01:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Сан-Диего",
+          "decimal_odds": 1.53,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Колорадо",
+          "decimal_odds": 2.5,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "baseball",
+      "competition": "MLB",
+      "provider_event_id": "baseball-SF-MIL-202607290145",
+      "participants": [
+        "Сан-Франциско",
+        "Милуоки"
+      ],
+      "canonical_participants": [
+        "SF",
+        "MIL"
+      ],
+      "start_at": "2026-07-29T01:45:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/bejsbol/ssha/mlb",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Сан-Франциско",
+          "decimal_odds": 2.17,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Милуоки",
+          "decimal_odds": 1.7,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-mateusz-rebecki-kyle-prepolec-202608011400",
+      "participants": [
+        "Ребецки М.",
+        "Преполек К."
+      ],
+      "canonical_participants": [
+        "mateusz-rebecki",
+        "kyle-prepolec"
+      ],
+      "start_at": "2026-08-01T14:00:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Ребецки М.",
+          "decimal_odds": 1.18,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Преполек К.",
+          "decimal_odds": 4.1,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-nina-milosevic-hailey-cowan-202608011440",
+      "participants": [
+        "Милосевич Н.",
+        "Кован Х."
+      ],
+      "canonical_participants": [
+        "nina-milosevic",
+        "hailey-cowan"
+      ],
+      "start_at": "2026-08-01T14:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Милосевич Н.",
+          "decimal_odds": 1.24,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Кован Х.",
+          "decimal_odds": 3.5,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-dennis-buzukja-bogdan-grad-202608011500",
+      "participants": [
+        "Бузукджа Д.",
+        "Град Б."
+      ],
+      "canonical_participants": [
+        "dennis-buzukja",
+        "bogdan-grad"
+      ],
+      "start_at": "2026-08-01T15:00:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Бузукджа Д.",
+          "decimal_odds": 2.49,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Град Б.",
+          "decimal_odds": 1.43,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-oban-elliott-michael-oliveira-202608011540",
+      "participants": [
+        "Эллиотт О.",
+        "Оливейра М."
+      ],
+      "canonical_participants": [
+        "oban-elliott",
+        "michael-oliveira"
+      ],
+      "start_at": "2026-08-01T15:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Эллиотт О.",
+          "decimal_odds": 3.5,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Оливейра М.",
+          "decimal_odds": 1.24,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-ludovit-klein-tofiq-musayev-202608011600",
+      "participants": [
+        "Клайн Л.",
+        "Мусаев Т."
+      ],
+      "canonical_participants": [
+        "ludovit-klein",
+        "tofiq-musayev"
+      ],
+      "start_at": "2026-08-01T16:00:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Клайн Л.",
+          "decimal_odds": 1.38,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Мусаев Т.",
+          "decimal_odds": 2.66,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-vlasto-cepo-gilbert-urbina-202608011700",
+      "participants": [
+        "Сепо В.",
+        "Урбина Г."
+      ],
+      "canonical_participants": [
+        "vlasto-cepo",
+        "gilbert-urbina"
+      ],
+      "start_at": "2026-08-01T17:00:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Сепо В.",
+          "decimal_odds": 1.28,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Урбина Г.",
+          "decimal_odds": 3.25,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-dusko-todorovic-robert-valentin-202608011720",
+      "participants": [
+        "Тодорович Д.",
+        "Валентин Р."
+      ],
+      "canonical_participants": [
+        "dusko-todorovic",
+        "robert-valentin"
+      ],
+      "start_at": "2026-08-01T17:20:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Тодорович Д.",
+          "decimal_odds": 2.39,
+          "factor_id": "home"
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "decimal_odds": 50,
+          "factor_id": "draw"
+        },
+        {
+          "key": "away",
+          "label": "Валентин Р.",
+          "decimal_odds": 1.6,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-aleksandar-rakic-marcin-tybura-202608011740",
+      "participants": [
+        "Ракич А.",
+        "Тыбура М."
+      ],
+      "canonical_participants": [
+        "aleksandar-rakic",
+        "marcin-tybura"
+      ],
+      "start_at": "2026-08-01T17:40:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Ракич А.",
+          "decimal_odds": 1.29,
+          "factor_id": "home"
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "decimal_odds": 50,
+          "factor_id": "draw"
+        },
+        {
+          "key": "away",
+          "label": "Тыбура М.",
+          "decimal_odds": 3.7,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-jan-blachowicz-navajo-stirling-202608011800",
+      "participants": [
+        "Блахович Я.",
+        "Стирлинг Н."
+      ],
+      "canonical_participants": [
+        "jan-blachowicz",
+        "navajo-stirling"
+      ],
+      "start_at": "2026-08-01T18:00:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Блахович Я.",
+          "decimal_odds": 3.5,
+          "factor_id": "home"
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "decimal_odds": 50,
+          "factor_id": "draw"
+        },
+        {
+          "key": "away",
+          "label": "Стирлинг Н.",
+          "decimal_odds": 1.32,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-uros-medic-daniel-rodriguez-202608011820",
+      "participants": [
+        "Медич У.",
+        "Родригез Д."
+      ],
+      "canonical_participants": [
+        "uros-medic",
+        "daniel-rodriguez"
+      ],
+      "start_at": "2026-08-01T18:20:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Медич У.",
+          "decimal_odds": 1.29,
+          "factor_id": "home"
+        },
+        {
+          "key": "draw",
+          "label": "Draw",
+          "decimal_odds": 45,
+          "factor_id": "draw"
+        },
+        {
+          "key": "away",
+          "label": "Родригез Д.",
+          "decimal_odds": 3.85,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-mackenzie-dern-gillian-robertson-202608160120",
+      "participants": [
+        "Дёрн М.",
+        "Робертсон Дж."
+      ],
+      "canonical_participants": [
+        "mackenzie-dern",
+        "gillian-robertson"
+      ],
+      "start_at": "2026-08-16T01:20:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Дёрн М.",
+          "decimal_odds": 1.35,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Робертсон Дж.",
+          "decimal_odds": 2.78,
+          "factor_id": "away"
+        }
+      ]
+    },
+    {
+      "bookmaker": "winline",
+      "sport": "ufc",
+      "competition": "UFC",
+      "provider_event_id": "ufc-islam-makhachev-ian-machado-garry-202608160150",
+      "participants": [
+        "Махачев И.",
+        "Мачадо Гэрри И."
+      ],
+      "canonical_participants": [
+        "islam-makhachev",
+        "ian-machado-garry"
+      ],
+      "start_at": "2026-08-16T01:50:00.000Z",
+      "source_url": "https://winline.ru/stavki/sport/mma/ufc",
+      "outcomes": [
+        {
+          "key": "home",
+          "label": "Махачев И.",
+          "decimal_odds": 1.17,
+          "factor_id": "home"
+        },
+        {
+          "key": "away",
+          "label": "Мачадо Гэрри И.",
+          "decimal_odds": 4.25,
+          "factor_id": "away"
+        }
+      ]
+    }
+  ]
+}
