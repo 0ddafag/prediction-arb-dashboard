@@ -5,6 +5,7 @@ const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('.
 const { SPORT_TABS } = require('./domain');
 const { sortTopOpportunities } = require('./opportunities');
 const { fetchLiveSportsbookPolymarketSource } = require('./live-sportsbook-polymarket');
+const { getPersistentState, saveSourceSnapshot } = require('./storage/postgres-store');
 
 function buildInputIndex(items, key) {
   return new Map(items.map((item) => [item[key], item]));
@@ -38,16 +39,38 @@ function buildManualSandboxRows(normalizedMarkets, pairMap) {
     }));
 }
 
+function mergeOverrides(fileOverrides = {}, databaseOverrides = {}) {
+  return {
+    bookmaker_odds: { ...(fileOverrides.bookmaker_odds || {}), ...(databaseOverrides.bookmaker_odds || {}) },
+    pair_prices: { ...(fileOverrides.pair_prices || {}), ...(databaseOverrides.pair_prices || {}) },
+  };
+}
+
+function applySeedOverrides(store, overrides) {
+  const next = JSON.parse(JSON.stringify(store));
+  const bookmakerOdds = overrides.bookmaker_odds || {};
+  const pairPrices = overrides.pair_prices || {};
+  next.bookmaker_market_normalized = (next.bookmaker_market_normalized || []).map((market) => {
+    if (!(market.bookmaker_market_id in bookmakerOdds)) return market;
+    const value = bookmakerOdds[market.bookmaker_market_id];
+    return { ...market, edited_decimal_odds: value, effective_decimal_odds: value, implied_prob: impliedProbability(value) };
+  });
+  next.market_pairs = (next.market_pairs || []).map((pair) => ({ ...pair, ...(pairPrices[pair.pair_id] || {}) }));
+  return next;
+}
+
 async function buildDashboardPayload({
   dataMode = process.env.LIVE_DATA_MODE || 'live',
   liveFetcher = fetchLiveSportsbookPolymarketSource,
   featuredFetcher = fetchFeaturedMarkets,
 } = {}) {
   const persistedStore = readStore();
+  const persistentState = await getPersistentState();
+  const overrides = mergeOverrides(persistedStore.live_overrides, persistentState.live_overrides);
   const mappedIds = persistedStore.market_pairs.map((pair) => pair.poly_market_id);
   const sourcePromise = dataMode === 'seed'
     ? fetchMappedMarkets(mappedIds).then((mappedMarkets) => ({
-      ...persistedStore,
+      ...applySeedOverrides(persistedStore, overrides),
       mapped_markets: mappedMarkets,
       metadata: {
         source: 'seed_store',
@@ -55,7 +78,7 @@ async function buildDashboardPayload({
         matches: persistedStore.market_pairs.length / 2,
       },
     }))
-    : liveFetcher({ overrides: persistedStore.live_overrides || {} });
+    : liveFetcher({ overrides });
 
   const [sourceResult, featuredMarketsResult] = await Promise.allSettled([
     sourcePromise,
@@ -81,6 +104,10 @@ async function buildDashboardPayload({
     live_data_ok: dataMode === 'live' ? sourceOk : null,
     featured_markets_ok: featuredMarketsResult.status === 'fulfilled',
     source_metadata: source.metadata || {},
+    persistence: {
+      postgres_configured: Boolean(process.env.DATABASE_URL),
+      warning: persistentState.warning,
+    },
     warnings: [sourceResult, featuredMarketsResult]
       .filter((result) => result.status === 'rejected')
       .map((result) => result.reason?.message || 'Unknown upstream error'),
@@ -129,6 +156,14 @@ async function buildDashboardPayload({
     updated_at: new Date().toISOString(),
   };
 
+  if (sourceOk) {
+    await saveSourceSnapshot(source.metadata?.source || dataMode, source.metadata || {}, {
+      bookmaker_inputs: source.bookmaker_inputs || [],
+      bookmaker_market_normalized: source.bookmaker_market_normalized || [],
+      market_pairs: source.market_pairs || [],
+    }).catch(() => {});
+  }
+
   return {
     generatedAt: new Date().toISOString(),
     source_mode_adapters: buildBookmakerAdapters(),
@@ -138,6 +173,8 @@ async function buildDashboardPayload({
     },
     summary,
     diagnostics,
+    settings: persistentState.settings,
+    manual_overrides: persistentState.manual_overrides,
     featured_polymarket_markets: featuredMarkets,
     bookmaker_inputs: inputs,
     bookmaker_market_normalized: store.bookmaker_market_normalized,

@@ -13,4 +13,6 @@
 
 `src/storage/postgres-store.js` contains the deterministic transformer from the current `data/store.json` snapshot. Its tests verify that all 24 current Winline MLB markets and mappings survive normalization.
 
-The production process still uses `data/store.json` until a real `DATABASE_URL` is provisioned. Applying the migration or wiring writes without credentials would create fake durability, so this step is intentionally gated on a reachable Postgres instance. No cron schedule is changed by the migration.
+The production process uses `data/store.json` as the source snapshot for seed/manual data and the live connectors for refreshes. When `DATABASE_URL` is configured, the server initializes both migrations on first request and persists dashboard settings, manual row overrides, and source refresh diagnostics in Postgres. If the URL is absent or temporarily unavailable, reads safely fall back to the local store and the API reports the persistence warning in `diagnostics.persistence`.
+
+`GET /api/state`, `POST /api/state/settings`, and `POST /api/state/overrides` expose the durable state contract. The existing `/api/data` response remains backward compatible and includes `settings` and `manual_overrides` in addition to the existing fields. No cron schedule is changed by the migration.

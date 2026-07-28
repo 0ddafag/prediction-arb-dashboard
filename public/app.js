@@ -30,6 +30,7 @@ function bindControls() {
 
   cashInput.addEventListener('input', (event) => {
     state.settings.cashStakeRub = event.target.value;
+    persistSetting('cashStakeRub', event.target.value);
     syncSettingInputs('cashStakeRub', event.target.value, event.target);
     renderSummaryBar();
     renderPairDetail();
@@ -38,6 +39,7 @@ function bindControls() {
 
   fxInput.addEventListener('input', (event) => {
     state.settings.fxRubPerUsd = event.target.value;
+    persistSetting('fxRubPerUsd', event.target.value);
     syncSettingInputs('fxRubPerUsd', event.target.value, event.target);
     renderSummaryBar();
     renderPairDetail();
@@ -54,10 +56,24 @@ async function fetchJson(url, options) {
   return data;
 }
 
+let settingSaveTimer;
+function persistSetting(key, value) {
+  clearTimeout(settingSaveTimer);
+  settingSaveTimer = setTimeout(() => {
+    fetchJson('/api/state/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value }),
+    }).catch(() => {});
+  }, 250);
+}
+
 async function loadDashboard() {
   try {
     const payload = await fetchJson('/api/data');
     state.payload = payload;
+    state.settings.cashStakeRub = payload.settings?.cashStakeRub ?? state.settings.cashStakeRub;
+    state.settings.fxRubPerUsd = payload.settings?.fxRubPerUsd ?? state.settings.fxRubPerUsd;
     if (!state.selectedPairId) {
       state.selectedPairId = payload.arb_snapshots[0]?.pair_id || null;
     }

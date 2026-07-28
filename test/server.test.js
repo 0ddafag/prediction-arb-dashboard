@@ -41,6 +41,25 @@ test('server exposes health and data endpoints', async () => {
   });
 });
 
+test('server exposes safe Postgres-backed state fallback without DATABASE_URL', async () => {
+  await withServer(async (port) => {
+    const stateResponse = await fetch(`http://127.0.0.1:${port}/api/state`);
+    assert.equal(stateResponse.status, 200);
+    const state = await stateResponse.json();
+    assert.deepEqual(state.settings, {});
+    assert.deepEqual(state.live_overrides, { bookmaker_odds: {}, pair_prices: {} });
+
+    const settingResponse = await fetch(`http://127.0.0.1:${port}/api/state/settings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'cashStakeRub', value: '2000' }),
+    });
+    assert.equal(settingResponse.status, 200);
+    const setting = await settingResponse.json();
+    assert.equal(setting.updated.persisted, false);
+  });
+});
+
 test('server exposes filtered and categorized opportunities', async () => {
   await withServer(async (port) => {
     const footballResponse = await fetch(`http://127.0.0.1:${port}/api/opportunities?sport=football`);

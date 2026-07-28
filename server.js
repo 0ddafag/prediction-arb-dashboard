@@ -11,6 +11,11 @@ const {
   createManualInput,
 } = require('./src/storage');
 const { impliedProbability } = require('./src/math');
+const {
+  getPersistentState,
+  upsertSetting,
+  upsertOverride,
+} = require('./src/storage/postgres-store');
 
 const PORT = Number(process.env.PORT || 4173);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -80,6 +85,23 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
     return sendJson(res, 200, { ok: true, service: 'prediction-arb-dashboard' });
   }
 
+  if (req.method === 'GET' && pathname === '/api/state') {
+    return sendJson(res, 200, await getPersistentState());
+  }
+
+  if (req.method === 'POST' && pathname === '/api/state/settings') {
+    const payload = await readBody(req);
+    if (!payload.key) return sendJson(res, 400, { error: 'key is required' });
+    return sendJson(res, 200, { ok: true, updated: await upsertSetting(String(payload.key), payload.value) });
+  }
+
+  if (req.method === 'POST' && pathname === '/api/state/overrides') {
+    const payload = await readBody(req);
+    const rowId = payload.row_id || payload.rowId;
+    const targetType = payload.target_type || payload.targetType || 'dashboard_row';
+    return sendJson(res, 200, { ok: true, updated: await upsertOverride({ rowId, targetType, override: payload.override || {} }) });
+  }
+
   if (req.method === 'GET' && pathname === '/api/data') {
     return sendJson(res, 200, await buildDashboardPayload());
   }
@@ -110,7 +132,8 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
       ? null
       : Number(payload.edited_decimal_odds);
 
-    const updated = (bookmakerMarketId.startsWith('bm-live-fonbet-') || bookmakerMarketId.startsWith('bm-live-winline-'))
+    const isLive = bookmakerMarketId.startsWith('bm-live-fonbet-') || bookmakerMarketId.startsWith('bm-live-winline-');
+    const updated = isLive
       ? updateLiveBookmakerOverride(bookmakerMarketId, edited)
       : updateNormalizedMarket(bookmakerMarketId, (market) => {
         market.edited_decimal_odds = edited;
@@ -119,6 +142,11 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
         market.limit_notes = payload.limit_notes || market.limit_notes || '';
         return market;
       });
+    await upsertOverride({
+      rowId: bookmakerMarketId,
+      targetType: 'bookmaker_market',
+      override: { edited_decimal_odds: edited, limit_notes: payload.limit_notes || null },
+    });
 
     return sendJson(res, 200, { ok: true, updated });
   }
@@ -134,9 +162,11 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
       poly_no_limit_override: toNullableNumber(payload.poly_no_limit_override),
       poly_no_easy_override: toNullableNumber(payload.poly_no_easy_override),
     };
-    const updated = (pairId.startsWith('pair-live-fonbet-') || pairId.startsWith('pair-live-winline-'))
+    const isLive = pairId.startsWith('pair-live-fonbet-') || pairId.startsWith('pair-live-winline-');
+    const updated = isLive
       ? updateLivePairOverride(pairId, values)
       : updateMarketPair(pairId, (pair) => ({ ...pair, ...values }));
+    await upsertOverride({ rowId: pairId, targetType: 'market_pair', override: values });
 
     return sendJson(res, 200, { ok: true, updated });
   }
