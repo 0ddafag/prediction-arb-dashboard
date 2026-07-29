@@ -124,12 +124,12 @@ async function refreshWinline() {
   const button = document.getElementById('winlineRefreshButton');
   const status = document.getElementById('winlineRefreshStatus');
   button.disabled = true;
-  button.textContent = 'Refreshing Winline…';
+  button.textContent = 'Refreshing books…';
   status.dataset.status = 'running';
   status.textContent = 'running';
 
   try {
-    const response = await fetchJson('/api/winline/refresh', { method: 'POST' });
+    const response = await fetchJson('/api/books/refresh', { method: 'POST' });
     if (response.status === 'queued' || response.status === 'accepted') {
       status.dataset.status = response.status;
       status.textContent = response.status === 'queued' ? 'queued — waiting for VPS worker' : 'accepted — waiting for collector';
@@ -149,7 +149,7 @@ async function refreshWinline() {
     status.textContent = notConfigured ? 'not configured' : `error — ${error.message}`;
   } finally {
     button.disabled = false;
-    button.textContent = 'Refresh Winline';
+    button.textContent = 'Refresh books';
   }
 }
 
@@ -275,7 +275,11 @@ function renderSummaryBar() {
     }).join('')
     : '';
   const warnings = state.payload?.diagnostics?.warnings || [];
-  const sourceState = warnings.length ? `Winline unavailable: ${warnings.join('; ')}` : `Winline snapshot: ${state.payload?.summary?.source_captured_at || 'not captured'}`;
+  const sourceStatus = state.payload?.diagnostics?.source_status || {};
+  const sourceState = Object.entries(sourceStatus).map(([source, details]) => {
+    const captured = details.metadata?.captured_at || 'not captured';
+    return `${source}: ${details.status}${details.status === 'ok' ? ` (${captured})` : ` — ${details.error || 'unavailable'}`}`;
+  }).join(' · ') || (warnings.length ? warnings.join('; ') : 'book snapshots: not captured');
   document.getElementById('winlineFeedStatus').textContent = sourceState;
   document.getElementById('summaryBar').innerHTML = `
     <span class="summary-pill">Matches ${matches}</span>

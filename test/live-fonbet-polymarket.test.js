@@ -4,6 +4,7 @@ const {
   buildExactLiveMatches,
   buildLiveCollections,
   fetchLiveFonbetPolymarketSource,
+  fetchFonbetSnapshotCandidates,
 } = require('../src/live-fonbet-polymarket');
 
 function polyEvent({ id, title, gameStartTime, outcomes }) {
@@ -148,4 +149,18 @@ test('live source fetches MLB and UFC then enriches only exact matched moneyline
   assert.equal(source.market_pairs.length, 4);
   assert.equal(source.mapped_markets.length, 2);
   assert.equal(source.mapped_markets.every((market) => market.token_price_views.length === 2), true);
+});
+
+test('Fonbet snapshot reader validates freshness and preserves provider ids', async () => {
+  const candidates = await fetchFonbetSnapshotCandidates({
+    getSnapshot: async () => ({
+      status: 'ok',
+      captured_at: '2026-08-01T12:00:00.000Z',
+      raw: { captured_at: '2026-08-01T12:00:00.000Z', candidates: fonbetCandidates },
+    }),
+    maxAgeMs: Number.MAX_SAFE_INTEGER,
+  });
+  assert.equal(candidates.length, 3);
+  assert.deepEqual(candidates.map((candidate) => candidate.provider_event_id), [101, 202, 303]);
+  assert.equal(candidates.every((candidate) => candidate.source_mode === 'snapshot_feed'), true);
 });

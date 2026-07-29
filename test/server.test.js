@@ -202,7 +202,7 @@ test('server queues manual Winline refresh in Neon when webhook is absent', asyn
       assert.deepEqual(await response.json(), {
         ok: true,
         status: 'queued',
-        message: 'Winline refresh queued',
+        message: 'Book refresh queued',
         request_id: 42,
         request: { id: 42, status: 'pending', requested_at: '2026-07-29T12:00:00.000Z' },
       });

@@ -1,6 +1,7 @@
 const aliases = require('../config/participant-aliases.json');
 const fonbet = require('./connectors/bookmakers/fonbet');
 const { fetchSportsEvents, enrichMarket } = require('./polymarket');
+const { getLatestSourceSnapshot } = require('./storage/postgres-store');
 
 function parseMaybeJsonArray(value) {
   if (Array.isArray(value)) return value;
@@ -193,10 +194,37 @@ async function defaultFetchCandidates() {
   return fonbet.extractMainWinnerCandidates(line);
 }
 
+async function fetchFonbetSnapshotCandidates({
+  fetchJson,
+  snapshotUrl = null,
+  maxAgeMs = Number(process.env.FONBET_SNAPSHOT_MAX_AGE_MS || 15 * 60 * 1000),
+  getSnapshot = getLatestSourceSnapshot,
+} = {}) {
+  const databaseSnapshot = await getSnapshot('fonbet');
+  let payload = databaseSnapshot?.raw;
+  if (!payload && fetchJson) payload = await fetchJson('test://fonbet-snapshot');
+  if (!databaseSnapshot && !fetchJson) throw new Error('Fonbet snapshot is missing from Neon');
+  if (databaseSnapshot && databaseSnapshot.status !== 'ok') throw new Error(databaseSnapshot.error || 'Fonbet snapshot is in error state');
+  const capturedAt = databaseSnapshot?.captured_at || payload?.captured_at;
+  if (!capturedAt || !Number.isFinite(Date.parse(capturedAt))) throw new Error('Fonbet snapshot has no valid captured_at');
+  if (databaseSnapshot && Date.now() - Date.parse(capturedAt) > maxAgeMs) throw new Error(`Fonbet snapshot is stale (captured_at=${capturedAt})`);
+  if (!payload || !Array.isArray(payload.candidates)) throw new Error('Fonbet snapshot payload is missing candidates[]');
+  const candidates = payload.candidates.filter((candidate) => (
+    candidate?.venue === 'fonbet'
+    && ['baseball', 'ufc'].includes(candidate.sport)
+    && Array.isArray(candidate.participants)
+    && Array.isArray(candidate.outcomes)
+    && Date.parse(candidate.start_at)
+  )).map((candidate) => ({ ...candidate, source_mode: 'snapshot_feed' }));
+  Object.defineProperty(candidates, 'feed_captured_at', { value: capturedAt, enumerable: false });
+  Object.defineProperty(candidates, 'snapshot_url', { value: databaseSnapshot ? 'postgres:live_source_snapshots/fonbet' : snapshotUrl, enumerable: false });
+  return candidates;
+}
+
 async function fetchLiveFonbetPolymarketSource({
   now = new Date(),
   overrides = {},
-  fetchCandidates = defaultFetchCandidates,
+  fetchCandidates = fetchFonbetSnapshotCandidates,
   fetchEvents = fetchSportsEvents,
   enrich = enrichMarket,
 } = {}) {
@@ -229,8 +257,9 @@ async function fetchLiveFonbetPolymarketSource({
     ...collections,
     mapped_markets: mappedMarkets,
     metadata: {
-      source: 'fonbet_public_client_line+polymarket_gamma_clob',
-      captured_at: capturedAt,
+      source: fonbetCandidates.snapshot_url ? 'fonbet_snapshot_feed+polymarket_gamma_clob' : 'fonbet_public_client_line+polymarket_gamma_clob',
+      captured_at: fonbetCandidates.feed_captured_at || capturedAt,
+      snapshot_url: fonbetCandidates.snapshot_url || null,
       candidates: fonbetCandidates.length,
       matches: matches.length,
       matches_by_sport: bySport,
@@ -240,6 +269,8 @@ async function fetchLiveFonbetPolymarketSource({
 
 module.exports = {
   canonicalParticipant,
+  defaultFetchCandidates,
+  fetchFonbetSnapshotCandidates,
   buildExactLiveMatches,
   buildLiveCollections,
   fetchLiveFonbetPolymarketSource,

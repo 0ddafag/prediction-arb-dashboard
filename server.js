@@ -90,7 +90,7 @@ async function triggerWinlineCollector() {
         payload: {
           ok: true,
           status: 'queued',
-          message: 'Winline refresh queued',
+          message: 'Book refresh queued',
           request_id: request?.id,
           request: request ? {
             id: request.id,
@@ -164,7 +164,7 @@ async function triggerWinlineCollector() {
         payload: {
           ok: true,
           status: 'queued',
-          message: 'Winline refresh queued after collector webhook failure',
+          message: 'Book refresh queued after collector webhook failure',
           request_id: request?.id,
           request: request ? {
             id: request.id,
@@ -221,7 +221,7 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
     return sendJson(res, 200, await buildDashboardPayload());
   }
 
-  if (req.method === 'POST' && pathname === '/api/winline/refresh') {
+  if (req.method === 'POST' && (pathname === '/api/winline/refresh' || pathname === '/api/books/refresh')) {
     const result = await triggerWinlineCollector();
     return sendJson(res, result.status, result.payload);
   }

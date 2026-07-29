@@ -3,7 +3,11 @@ const { fetchLiveWinlinePolymarketSource } = require('./live-winline-polymarket'
 
 function mergeSources(results) {
   const fulfilled = results.filter((result) => result.status === 'fulfilled').map((result) => result.value);
-  const warnings = results.filter((result) => result.status === 'rejected').map((result) => result.reason?.message || 'Unknown live source error');
+  const rejected = results.filter((result) => result.status === 'rejected');
+  const warnings = rejected.map((result) => `${result.source || result.reason?.source || 'unknown'}: ${result.reason?.message || 'Unknown live source error'}`);
+  const sourceStatus = {};
+  for (const source of fulfilled) sourceStatus[source.metadata?.bookmaker || source.metadata?.source?.split('_')[0] || 'unknown'] = { status: 'ok', metadata: source.metadata || {} };
+  for (const result of rejected) sourceStatus[result.source || result.reason?.source || 'unknown'] = { status: 'error', error: result.reason?.message || 'Unknown live source error' };
   const mappedById = new Map();
   for (const source of fulfilled) {
     for (const market of source.mapped_markets || []) mappedById.set(String(market.id), market);
@@ -25,6 +29,7 @@ function mergeSources(results) {
       captured_at: captured[captured.length - 1] || new Date().toISOString(),
       sources: fulfilled.map((source) => source.metadata || {}),
       warnings,
+      source_status: sourceStatus,
       matches_by_sport: matchesBySport,
       matches: Object.values(matchesBySport).reduce((sum, count) => sum + count, 0),
     },
@@ -32,9 +37,9 @@ function mergeSources(results) {
 }
 
 async function fetchLiveSportsbookPolymarketSource(options = {}) {
-  const results = await Promise.allSettled([
-    fetchLiveFonbetPolymarketSource(options),
-    fetchLiveWinlinePolymarketSource(options),
+  const results = await Promise.all([
+    Promise.resolve(fetchLiveFonbetPolymarketSource(options)).then((value) => ({ status: 'fulfilled', value, source: 'fonbet' }), (reason) => ({ status: 'rejected', reason, source: 'fonbet' })),
+    Promise.resolve(fetchLiveWinlinePolymarketSource(options)).then((value) => ({ status: 'fulfilled', value, source: 'winline' }), (reason) => ({ status: 'rejected', reason, source: 'winline' })),
   ]);
   return mergeSources(results);
 }

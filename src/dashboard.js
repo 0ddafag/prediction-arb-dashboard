@@ -4,7 +4,7 @@ const { fetchMappedMarkets, fetchFeaturedMarkets } = require('./polymarket');
 const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('./bookmaker');
 const { SPORT_TABS } = require('./domain');
 const { sortTopOpportunities } = require('./opportunities');
-const { fetchLiveWinlinePolymarketSource } = require('./live-winline-polymarket');
+const { fetchLiveSportsbookPolymarketSource } = require('./live-sportsbook-polymarket');
 const { getPersistentState } = require('./storage/postgres-store');
 
 function buildInputIndex(items, key) {
@@ -61,7 +61,7 @@ function applySeedOverrides(store, overrides) {
 
 async function buildDashboardPayload({
   dataMode = process.env.LIVE_DATA_MODE || 'live',
-  liveFetcher = fetchLiveWinlinePolymarketSource,
+  liveFetcher = fetchLiveSportsbookPolymarketSource,
   featuredFetcher = fetchFeaturedMarkets,
 } = {}) {
   const persistedStore = readStore();
@@ -104,6 +104,7 @@ async function buildDashboardPayload({
     live_data_ok: dataMode === 'live' ? sourceOk : null,
     featured_markets_ok: featuredMarketsResult.status === 'fulfilled',
     source_metadata: source.metadata || {},
+    source_status: source.metadata?.source_status || {},
     persistence: {
       postgres_configured: Boolean(process.env.DATABASE_URL),
       warning: persistentState.warning,

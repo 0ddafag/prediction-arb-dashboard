@@ -20,21 +20,32 @@ function parseResult(stdout) {
   return stdout ? { output: String(stdout).slice(-8_000) } : null;
 }
 
-async function runRequest(request) {
+async function runRequest(request, { exec = execFileAsync, complete = completeWinlineRefresh } = {}) {
   console.log(`[${WORKER_ID}] running request ${request.id}`);
   try {
-    const { stdout, stderr } = await execFileAsync('npm', ['run', 'winline:feed'], {
-      cwd: process.cwd(),
-      env: process.env,
-      maxBuffer: 2 * 1024 * 1024,
+    const sources = {};
+    let failed = false;
+    for (const source of ['winline', 'fonbet']) {
+      try {
+        const { stdout, stderr } = await exec('npm', ['run', `${source}:feed`], {
+          cwd: process.cwd(),
+          env: process.env,
+          maxBuffer: 2 * 1024 * 1024,
+        });
+        sources[source] = { ...parseResult(stdout), stderr: stderr?.trim() || undefined };
+      } catch (error) {
+        failed = true;
+        sources[source] = { ...parseResult(error.stdout), status: 'error', error: String(error.stderr || error.message).trim().slice(-8_000) };
+      }
+    }
+    await complete(request.id, failed ? 'failed' : 'succeeded', {
+      result: { sources },
+      error: failed ? 'One or more source feeds failed' : null,
     });
-    const result = parseResult(stdout);
-    await completeWinlineRefresh(request.id, 'succeeded', { result });
-    console.log(`[${WORKER_ID}] request ${request.id} succeeded${stderr ? `: ${stderr.trim().slice(-500)}` : ''}`);
+    console.log(`[${WORKER_ID}] request ${request.id} ${failed ? 'failed' : 'succeeded'}`);
   } catch (error) {
-    const result = parseResult(error.stdout);
-    const message = String(error.stderr || error.message || 'Winline feed failed').trim().slice(-8_000);
-    await completeWinlineRefresh(request.id, 'failed', { result, error: message });
+    const message = String(error.message || 'Refresh worker failed').trim().slice(-8_000);
+    await complete(request.id, 'failed', { error: message });
     console.error(`[${WORKER_ID}] request ${request.id} failed: ${message}`);
   }
 }
