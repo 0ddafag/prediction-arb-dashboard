@@ -11,16 +11,7 @@ const {
   createManualInput,
 } = require('./src/storage');
 const { impliedProbability } = require('./src/math');
-const { fetchWinlineCandidates } = require('./src/live-winline-polymarket');
-const {
-  getPersistentState,
-  upsertSetting,
-  upsertOverride,
-  saveSourceSnapshot,
-} = require('./src/storage/postgres-store');
-
-let winlineUpdatePromise = null;
-let lastWinlineUpdateAt = 0;
+const { getPersistentState, upsertSetting, upsertOverride } = require('./src/storage/postgres-store');
 
 const PORT = Number(process.env.PORT || 4173);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -110,42 +101,6 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
   if (req.method === 'GET' && pathname === '/api/data') {
     return sendJson(res, 200, await buildDashboardPayload());
   }
-
-  if (req.method === 'POST' && pathname === '/api/winline-feed/update') {
-    const now = Date.now();
-    if (winlineUpdatePromise) return sendJson(res, 202, { ok: true, status: 'in_progress' });
-    if (now - lastWinlineUpdateAt < 30_000) {
-      return sendJson(res, 429, { error: 'Winline feed was updated recently; try again in a few seconds.' });
-    }
-    lastWinlineUpdateAt = now;
-    winlineUpdatePromise = (async () => {
-      const capturedAt = new Date().toISOString();
-      const candidates = await fetchWinlineCandidates({ now: new Date(capturedAt) });
-      const payload = {
-        schema_version: 1,
-        source: 'winline_browser_rendered_dom_snapshot',
-        captured_at: capturedAt,
-        bookmaker: 'winline',
-        sports: [...new Set(candidates.map((candidate) => candidate.sport))].sort(),
-        candidate_count: candidates.length,
-        candidates,
-      };
-      const persisted = await saveSourceSnapshot(payload.source, {
-        candidate_count: candidates.length,
-        sports: payload.sports,
-      }, payload);
-      if (!persisted.persisted) {
-        fs.writeFileSync(path.join(__dirname, 'data', 'live-winline.json'), `${JSON.stringify(payload, null, 2)}\n`);
-      }
-      return { ok: true, captured_at: capturedAt, candidate_count: candidates.length, sports: payload.sports, persisted: persisted.persisted };
-    })();
-    try {
-      return sendJson(res, 200, await winlineUpdatePromise);
-    } finally {
-      winlineUpdatePromise = null;
-    }
-  }
-
   if (req.method === 'GET' && pathname === '/api/opportunities') {
     return sendJson(res, 200, await buildOpportunitiesPayload({
       sport: searchParams.get('sport'),

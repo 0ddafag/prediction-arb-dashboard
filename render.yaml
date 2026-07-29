@@ -4,10 +4,12 @@ services:
     runtime: node
     plan: starter
     autoDeploy: true
-    buildCommand: npm install && PLAYWRIGHT_BROWSERS_PATH=0 npx playwright install chromium
+    buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
+      - key: DATABASE_URL
+        sync: false
       - key: NODE_VERSION
         value: 22
       - key: POLYMARKET_TIMEOUT_MS

@@ -23,7 +23,6 @@ function bindControls() {
   const fxInput = document.getElementById('fxRubPerUsd');
 
   document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
-  document.getElementById('updateWinlineButton').addEventListener('click', updateWinlineFeed);
   document.getElementById('toggleSecondary').addEventListener('click', () => {
     state.secondaryOpen = !state.secondaryOpen;
     renderSecondaryVisibility();
@@ -117,29 +116,6 @@ async function refreshDashboard() {
   } finally {
     button.disabled = false;
     button.textContent = 'Refresh';
-  }
-}
-
-async function updateWinlineFeed() {
-  const button = document.getElementById('updateWinlineButton');
-  const status = document.getElementById('winlineFeedStatus');
-  button.disabled = true;
-  button.textContent = 'Updating…';
-  status.textContent = 'Fetching current Winline odds in the server browser…';
-  try {
-    const result = await fetchJson('/api/winline-feed/update', { method: 'POST' });
-    if (result.status === 'in_progress') {
-      status.textContent = 'Winline update is already running. Try Refresh again in a moment.';
-      return;
-    }
-    status.textContent = `Winline updated: ${result.candidate_count} candidates (${(result.sports || []).join(', ')}) at ${new Date(result.captured_at).toLocaleString('en-GB')}. Refreshing matches…`;
-    await loadDashboard();
-    status.textContent += ' Done.';
-  } catch (error) {
-    status.textContent = `Winline update failed: ${error.message}`;
-  } finally {
-    button.disabled = false;
-    button.textContent = 'Update Winline feed';
   }
 }
 
@@ -264,6 +240,9 @@ function renderSummaryBar() {
       return `<span class="summary-pill category-${category}">${opportunityCategoryLabel(category)} ${count}</span>`;
     }).join('')
     : '';
+  const warnings = state.payload?.diagnostics?.warnings || [];
+  const sourceState = warnings.length ? `Winline unavailable: ${warnings.join('; ')}` : `Winline snapshot: ${state.payload?.summary?.source_captured_at || 'not captured'}`;
+  document.getElementById('winlineFeedStatus').textContent = sourceState;
   document.getElementById('summaryBar').innerHTML = `
     <span class="summary-pill">Matches ${matches}</span>
     <span class="summary-pill">Rows ${rows.length}</span>

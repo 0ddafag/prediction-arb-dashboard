@@ -4,8 +4,8 @@ const { fetchMappedMarkets, fetchFeaturedMarkets } = require('./polymarket');
 const { buildBookmakerAdapters, getBookmakerLabel, listBookmakers } = require('./bookmaker');
 const { SPORT_TABS } = require('./domain');
 const { sortTopOpportunities } = require('./opportunities');
-const { fetchLiveSportsbookPolymarketSource } = require('./live-sportsbook-polymarket');
-const { getPersistentState, saveSourceSnapshot } = require('./storage/postgres-store');
+const { fetchLiveWinlinePolymarketSource } = require('./live-winline-polymarket');
+const { getPersistentState } = require('./storage/postgres-store');
 
 function buildInputIndex(items, key) {
   return new Map(items.map((item) => [item[key], item]));
@@ -61,14 +61,14 @@ function applySeedOverrides(store, overrides) {
 
 async function buildDashboardPayload({
   dataMode = process.env.LIVE_DATA_MODE || 'live',
-  liveFetcher = fetchLiveSportsbookPolymarketSource,
+  liveFetcher = fetchLiveWinlinePolymarketSource,
   featuredFetcher = fetchFeaturedMarkets,
 } = {}) {
   const persistedStore = readStore();
   const persistentState = await getPersistentState();
   const overrides = mergeOverrides(persistedStore.live_overrides, persistentState.live_overrides);
   const mappedIds = persistedStore.market_pairs.map((pair) => pair.poly_market_id);
-  const sourcePromise = dataMode === 'seed'
+  const sourcePromise = dataMode === 'seed' && process.env.NODE_ENV === 'test'
     ? fetchMappedMarkets(mappedIds).then((mappedMarkets) => ({
       ...applySeedOverrides(persistedStore, overrides),
       mapped_markets: mappedMarkets,
@@ -155,14 +155,6 @@ async function buildDashboardPayload({
     best_net_edge_limit: arbSnapshots[0]?.net_edge_limit ?? null,
     updated_at: new Date().toISOString(),
   };
-
-  if (sourceOk) {
-    await saveSourceSnapshot(source.metadata?.source || dataMode, source.metadata || {}, {
-      bookmaker_inputs: source.bookmaker_inputs || [],
-      bookmaker_market_normalized: source.bookmaker_market_normalized || [],
-      market_pairs: source.market_pairs || [],
-    }).catch(() => {});
-  }
 
   return {
     generatedAt: new Date().toISOString(),

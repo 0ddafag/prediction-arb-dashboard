@@ -22,3 +22,12 @@ test('Postgres configuration is enabled only by a non-empty DATABASE_URL', () =>
   assert.equal(isPostgresConfigured({ DATABASE_URL: '' }), false);
   assert.equal(isPostgresConfigured({ DATABASE_URL: 'postgresql://example.invalid/db' }), true);
 });
+
+test('Neon migration guards legacy target_type reads for partial legacy schemas', () => {
+  const migration = fs.readFileSync(path.join(__dirname, '..', 'migrations', '003_neon_winline_pipeline.sql'), 'utf8');
+  assert.match(migration, /column_name = 'target_type'/);
+  assert.match(migration, /column_name = 'target_id'/);
+  assert.match(migration, /EXECUTE/);
+  assert.match(migration, /jsonb_object_agg\(field_name, value\)/);
+  assert.match(migration, /NULL::text/);
+});

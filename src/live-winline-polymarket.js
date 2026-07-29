@@ -1,7 +1,6 @@
 const aliases = require('../config/participant-aliases.json');
 const { fetchSportsEvents, enrichMarket } = require('./polymarket');
 const { execFileSync } = require('child_process');
-const fs = require('fs');
 const path = require('path');
 const { getLatestSourceSnapshot } = require('./storage/postgres-store');
 
@@ -9,8 +8,6 @@ const WINLINE_URLS = Object.freeze({
   baseball: 'https://winline.ru/stavki/sport/bejsbol/ssha/mlb',
   ufc: 'https://winline.ru/stavki/sport/mma/ufc',
 });
-
-const DEFAULT_WINLINE_SNAPSHOT_URL = 'https://raw.githubusercontent.com/0ddafag/prediction-arb-dashboard/winline-feed/data/live-winline.json';
 
 function canonicalParticipant(sport, name) {
   return aliases[sport]?.[String(name || '').trim()] || null;
@@ -150,51 +147,32 @@ async function fetchWinlineCandidates({ now = new Date(), fetchText = fetchRende
 }
 
 async function fetchWinlineSnapshotCandidates({
-  snapshotUrl = process.env.WINLINE_SNAPSHOT_URL || DEFAULT_WINLINE_SNAPSHOT_URL,
   fetchJson,
+  snapshotUrl = null,
+  maxAgeMs = Number(process.env.WINLINE_SNAPSHOT_MAX_AGE_MS || 15 * 60 * 1000),
 } = {}) {
-  const load = fetchJson || (async (url) => {
-    const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
-    if (!response.ok) throw new Error(`Winline snapshot HTTP ${response.status} from ${url}`);
-    return response.json();
-  });
-  const databaseSnapshot = await getLatestSourceSnapshot('winline_browser_rendered_dom_snapshot');
-  const payload = databaseSnapshot?.raw?.candidates
-    ? { ...databaseSnapshot.raw, captured_at: databaseSnapshot.captured_at || databaseSnapshot.raw.captured_at }
-    : fs.existsSync(path.join(__dirname, '..', 'data', 'live-winline.json'))
-      ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'live-winline.json'), 'utf8'))
-      : await load(snapshotUrl);
-  if (!payload || !Array.isArray(payload.candidates)) {
-    throw new Error('Winline snapshot payload is missing candidates[]');
-  }
+  const databaseSnapshot = await getLatestSourceSnapshot('winline');
+  let payload = databaseSnapshot?.raw;
+  if (!payload && fetchJson) payload = await fetchJson('test://winline-snapshot');
+  if (!databaseSnapshot && !fetchJson) throw new Error('Winline snapshot is missing from Neon');
+  if (databaseSnapshot && databaseSnapshot.status !== 'ok') throw new Error(databaseSnapshot.error || 'Winline snapshot is in error state');
+  const capturedAt = databaseSnapshot?.captured_at || payload?.captured_at;
+  if (!capturedAt || !Number.isFinite(Date.parse(capturedAt))) throw new Error('Winline snapshot has no valid captured_at');
+  if (databaseSnapshot && Date.now() - Date.parse(capturedAt) > maxAgeMs) throw new Error(`Winline snapshot is stale (captured_at=${capturedAt})`);
+  if (!payload || !Array.isArray(payload.candidates)) throw new Error('Winline snapshot payload is missing candidates[]');
   const candidates = payload.candidates.filter((candidate) => (
     candidate?.bookmaker === 'winline'
     && WINLINE_URLS[candidate.sport]
     && Array.isArray(candidate.canonical_participants)
     && Array.isArray(candidate.outcomes)
     && Date.parse(candidate.start_at)
-  )).map((candidate) => ({
-    ...candidate,
-    source_mode: 'snapshot_feed',
-    source_url: candidate.source_url || snapshotUrl,
-  }));
-  Object.defineProperty(candidates, 'feed_captured_at', {
-    value: payload.captured_at || null,
-    enumerable: false,
-  });
-  Object.defineProperty(candidates, 'snapshot_url', {
-    value: databaseSnapshot
-      ? 'postgres:source_snapshots/winline_browser_rendered_dom_snapshot'
-      : fs.existsSync(path.join(__dirname, '..', 'data', 'live-winline.json'))
-        ? 'local:data/live-winline.json'
-        : snapshotUrl,
-    enumerable: false,
-  });
+  )).map((candidate) => ({ ...candidate, source_mode: 'snapshot_feed' }));
+  Object.defineProperty(candidates, 'feed_captured_at', { value: capturedAt, enumerable: false });
+  Object.defineProperty(candidates, 'snapshot_url', { value: databaseSnapshot ? 'postgres:live_source_snapshots/winline' : snapshotUrl, enumerable: false });
   return candidates;
 }
 
 async function fetchDefaultWinlineCandidates(options = {}) {
-  if (process.env.WINLINE_LIVE_MODE === 'browser') return fetchWinlineCandidates(options);
   return fetchWinlineSnapshotCandidates(options);
 }
 
@@ -247,6 +225,10 @@ function basisRiskFor(sport, outcomes) {
   return 'RULES_MISMATCH';
 }
 
+function stableLiveRowId({ bookmaker = 'winline', providerEventId, factorId, polyMarketId, polyOutcome }) {
+  return [bookmaker, providerEventId, factorId, polyMarketId, polyOutcome].map((value) => String(value)).join(':');
+}
+
 function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), overrides = {} } = {}) {
   const bookmakerInputs = [];
   const normalizedMarkets = [];
@@ -264,10 +246,11 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
       const sameIndex = market.canonical_outcomes.indexOf(canonicalOutcome);
       if (sameIndex < 0) continue;
       const oppositeIndex = sameIndex === 0 ? 1 : 0;
-      const suffix = `${candidate.provider_event_id}-${outcome.factor_id}`;
-      const inputId = `live-winline-${suffix}`;
-      const bookmakerMarketId = `bm-live-winline-${suffix}`;
-      const pairId = `pair-live-winline-${suffix}`;
+      const polyOutcome = market.canonical_outcomes[oppositeIndex];
+      const rowId = stableLiveRowId({ providerEventId: candidate.provider_event_id, factorId: outcome.factor_id, polyMarketId: market.id, polyOutcome });
+      const inputId = `live-winline-${rowId}`;
+      const bookmakerMarketId = `bm-live-winline-${rowId}`;
+      const pairId = `pair-live-winline-${rowId}`;
       const editedOdds = bookmakerOverrides[bookmakerMarketId];
       const pairPriceOverride = pairOverrides[pairId] || {};
       const odds = editedOdds == null ? outcome.decimal_odds : Number(editedOdds);
@@ -291,6 +274,7 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
       normalizedMarkets.push({
         bookmaker_market_id: bookmakerMarketId,
         input_id: inputId,
+        row_id: rowId,
         bookmaker_key: 'winline',
         event_title: candidate.participants.join(' — '),
         event_start_at: candidate.start_at,
@@ -312,6 +296,7 @@ function buildLiveCollections(matches, { capturedAt = new Date().toISOString(), 
       marketPairs.push({
         pair_id: pairId,
         bookmaker_market_id: bookmakerMarketId,
+        row_id: rowId,
         poly_market_id: String(market.id),
         poly_outcome_index: oppositeIndex,
         pairing_mode: 'explicit_alias_exact',
@@ -384,13 +369,13 @@ async function fetchLiveWinlinePolymarketSource({
 
 module.exports = {
   WINLINE_URLS,
-  DEFAULT_WINLINE_SNAPSHOT_URL,
   parseWinlineTime,
   parseWinlineText,
   fetchWinlineCandidates,
   fetchWinlineSnapshotCandidates,
   fetchDefaultWinlineCandidates,
   buildExactLiveMatches,
+  stableLiveRowId,
   buildLiveCollections,
   fetchLiveWinlinePolymarketSource,
 };

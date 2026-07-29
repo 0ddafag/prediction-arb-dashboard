@@ -22,7 +22,7 @@ async function initializePostgres(env = process.env) {
   if (!database) return false;
   if (!initialization) {
     initialization = (async () => {
-      for (const file of ['001_core.sql', '002_dashboard_state.sql']) {
+      for (const file of ['001_core.sql', '002_dashboard_state.sql', '003_neon_winline_pipeline.sql']) {
         await database.query(fs.readFileSync(path.join(__dirname, '..', '..', 'migrations', file), 'utf8'));
       }
       return true;
@@ -45,21 +45,16 @@ async function getPersistentState(env = process.env) {
     await initializePostgres(env);
     const [settings, overrides, opportunities] = await Promise.all([
       database.query('SELECT key, value FROM dashboard_settings'),
-      database.query('SELECT target_type, target_id, field_name, value FROM manual_overrides'),
+      database.query('SELECT row_id, bookmaker_key, provider_event_id, market_key, poly_market_id, poly_outcome, override FROM manual_overrides'),
       database.query('SELECT * FROM opportunities ORDER BY updated_at DESC'),
     ]);
     const state = emptyPersistentState();
     for (const row of settings.rows) state.settings[row.key] = row.value;
     for (const row of overrides.rows) {
-      state.manual_overrides[row.target_id] ||= { row_id: row.target_id, target_type: row.target_type, override: {} };
-      state.manual_overrides[row.target_id].override[row.field_name] = row.value;
-      if (row.target_type === 'bookmaker_market' && row.field_name === 'edited_decimal_odds') {
-        state.live_overrides.bookmaker_odds[row.target_id] = row.value;
-      }
-      if (row.target_type === 'market_pair') {
-        state.live_overrides.pair_prices[row.target_id] ||= {};
-        state.live_overrides.pair_prices[row.target_id][row.field_name] = row.value;
-      }
+      state.manual_overrides[row.row_id] = row;
+      if (row.override?.edited_decimal_odds != null) state.live_overrides.bookmaker_odds[row.row_id] = row.override.edited_decimal_odds;
+      const pairPrice = Object.fromEntries(Object.entries(row.override || {}).filter(([key]) => key.startsWith('poly_no_')));
+      if (Object.keys(pairPrice).length) state.live_overrides.pair_prices[row.row_id] = pairPrice;
     }
     state.opportunities = opportunities.rows;
     return state;
@@ -80,43 +75,33 @@ async function upsertSetting(key, value, env = process.env) {
   return { key, value, persisted: true };
 }
 
-async function upsertOverride({ rowId, targetType = 'dashboard_row', override = {} }, env = process.env) {
+async function upsertOverride({ rowId, targetType = 'dashboard_row', override = {}, bookmakerKey = null, providerEventId = null, marketKey = null, polyMarketId = null, polyOutcome = null }, env = process.env) {
   if (!rowId) throw new Error('row_id is required');
   const database = getPool(env);
   if (!database) return { row_id: rowId, target_type: targetType, override, persisted: false };
   await initializePostgres(env);
-  const client = await database.connect();
-  try {
-    await client.query('BEGIN');
-    await client.query('DELETE FROM manual_overrides WHERE target_type = $1 AND target_id = $2', [targetType, rowId]);
-    for (const [fieldName, value] of Object.entries(override || {})) {
-      if (value !== undefined && value !== null && value !== '') {
-        await client.query(
-          `INSERT INTO manual_overrides (target_type, target_id, field_name, value)
-           VALUES ($1, $2, $3, $4::jsonb)
-           ON CONFLICT (target_type, target_id, field_name)
-           DO UPDATE SET value = EXCLUDED.value, created_at = now()`,
-          [targetType, rowId, fieldName, JSON.stringify(value)]
-        );
-      }
-    }
-    await client.query('COMMIT');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+  await database.query(
+    `INSERT INTO manual_overrides (row_id, bookmaker_key, provider_event_id, market_key, poly_market_id, poly_outcome, override)
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+     ON CONFLICT (row_id) DO UPDATE SET bookmaker_key = EXCLUDED.bookmaker_key,
+       provider_event_id = EXCLUDED.provider_event_id, market_key = EXCLUDED.market_key,
+       poly_market_id = EXCLUDED.poly_market_id, poly_outcome = EXCLUDED.poly_outcome,
+       override = EXCLUDED.override, updated_at = now()`,
+    [rowId, bookmakerKey, providerEventId, marketKey || targetType, polyMarketId, polyOutcome, JSON.stringify(override || {})]
+  );
   return { row_id: rowId, target_type: targetType, override, persisted: true };
 }
 
-async function saveSourceSnapshot(source, summary, raw, env = process.env) {
+async function saveSourceSnapshot(source, summary, raw, env = process.env, details = {}) {
   const database = getPool(env);
   if (!database) return { persisted: false };
   await initializePostgres(env);
   await database.query(
-    'INSERT INTO source_snapshots (source, captured_at, summary, raw) VALUES ($1, now(), $2::jsonb, $3::jsonb)',
-    [source, JSON.stringify(summary || {}), JSON.stringify(raw || {})]
+    `INSERT INTO live_source_snapshots (source, captured_at, status, error, summary, raw)
+     VALUES ($1, COALESCE($2::timestamptz, now()), $3, $4, $5::jsonb, $6::jsonb)
+     ON CONFLICT (source) DO UPDATE SET captured_at = EXCLUDED.captured_at, status = EXCLUDED.status,
+       error = EXCLUDED.error, summary = EXCLUDED.summary, raw = EXCLUDED.raw, updated_at = now()`,
+    [source, details.capturedAt || null, details.status || 'ok', details.error || null, JSON.stringify(summary || {}), JSON.stringify(raw || {})]
   );
   return { persisted: true };
 }
@@ -126,10 +111,7 @@ async function getLatestSourceSnapshot(source, env = process.env) {
   if (!database) return null;
   try {
     await initializePostgres(env);
-    const result = await database.query(
-      'SELECT captured_at, summary, raw FROM source_snapshots WHERE source = $1 ORDER BY captured_at DESC LIMIT 1',
-      [source]
-    );
+    const result = await database.query('SELECT captured_at, status, error, summary, raw, updated_at FROM live_source_snapshots WHERE source = $1', [source]);
     return result.rows[0] || null;
   } catch {
     return null;
