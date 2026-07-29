@@ -23,6 +23,7 @@ function bindControls() {
   const fxInput = document.getElementById('fxRubPerUsd');
 
   document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
+  document.getElementById('winlineRefreshButton').addEventListener('click', refreshWinline);
   document.getElementById('toggleSecondary').addEventListener('click', () => {
     state.secondaryOpen = !state.secondaryOpen;
     renderSecondaryVisibility();
@@ -116,6 +117,29 @@ async function refreshDashboard() {
   } finally {
     button.disabled = false;
     button.textContent = 'Refresh';
+  }
+}
+
+async function refreshWinline() {
+  const button = document.getElementById('winlineRefreshButton');
+  const status = document.getElementById('winlineRefreshStatus');
+  button.disabled = true;
+  button.textContent = 'Refreshing Winline…';
+  status.dataset.status = 'running';
+  status.textContent = 'running';
+
+  try {
+    await fetchJson('/api/winline/refresh', { method: 'POST' });
+    status.dataset.status = 'success';
+    status.textContent = 'success — reloading snapshot';
+    await loadDashboard();
+  } catch (error) {
+    const notConfigured = error.message === 'Winline manual refresh is not configured';
+    status.dataset.status = notConfigured ? 'not_configured' : 'error';
+    status.textContent = notConfigured ? 'not configured' : `error — ${error.message}`;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Refresh Winline';
   }
 }
 

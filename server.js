@@ -76,6 +76,78 @@ function readBody(req) {
   });
 }
 
+const WINLINE_WEBHOOK_TIMEOUT_MS = 8_000;
+const WINLINE_RESPONSE_LIMIT = 64 * 1024;
+
+async function triggerWinlineCollector() {
+  const webhookUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  if (!webhookUrl) {
+    return {
+      status: 501,
+      payload: {
+        ok: false,
+        status: 'not_configured',
+        message: 'Winline manual refresh is not configured',
+      },
+    };
+  }
+
+  const headers = { Accept: 'application/json, text/plain' };
+  if (process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN}`;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), WINLINE_WEBHOOK_TIMEOUT_MS);
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers,
+      signal: controller.signal,
+    });
+    const rawBody = await response.text();
+    const bodyText = rawBody.slice(0, WINLINE_RESPONSE_LIMIT);
+    let body = bodyText;
+    try {
+      body = JSON.parse(bodyText);
+    } catch {
+      // Keep a bounded plain-text response when the collector does not return JSON.
+    }
+
+    if (!response.ok) {
+      return {
+        status: 502,
+        payload: {
+          ok: false,
+          status: 'error',
+          message: `Winline collector returned HTTP ${response.status}`,
+          collector: { status: response.status, body },
+        },
+      };
+    }
+
+    return {
+      status: 200,
+      payload: {
+        ok: true,
+        status: 'success',
+        message: 'Winline collector refresh triggered',
+        collector: { status: response.status, body },
+      },
+    };
+  } catch (error) {
+    const message = error.name === 'AbortError'
+      ? 'Winline collector request timed out'
+      : 'Winline collector request failed';
+    return {
+      status: 502,
+      payload: { ok: false, status: 'error', message },
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function handleApi(req, res, pathname, searchParams = new URLSearchParams()) {
   if (req.method === 'GET' && pathname === '/api/health') {
     return sendJson(res, 200, { ok: true, service: 'prediction-arb-dashboard' });
@@ -111,6 +183,11 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
 
   if (req.method === 'POST' && pathname === '/api/refresh') {
     return sendJson(res, 200, await buildDashboardPayload());
+  }
+
+  if (req.method === 'POST' && pathname === '/api/winline/refresh') {
+    const result = await triggerWinlineCollector();
+    return sendJson(res, result.status, result.payload);
   }
 
   if (req.method === 'POST' && pathname === '/api/manual-inputs') {

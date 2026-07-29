@@ -26,8 +26,41 @@ Then open `http://127.0.0.1:4173/`.
 
 - `PORT` — HTTP port, default `4173`
 - `POLYMARKET_TIMEOUT_MS` — upstream timeout for Polymarket requests, default `10000`
+- `WINLINE_COLLECTOR_WEBHOOK_URL` — optional on-demand collector endpoint. If absent, the dashboard button reports `not configured` and does not fake a data reload.
+- `WINLINE_COLLECTOR_WEBHOOK_TOKEN` — optional Bearer token sent to the collector endpoint; never returned or logged by the dashboard.
 
-## Deployment recommendation
+### Manual Winline refresh
+
+The dashboard's `Refresh` button only reloads `/api/data`. `Refresh Winline` first sends `POST` to `WINLINE_COLLECTOR_WEBHOOK_URL`; the external collector is responsible for running Playwright and writing the Winline snapshot to Neon. Render never runs the Winline collector. On a successful trigger, the browser reloads `/api/data` and displays the latest available snapshot.
+
+To enable this later, set these Render environment variables:
+
+```text
+WINLINE_COLLECTOR_WEBHOOK_URL=https://your-vps.example/winline-refresh
+WINLINE_COLLECTOR_WEBHOOK_TOKEN=<long-random-token>
+```
+
+Without the webhook URL, the button honestly shows `not configured`.
+
+A simple VPS wrapper can be a small token-checking HTTP server that runs the existing collector command on demand (no timer or systemd job). For example, save this as `/opt/prediction-arb-dashboard/winline-webhook.py`, set `WINLINE_WEBHOOK_TOKEN` and `WINLINE_APP_DIR`, then run it in the foreground with `python3 /opt/prediction-arb-dashboard/winline-webhook.py`:
+
+```python
+import os, subprocess
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class Handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        if self.path != '/winline-refresh' or self.headers.get('Authorization') != f"Bearer {os.environ['WINLINE_WEBHOOK_TOKEN']}":
+            self.send_response(404); self.end_headers(); return
+        subprocess.Popen(['npm', 'run', 'winline:feed'], cwd=os.environ['WINLINE_APP_DIR'], start_new_session=True)
+        self.send_response(202); self.end_headers(); self.wfile.write(b'{"accepted":true}')
+    def log_message(self, *_): pass
+
+HTTPServer(('127.0.0.1', 8787), Handler).serve_forever()
+```
+
+Put this behind the VPS reverse proxy at `https://your-vps.example/winline-refresh`. The command runs only when the dashboard button calls it; do not add a cron/systemd timer for this MVP.
+
 
 ### Recommended: Render
 

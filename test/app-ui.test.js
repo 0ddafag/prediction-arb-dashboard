@@ -47,3 +47,9 @@ test('market display preserves fee-inclusive fractional cents while limit stays 
   assert.equal(app.formatPercentPrice(0.3411), '34.11%');
   assert.equal(app.formatLimitDisplayInput(0.34), '34');
 });
+
+test('client exposes the manual Winline refresh flow', () => {
+  const app = loadAppFunctions();
+  assert.equal(typeof app.refreshWinline, 'function');
+  assert.match(fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8'), /id="winlineRefreshButton"/);
+});

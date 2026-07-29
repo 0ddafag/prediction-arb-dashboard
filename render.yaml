@@ -14,3 +14,7 @@ services:
         value: 22
       - key: POLYMARKET_TIMEOUT_MS
         value: 10000
+      - key: WINLINE_COLLECTOR_WEBHOOK_URL
+        sync: false
+      - key: WINLINE_COLLECTOR_WEBHOOK_TOKEN
+        sync: false

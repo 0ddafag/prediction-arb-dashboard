@@ -157,3 +157,62 @@ test('server accepts manual overrides for dynamic live row ids', async () => {
     fs.writeFileSync(STORE_PATH, originalStore, 'utf8');
   }
 });
+
+test('server reports that manual Winline refresh is not configured', async () => {
+  const originalUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  const originalToken = process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+  delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  delete process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+
+  try {
+    await withServer(async (port) => {
+      const response = await fetch(`http://127.0.0.1:${port}/api/winline/refresh`, { method: 'POST' });
+      assert.equal(response.status, 501);
+      assert.deepEqual(await response.json(), {
+        ok: false,
+        status: 'not_configured',
+        message: 'Winline manual refresh is not configured',
+      });
+    });
+  } finally {
+    if (originalUrl === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+    else process.env.WINLINE_COLLECTOR_WEBHOOK_URL = originalUrl;
+    if (originalToken === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+    else process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN = originalToken;
+  }
+});
+
+test('server triggers the configured Winline collector webhook', async () => {
+  const collector = require('node:http').createServer((req, res) => {
+    assert.equal(req.method, 'POST');
+    assert.equal(req.headers.authorization, 'Bearer test-token');
+    res.writeHead(202, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ accepted: true, job_id: 'safe-job-id' }));
+  });
+  collector.listen(0, '127.0.0.1');
+  await once(collector, 'listening');
+  const { port: collectorPort } = collector.address();
+  const originalUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  const originalToken = process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+  process.env.WINLINE_COLLECTOR_WEBHOOK_URL = `http://127.0.0.1:${collectorPort}/winline-refresh`;
+  process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN = 'test-token';
+
+  try {
+    await withServer(async (port) => {
+      const response = await fetch(`http://127.0.0.1:${port}/api/winline/refresh`, { method: 'POST' });
+      assert.equal(response.status, 200);
+      assert.deepEqual(await response.json(), {
+        ok: true,
+        status: 'success',
+        message: 'Winline collector refresh triggered',
+        collector: { status: 202, body: { accepted: true, job_id: 'safe-job-id' } },
+      });
+    });
+  } finally {
+    await new Promise((resolve, reject) => collector.close((error) => (error ? reject(error) : resolve())));
+    if (originalUrl === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+    else process.env.WINLINE_COLLECTOR_WEBHOOK_URL = originalUrl;
+    if (originalToken === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+    else process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN = originalToken;
+  }
+});
