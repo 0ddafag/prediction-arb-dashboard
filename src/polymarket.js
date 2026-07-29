@@ -99,14 +99,20 @@ async function fetchFeaturedMarkets(limit = 6) {
   return Promise.all(markets.map((market) => enrichMarket(market)));
 }
 
-async function fetchSportsEvents(tag, { limit = 100, fetchJsonImpl = fetchJson } = {}) {
+async function fetchSportsEvents(
+  tag,
+  { limit = 100, ascending = true, fetchJsonImpl = fetchJson } = {}
+) {
   const url = new URL('/events', GAMMA_BASE);
   url.searchParams.set('active', 'true');
   url.searchParams.set('closed', 'false');
   url.searchParams.set('tag_slug', tag);
   url.searchParams.set('limit', String(limit));
   url.searchParams.set('order', 'startDate');
-  url.searchParams.set('ascending', 'false');
+  // Live sportsbook matching needs the nearest/current events. Gamma's
+  // descending first page can otherwise contain only far-future markets,
+  // which exact participant/time matching must (correctly) reject.
+  url.searchParams.set('ascending', String(ascending));
   const data = await fetchJsonImpl(url.toString());
   return Array.isArray(data) ? data : [];
 }
