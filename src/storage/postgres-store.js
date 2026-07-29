@@ -121,6 +121,21 @@ async function saveSourceSnapshot(source, summary, raw, env = process.env) {
   return { persisted: true };
 }
 
+async function getLatestSourceSnapshot(source, env = process.env) {
+  const database = getPool(env);
+  if (!database) return null;
+  try {
+    await initializePostgres(env);
+    const result = await database.query(
+      'SELECT captured_at, summary, raw FROM source_snapshots WHERE source = $1 ORDER BY captured_at DESC LIMIT 1',
+      [source]
+    );
+    return result.rows[0] || null;
+  } catch {
+    return null;
+  }
+}
+
 function buildStoreSnapshotRows(store) {
   const inputs = new Map((store.bookmaker_inputs || []).map((item) => [item.input_id, item]));
   const canonicalEventsMap = new Map();
@@ -187,4 +202,5 @@ module.exports = {
   upsertSetting,
   upsertOverride,
   saveSourceSnapshot,
+  getLatestSourceSnapshot,
 };

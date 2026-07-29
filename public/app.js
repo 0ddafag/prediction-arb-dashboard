@@ -23,6 +23,7 @@ function bindControls() {
   const fxInput = document.getElementById('fxRubPerUsd');
 
   document.getElementById('refreshButton').addEventListener('click', refreshDashboard);
+  document.getElementById('updateWinlineButton').addEventListener('click', updateWinlineFeed);
   document.getElementById('toggleSecondary').addEventListener('click', () => {
     state.secondaryOpen = !state.secondaryOpen;
     renderSecondaryVisibility();
@@ -116,6 +117,29 @@ async function refreshDashboard() {
   } finally {
     button.disabled = false;
     button.textContent = 'Refresh';
+  }
+}
+
+async function updateWinlineFeed() {
+  const button = document.getElementById('updateWinlineButton');
+  const status = document.getElementById('winlineFeedStatus');
+  button.disabled = true;
+  button.textContent = 'Updating…';
+  status.textContent = 'Fetching current Winline odds in the server browser…';
+  try {
+    const result = await fetchJson('/api/winline-feed/update', { method: 'POST' });
+    if (result.status === 'in_progress') {
+      status.textContent = 'Winline update is already running. Try Refresh again in a moment.';
+      return;
+    }
+    status.textContent = `Winline updated: ${result.candidate_count} candidates (${(result.sports || []).join(', ')}) at ${new Date(result.captured_at).toLocaleString('en-GB')}. Refreshing matches…`;
+    await loadDashboard();
+    status.textContent += ' Done.';
+  } catch (error) {
+    status.textContent = `Winline update failed: ${error.message}`;
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Update Winline feed';
   }
 }
 
@@ -579,7 +603,7 @@ function formatPercentInput(value) {
 
 function formatMarketDisplayInput(value) {
   if (value == null || Number.isNaN(Number(value))) return '';
-  return String(Math.ceil(Number(value) * 100));
+  return trimTrailingZeros((Number(value) * 100).toFixed(2));
 }
 
 function formatLimitDisplayInput(value) {
@@ -637,7 +661,7 @@ function feePct(raw, trueCost) {
 
 function formatPercentPrice(value) {
   if (value == null || Number.isNaN(value)) return '—';
-  return `${Math.round(Number(value) * 100)}%`;
+  return `${trimTrailingZeros((Number(value) * 100).toFixed(2))}%`;
 }
 
 function formatPctPair(a, b) {

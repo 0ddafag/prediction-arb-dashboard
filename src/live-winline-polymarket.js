@@ -1,7 +1,9 @@
 const aliases = require('../config/participant-aliases.json');
 const { fetchSportsEvents, enrichMarket } = require('./polymarket');
 const { execFileSync } = require('child_process');
+const fs = require('fs');
 const path = require('path');
+const { getLatestSourceSnapshot } = require('./storage/postgres-store');
 
 const WINLINE_URLS = Object.freeze({
   baseball: 'https://winline.ru/stavki/sport/bejsbol/ssha/mlb',
@@ -155,7 +157,12 @@ async function fetchWinlineSnapshotCandidates({
     if (!response.ok) throw new Error(`Winline snapshot HTTP ${response.status} from ${url}`);
     return response.json();
   });
-  const payload = await load(snapshotUrl);
+  const databaseSnapshot = await getLatestSourceSnapshot('winline_browser_rendered_dom_snapshot');
+  const payload = databaseSnapshot?.raw?.candidates
+    ? { ...databaseSnapshot.raw, captured_at: databaseSnapshot.captured_at || databaseSnapshot.raw.captured_at }
+    : fs.existsSync(path.join(__dirname, '..', 'data', 'live-winline.json'))
+      ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'live-winline.json'), 'utf8'))
+      : await load(snapshotUrl);
   if (!payload || !Array.isArray(payload.candidates)) {
     throw new Error('Winline snapshot payload is missing candidates[]');
   }
@@ -175,7 +182,11 @@ async function fetchWinlineSnapshotCandidates({
     enumerable: false,
   });
   Object.defineProperty(candidates, 'snapshot_url', {
-    value: snapshotUrl,
+    value: databaseSnapshot
+      ? 'postgres:source_snapshots/winline_browser_rendered_dom_snapshot'
+      : fs.existsSync(path.join(__dirname, '..', 'data', 'live-winline.json'))
+        ? 'local:data/live-winline.json'
+        : snapshotUrl,
     enumerable: false,
   });
   return candidates;
@@ -338,8 +349,8 @@ async function fetchLiveWinlinePolymarketSource({
   const capturedAt = new Date().toISOString();
   const [candidates, mlbEvents, ufcEvents] = await Promise.all([
     fetchCandidates({ now }),
-    fetchEvents('mlb'),
-    fetchEvents('ufc'),
+    fetchEvents('mlb', { pages: 3 }),
+    fetchEvents('ufc', { pages: 2 }),
   ]);
   const matches = buildExactLiveMatches({ candidates, polymarketEvents: [...mlbEvents, ...ufcEvents], now });
   const mappedMarkets = await Promise.all(matches.map((match) => enrich(match.polymarket)));
@@ -358,6 +369,14 @@ async function fetchLiveWinlinePolymarketSource({
         acc[match.winline.sport] = (acc[match.winline.sport] || 0) + 1;
         return acc;
       }, {}),
+      candidate_count_by_sport: candidates.reduce((acc, candidate) => {
+        acc[candidate.sport] = (acc[candidate.sport] || 0) + 1;
+        return acc;
+      }, {}),
+      unmatched_candidates: candidates
+        .filter((candidate) => !matches.some((match) => match.winline.provider_event_id === candidate.provider_event_id))
+        .slice(0, 25)
+        .map((candidate) => ({ sport: candidate.sport, participants: candidate.participants, start_at: candidate.start_at })),
     },
   };
 }

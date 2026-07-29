@@ -40,3 +40,10 @@ test('event start formatting makes repeated fixtures visually distinguishable', 
   assert.match(label, /27/);
   assert.match(label, /22:40/);
 });
+
+test('market display preserves fee-inclusive fractional cents while limit stays compact', () => {
+  const app = loadAppFunctions();
+  assert.equal(app.formatMarketDisplayInput(0.3411), '34.11');
+  assert.equal(app.formatPercentPrice(0.3411), '34.11%');
+  assert.equal(app.formatLimitDisplayInput(0.34), '34');
+});

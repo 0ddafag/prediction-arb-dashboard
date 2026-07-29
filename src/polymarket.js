@@ -101,20 +101,24 @@ async function fetchFeaturedMarkets(limit = 6) {
 
 async function fetchSportsEvents(
   tag,
-  { limit = 100, ascending = true, fetchJsonImpl = fetchJson } = {}
+  { limit = 100, ascending = true, pages = 1, fetchJsonImpl = fetchJson } = {}
 ) {
-  const url = new URL('/events', GAMMA_BASE);
-  url.searchParams.set('active', 'true');
-  url.searchParams.set('closed', 'false');
-  url.searchParams.set('tag_slug', tag);
-  url.searchParams.set('limit', String(limit));
-  url.searchParams.set('order', 'startDate');
-  // Live sportsbook matching needs the nearest/current events. Gamma's
-  // descending first page can otherwise contain only far-future markets,
-  // which exact participant/time matching must (correctly) reject.
-  url.searchParams.set('ascending', String(ascending));
-  const data = await fetchJsonImpl(url.toString());
-  return Array.isArray(data) ? data : [];
+  const results = [];
+  for (let page = 0; page < Math.max(1, pages); page += 1) {
+    const url = new URL('/events', GAMMA_BASE);
+    url.searchParams.set('active', 'true');
+    url.searchParams.set('closed', 'false');
+    url.searchParams.set('tag_slug', tag);
+    url.searchParams.set('limit', String(limit));
+    url.searchParams.set('offset', String(page * limit));
+    url.searchParams.set('order', 'startDate');
+    url.searchParams.set('ascending', String(ascending));
+    const data = await fetchJsonImpl(url.toString());
+    if (!Array.isArray(data) || !data.length) break;
+    results.push(...data);
+    if (data.length < limit) break;
+  }
+  return [...new Map(results.map((event) => [String(event.id || `${event.slug}-${event.startDate}`), event])).values()];
 }
 
 async function fetchMappedMarkets(ids = DEFAULT_IDS) {
