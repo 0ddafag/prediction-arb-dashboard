@@ -215,6 +215,49 @@ test('server queues manual Winline refresh in Neon when webhook is absent', asyn
     else process.env.DATABASE_URL = originalDatabaseUrl;
   }
 });
+
+test('server exposes a safe manual books refresh status', async () => {
+  const storage = require('../src/storage/postgres-store');
+  const originalDatabaseUrl = process.env.DATABASE_URL;
+  const originalLatest = storage.getLatestWinlineRefreshRequest;
+  process.env.DATABASE_URL = 'postgresql://test.invalid/prediction';
+  storage.getLatestWinlineRefreshRequest = async () => ({
+    id: 42,
+    status: 'succeeded',
+    requested_at: '2026-07-29T12:00:00.000Z',
+    started_at: '2026-07-29T12:00:05.000Z',
+    finished_at: '2026-07-29T12:01:00.000Z',
+    worker_id: 'secret-worker-id',
+    request_source: 'dashboard',
+    error: null,
+    result: { sources: { fonbet: { status: 'ok', captured_at: '2026-07-29T12:00:59.000Z', output: 'not public' } } },
+  });
+
+  try {
+    await withServer(async (port) => {
+      const response = await fetch(`http://127.0.0.1:${port}/api/books/refresh/status`);
+      assert.equal(response.status, 200);
+      assert.deepEqual(await response.json(), {
+        ok: true,
+        status: 'succeeded',
+        request: {
+          id: 42,
+          status: 'succeeded',
+          requested_at: '2026-07-29T12:00:00.000Z',
+          started_at: '2026-07-29T12:00:05.000Z',
+          finished_at: '2026-07-29T12:01:00.000Z',
+          error: null,
+          result: { sources: { fonbet: { status: 'ok', captured_at: '2026-07-29T12:00:59.000Z' } } },
+        },
+      });
+    });
+  } finally {
+    storage.getLatestWinlineRefreshRequest = originalLatest;
+    if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+    else process.env.DATABASE_URL = originalDatabaseUrl;
+  }
+});
+
 test('server triggers the configured Winline collector webhook', async () => {
   const collector = require('node:http').createServer((req, res) => {
     assert.equal(req.method, 'POST');

@@ -162,6 +162,18 @@ async function getLatestWinlineRefreshRequest(env = process.env) {
   return result.rows[0] || null;
 }
 
+async function getWinlineRefreshRequest(id, env = process.env) {
+  const database = getPool(env);
+  if (!database) return null;
+  await initializePostgres(env);
+  const result = await database.query(
+    `SELECT id, requested_at, status, started_at, finished_at, worker_id, error, result, request_source
+     FROM winline_refresh_requests WHERE id = $1`,
+    [id]
+  );
+  return result.rows[0] || null;
+}
+
 async function claimPendingWinlineRefresh(workerId, env = process.env) {
   const database = getPool(env);
   if (!database) return null;
@@ -265,6 +277,7 @@ module.exports = {
   getLatestSourceSnapshot,
   enqueueWinlineRefresh,
   getLatestWinlineRefreshRequest,
+  getWinlineRefreshRequest,
   claimPendingWinlineRefresh,
   completeWinlineRefresh,
 };

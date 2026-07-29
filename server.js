@@ -184,6 +184,34 @@ async function triggerWinlineCollector() {
   }
 }
 
+function safeRefreshResult(result) {
+  if (!result || typeof result !== 'object') return null;
+  const sources = result.sources && typeof result.sources === 'object' ? result.sources : {};
+  return {
+    sources: Object.fromEntries(Object.entries(sources).map(([source, details]) => {
+      const summary = { status: details?.status || null };
+      for (const key of ['captured_at', 'candidate_count', 'mapped_pairs', 'keys']) {
+        if (details?.[key] != null) summary[key] = details[key];
+      }
+      if (Array.isArray(details?.sports)) summary.sports = details.sports;
+      return [source, summary];
+    })),
+  };
+}
+
+function safeRefreshRequest(request) {
+  if (!request) return null;
+  return {
+    id: request.id,
+    status: request.status,
+    requested_at: request.requested_at,
+    started_at: request.started_at || null,
+    finished_at: request.finished_at || null,
+    error: request.error || null,
+    result: safeRefreshResult(request.result),
+  };
+}
+
 async function handleApi(req, res, pathname, searchParams = new URLSearchParams()) {
   if (req.method === 'GET' && pathname === '/api/health') {
     return sendJson(res, 200, { ok: true, service: 'prediction-arb-dashboard' });
@@ -208,6 +236,20 @@ async function handleApi(req, res, pathname, searchParams = new URLSearchParams(
 
   if (req.method === 'GET' && pathname === '/api/data') {
     return sendJson(res, 200, await buildDashboardPayload());
+  }
+  const refreshStatusMatch = pathname.match(/^\/api\/books\/refresh(?:\/(status|\d+))?$/);
+  if (req.method === 'GET' && refreshStatusMatch) {
+    if (!storage.isPostgresConfigured()) {
+      return sendJson(res, 200, { ok: true, status: 'not_configured', request: null });
+    }
+    const request = refreshStatusMatch[1] && refreshStatusMatch[1] !== 'status'
+      ? await storage.getWinlineRefreshRequest(Number(refreshStatusMatch[1]))
+      : await storage.getLatestWinlineRefreshRequest();
+    return sendJson(res, 200, {
+      ok: true,
+      status: request ? request.status : 'no_state',
+      request: safeRefreshRequest(request),
+    });
   }
   if (req.method === 'GET' && pathname === '/api/opportunities') {
     return sendJson(res, 200, await buildOpportunitiesPayload({

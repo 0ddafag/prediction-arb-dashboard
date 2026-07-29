@@ -54,3 +54,12 @@ test('client exposes the manual Winline refresh flow', () => {
   assert.match(fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8'), /id="winlineRefreshButton"/);
   assert.match(fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8'), /waiting for VPS worker/);
 });
+
+test('client polls queued refresh status before reloading dashboard data', () => {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8');
+  assert.match(source, /\/api\/books\/refresh\//);
+  assert.match(source, /request_id/);
+  assert.match(source, /120_000/);
+  assert.match(source, /refresh status polling unavailable/);
+  assert.doesNotMatch(source, /setTimeout\(\(\) => loadDashboard\(\), 4_000\)/);
+});

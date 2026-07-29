@@ -130,14 +130,16 @@ async function refreshWinline() {
 
   try {
     const response = await fetchJson('/api/books/refresh', { method: 'POST' });
-    if (response.status === 'queued' || response.status === 'accepted') {
+    if (response.status === 'queued' && response.request_id) {
+      status.dataset.status = 'queued';
+      status.textContent = 'queued — waiting for VPS worker';
+      await pollRefreshStatus(response.request_id, status);
+    } else if (response.status === 'accepted' || response.status === 'queued') {
       status.dataset.status = response.status;
-      status.textContent = response.status === 'queued' ? 'queued — waiting for VPS worker' : 'accepted — waiting for collector';
-      setTimeout(() => {
-        status.dataset.status = 'running';
-        status.textContent = 'running — reloading snapshot soon';
-      }, 1_000);
-      setTimeout(() => loadDashboard(), 4_000);
+      status.textContent = response.status === 'queued'
+        ? 'queued — refresh id unavailable, checking later'
+        : 'accepted — waiting for collector';
+      await delayedRefreshFallback(status);
     } else {
       status.dataset.status = 'success';
       status.textContent = 'success — reloading snapshot';
@@ -151,6 +153,63 @@ async function refreshWinline() {
     button.disabled = false;
     button.textContent = 'Refresh books';
   }
+}
+
+const REFRESH_STATUS_POLL_MS = 3_000;
+const REFRESH_STATUS_TIMEOUT_MS = 120_000;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function pollRefreshStatus(requestId, status) {
+  const deadline = Date.now() + REFRESH_STATUS_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    await sleep(REFRESH_STATUS_POLL_MS);
+    try {
+      const response = await fetchJson(`/api/books/refresh/${encodeURIComponent(requestId)}`);
+      const request = response.request;
+      if (!request || response.status === 'no_state' || response.status === 'not_configured') {
+        throw new Error('refresh status polling unavailable');
+      }
+      if (request.status === 'pending' || request.status === 'running') {
+        status.dataset.status = request.status;
+        status.textContent = `${request.status} — waiting for books`;
+        continue;
+      }
+      await loadDashboard();
+      if (request.status === 'succeeded') {
+        status.dataset.status = 'success';
+        status.textContent = `success — finished ${formatRefreshTimestamp(request.finished_at)}`;
+      } else {
+        status.dataset.status = 'error';
+        status.textContent = `error — ${request.error || 'refresh failed'}`;
+      }
+      return;
+    } catch (error) {
+      status.dataset.status = 'running';
+      status.textContent = `running — status unavailable, checking in 35s (${error.message})`;
+      await delayedRefreshFallback(status);
+      return;
+    }
+  }
+  status.dataset.status = 'error';
+  status.textContent = 'error — refresh timed out; reload later to check books';
+}
+
+async function delayedRefreshFallback(status) {
+  status.dataset.status = 'running';
+  status.textContent = 'running — status unavailable, checking in 35s';
+  await sleep(35_000);
+  await loadDashboard();
+  status.dataset.status = 'success';
+  status.textContent = 'success — snapshot reloaded';
+}
+
+function formatRefreshTimestamp(value) {
+  if (!value) return 'now';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? 'now' : date.toLocaleString('en-GB');
 }
 
 function getAllSnapshots() {
