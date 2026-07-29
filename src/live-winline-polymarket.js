@@ -126,7 +126,7 @@ async function fetchRenderedText(url) {
     const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
     execFileSync(process.execPath, [playwrightCli, 'install', 'chromium'], {
       stdio: 'ignore',
-      timeout: 180000,
+      timeout: 360000,
     });
     browser = await chromium.launch(launchOptions);
   }
