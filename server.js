@@ -157,6 +157,24 @@ async function triggerWinlineCollector() {
     const message = error.name === 'AbortError'
       ? 'Winline collector request timed out'
       : 'Winline collector request failed';
+    if (storage.isPostgresConfigured()) {
+      const request = await storage.enqueueWinlineRefresh();
+      return {
+        status: 202,
+        payload: {
+          ok: true,
+          status: 'queued',
+          message: 'Winline refresh queued after collector webhook failure',
+          request_id: request?.id,
+          request: request ? {
+            id: request.id,
+            status: request.status,
+            requested_at: request.requested_at,
+          } : null,
+          collector_error: message,
+        },
+      };
+    }
     return {
       status: 502,
       payload: { ok: false, status: 'error', message },
