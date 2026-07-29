@@ -52,4 +52,5 @@ test('client exposes the manual Winline refresh flow', () => {
   const app = loadAppFunctions();
   assert.equal(typeof app.refreshWinline, 'function');
   assert.match(fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8'), /id="winlineRefreshButton"/);
+  assert.match(fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8'), /waiting for VPS worker/);
 });

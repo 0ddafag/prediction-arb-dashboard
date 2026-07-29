@@ -129,10 +129,20 @@ async function refreshWinline() {
   status.textContent = 'running';
 
   try {
-    await fetchJson('/api/winline/refresh', { method: 'POST' });
-    status.dataset.status = 'success';
-    status.textContent = 'success — reloading snapshot';
-    await loadDashboard();
+    const response = await fetchJson('/api/winline/refresh', { method: 'POST' });
+    if (response.status === 'queued' || response.status === 'accepted') {
+      status.dataset.status = response.status;
+      status.textContent = response.status === 'queued' ? 'queued — waiting for VPS worker' : 'accepted — waiting for collector';
+      setTimeout(() => {
+        status.dataset.status = 'running';
+        status.textContent = 'running — reloading snapshot soon';
+      }, 1_000);
+      setTimeout(() => loadDashboard(), 4_000);
+    } else {
+      status.dataset.status = 'success';
+      status.textContent = 'success — reloading snapshot';
+      await loadDashboard();
+    }
   } catch (error) {
     const notConfigured = error.message === 'Winline manual refresh is not configured';
     status.dataset.status = notConfigured ? 'not_configured' : 'error';

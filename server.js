@@ -11,7 +11,8 @@ const {
   createManualInput,
 } = require('./src/storage');
 const { impliedProbability } = require('./src/math');
-const { getPersistentState, upsertSetting, upsertOverride } = require('./src/storage/postgres-store');
+const storage = require('./src/storage/postgres-store');
+const { getPersistentState, upsertSetting, upsertOverride } = storage;
 
 const PORT = Number(process.env.PORT || 4173);
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -82,6 +83,23 @@ const WINLINE_RESPONSE_LIMIT = 64 * 1024;
 async function triggerWinlineCollector() {
   const webhookUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
   if (!webhookUrl) {
+    if (storage.isPostgresConfigured()) {
+      const request = await storage.enqueueWinlineRefresh();
+      return {
+        status: 202,
+        payload: {
+          ok: true,
+          status: 'queued',
+          message: 'Winline refresh queued',
+          request_id: request?.id,
+          request: request ? {
+            id: request.id,
+            status: request.status,
+            requested_at: request.requested_at,
+          } : null,
+        },
+      };
+    }
     return {
       status: 501,
       payload: {

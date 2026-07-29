@@ -26,23 +26,35 @@ Then open `http://127.0.0.1:4173/`.
 
 - `PORT` — HTTP port, default `4173`
 - `POLYMARKET_TIMEOUT_MS` — upstream timeout for Polymarket requests, default `10000`
-- `WINLINE_COLLECTOR_WEBHOOK_URL` — optional on-demand collector endpoint. If absent, the dashboard button reports `not configured` and does not fake a data reload.
+- `WINLINE_COLLECTOR_WEBHOOK_URL` — optional on-demand collector endpoint. If absent and `DATABASE_URL` is configured, the dashboard queues a manual refresh for the VPS worker.
 - `WINLINE_COLLECTOR_WEBHOOK_TOKEN` — optional Bearer token sent to the collector endpoint; never returned or logged by the dashboard.
+- `DATABASE_URL` — Neon/Postgres connection used by the dashboard and the foreground VPS worker.
 
 ### Manual Winline refresh
 
-The dashboard's `Refresh` button only reloads `/api/data`. `Refresh Winline` first sends `POST` to `WINLINE_COLLECTOR_WEBHOOK_URL`; the external collector is responsible for running Playwright and writing the Winline snapshot to Neon. Render never runs the Winline collector. On a successful trigger, the browser reloads `/api/data` and displays the latest available snapshot.
+The dashboard's `Refresh` button only reloads `/api/data`. `Refresh Winline` uses the webhook when configured; otherwise it inserts one pending request into Neon and returns `202 queued`. The foreground VPS worker polls that queue, runs `npm run winline:feed` once, and writes the result to Neon. Render never runs the Winline collector, and there is no periodic Winline scrape.
 
-To enable this later, set these Render environment variables:
+For the queue path, configure `DATABASE_URL` on Render and run this in the foreground on the VPS:
+
+```sh
+cd /home/test1/prediction-arb-dashboard
+git pull
+set -a; source /home/test1/.hermes/profiles/prediction/secrets/prediction-arb-dashboard.env; set +a
+node scripts/winline-refresh-worker.js
+```
+
+The worker polls cheaply every four seconds and runs the browser collector only after a dashboard request. Do not add a cron/systemd timer for this MVP.
+
+The webhook remains an optional compatibility path:
 
 ```text
 WINLINE_COLLECTOR_WEBHOOK_URL=https://your-vps.example/winline-refresh
 WINLINE_COLLECTOR_WEBHOOK_TOKEN=<long-random-token>
 ```
 
-Without the webhook URL, the button honestly shows `not configured`.
+The queue fallback is used whenever the webhook URL is absent and `DATABASE_URL` is configured.
 
-A simple VPS wrapper can be a small token-checking HTTP server that runs the existing collector command on demand (no timer or systemd job). For example, save this as `/opt/prediction-arb-dashboard/winline-webhook.py`, set `WINLINE_WEBHOOK_TOKEN` and `WINLINE_APP_DIR`, then run it in the foreground with `python3 /opt/prediction-arb-dashboard/winline-webhook.py`:
+A simple VPS wrapper remains available for the optional webhook compatibility path; it is not needed for the Neon queue worker:
 
 ```python
 import os, subprocess

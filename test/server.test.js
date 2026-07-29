@@ -161,8 +161,10 @@ test('server accepts manual overrides for dynamic live row ids', async () => {
 test('server reports that manual Winline refresh is not configured', async () => {
   const originalUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
   const originalToken = process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+  const originalDatabaseUrl = process.env.DATABASE_URL;
   delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
   delete process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
+  delete process.env.DATABASE_URL;
 
   try {
     await withServer(async (port) => {
@@ -179,9 +181,40 @@ test('server reports that manual Winline refresh is not configured', async () =>
     else process.env.WINLINE_COLLECTOR_WEBHOOK_URL = originalUrl;
     if (originalToken === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN;
     else process.env.WINLINE_COLLECTOR_WEBHOOK_TOKEN = originalToken;
+    if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+    else process.env.DATABASE_URL = originalDatabaseUrl;
   }
 });
 
+test('server queues manual Winline refresh in Neon when webhook is absent', async () => {
+  const storage = require('../src/storage/postgres-store');
+  const originalUrl = process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  const originalDatabaseUrl = process.env.DATABASE_URL;
+  const originalEnqueue = storage.enqueueWinlineRefresh;
+  delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+  process.env.DATABASE_URL = 'postgresql://test.invalid/prediction';
+  storage.enqueueWinlineRefresh = async () => ({ id: 42, status: 'pending', requested_at: '2026-07-29T12:00:00.000Z' });
+
+  try {
+    await withServer(async (port) => {
+      const response = await fetch(`http://127.0.0.1:${port}/api/winline/refresh`, { method: 'POST' });
+      assert.equal(response.status, 202);
+      assert.deepEqual(await response.json(), {
+        ok: true,
+        status: 'queued',
+        message: 'Winline refresh queued',
+        request_id: 42,
+        request: { id: 42, status: 'pending', requested_at: '2026-07-29T12:00:00.000Z' },
+      });
+    });
+  } finally {
+    storage.enqueueWinlineRefresh = originalEnqueue;
+    if (originalUrl === undefined) delete process.env.WINLINE_COLLECTOR_WEBHOOK_URL;
+    else process.env.WINLINE_COLLECTOR_WEBHOOK_URL = originalUrl;
+    if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+    else process.env.DATABASE_URL = originalDatabaseUrl;
+  }
+});
 test('server triggers the configured Winline collector webhook', async () => {
   const collector = require('node:http').createServer((req, res) => {
     assert.equal(req.method, 'POST');

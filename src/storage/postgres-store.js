@@ -22,7 +22,7 @@ async function initializePostgres(env = process.env) {
   if (!database) return false;
   if (!initialization) {
     initialization = (async () => {
-      for (const file of ['001_core.sql', '002_dashboard_state.sql', '003_neon_winline_pipeline.sql']) {
+      for (const file of ['001_core.sql', '002_dashboard_state.sql', '003_neon_winline_pipeline.sql', '004_manual_winline_refresh_queue.sql']) {
         await database.query(fs.readFileSync(path.join(__dirname, '..', '..', 'migrations', file), 'utf8'));
       }
       return true;
@@ -118,6 +118,84 @@ async function getLatestSourceSnapshot(source, env = process.env) {
   }
 }
 
+async function enqueueWinlineRefresh(env = process.env, requestSource = 'dashboard') {
+  const database = getPool(env);
+  if (!database) return null;
+  await initializePostgres(env);
+  const client = await database.connect();
+  try {
+    await client.query('BEGIN');
+    const inserted = await client.query(
+      `INSERT INTO winline_refresh_requests (request_source)
+       VALUES ($1)
+       ON CONFLICT DO NOTHING
+       RETURNING id, requested_at, status, started_at, finished_at`,
+      [requestSource]
+    );
+    const result = inserted.rows[0]
+      ? inserted
+      : await client.query(
+        `SELECT id, requested_at, status, started_at, finished_at
+         FROM winline_refresh_requests
+         WHERE status IN ('pending', 'running')
+         ORDER BY requested_at ASC
+         LIMIT 1`
+      );
+    await client.query('COMMIT');
+    return result.rows[0] || null;
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+async function getLatestWinlineRefreshRequest(env = process.env) {
+  const database = getPool(env);
+  if (!database) return null;
+  await initializePostgres(env);
+  const result = await database.query(
+    `SELECT id, requested_at, status, started_at, finished_at, worker_id, error, result, request_source
+     FROM winline_refresh_requests ORDER BY requested_at DESC LIMIT 1`
+  );
+  return result.rows[0] || null;
+}
+
+async function claimPendingWinlineRefresh(workerId, env = process.env) {
+  const database = getPool(env);
+  if (!database) return null;
+  await initializePostgres(env);
+  const result = await database.query(
+    `WITH next_request AS (
+       SELECT id FROM winline_refresh_requests
+       WHERE status = 'pending' ORDER BY requested_at ASC
+       FOR UPDATE SKIP LOCKED LIMIT 1
+     )
+     UPDATE winline_refresh_requests AS request
+     SET status = 'running', started_at = now(), worker_id = $1
+     FROM next_request WHERE request.id = next_request.id
+     RETURNING request.id, request.requested_at, request.status, request.started_at, request.worker_id, request.request_source`,
+    [workerId]
+  );
+  return result.rows[0] || null;
+}
+
+async function completeWinlineRefresh(id, status, { result = null, error = null } = {}, env = process.env) {
+  if (!['succeeded', 'failed'].includes(status)) throw new Error(`Invalid Winline refresh completion status: ${status}`);
+  const database = getPool(env);
+  if (!database) return null;
+  await initializePostgres(env);
+  const queryResult = await database.query(
+    `UPDATE winline_refresh_requests
+     SET status = $2, finished_at = now(), result = $3::jsonb, error = $4
+     WHERE id = $1
+     RETURNING id, requested_at, status, started_at, finished_at, worker_id, error, result, request_source`,
+    [id, status, result == null ? null : JSON.stringify(result), error]
+  );
+  return queryResult.rows[0] || null;
+}
+
 function buildStoreSnapshotRows(store) {
   const inputs = new Map((store.bookmaker_inputs || []).map((item) => [item.input_id, item]));
   const canonicalEventsMap = new Map();
@@ -185,4 +263,8 @@ module.exports = {
   upsertOverride,
   saveSourceSnapshot,
   getLatestSourceSnapshot,
+  enqueueWinlineRefresh,
+  getLatestWinlineRefreshRequest,
+  claimPendingWinlineRefresh,
+  completeWinlineRefresh,
 };

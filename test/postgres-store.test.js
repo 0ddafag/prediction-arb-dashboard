@@ -31,3 +31,10 @@ test('Neon migration guards legacy target_type reads for partial legacy schemas'
   assert.match(migration, /jsonb_object_agg\(field_name, value\)/);
   assert.match(migration, /NULL::text/);
 });
+
+test('manual Winline queue migration allows only one active request', () => {
+  const migration = fs.readFileSync(path.join(__dirname, '..', 'migrations', '004_manual_winline_refresh_queue.sql'), 'utf8');
+  assert.match(migration, /winline_refresh_requests/);
+  assert.match(migration, /status IN \('pending', 'running'\)/);
+  assert.match(migration, /UNIQUE INDEX/);
+});
