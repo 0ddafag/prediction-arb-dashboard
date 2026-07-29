@@ -107,6 +107,7 @@ function parseWinlineText(text, { sport, now = new Date(), sourceUrl = WINLINE_U
 
 async function fetchRenderedText(url) {
   let chromium;
+  if (!process.env.PLAYWRIGHT_BROWSERS_PATH) process.env.PLAYWRIGHT_BROWSERS_PATH = '0';
   try {
     ({ chromium } = require('playwright'));
   } catch (error) {
